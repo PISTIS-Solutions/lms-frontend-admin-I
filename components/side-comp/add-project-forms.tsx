@@ -8,7 +8,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
@@ -44,14 +43,14 @@ const AddProjectForms = () => {
         <div className="bg-white shadow-md w-[72px] h-[36px] flex justify-center items-center p-2 absolute -top-10 -right-5 rounded-[8px]">
           <p className="text-main text-xs font-medium">Project</p>
         </div>
-        <div className="w-[50px] h-[25px] block rounded-full bg-sub" />
+        <div className="w-[50px] h-[18px] md:h-[25px] block rounded-full bg-sub" />
         <div className="bg-sub w-full h-[4px]"></div>
-        <div className="w-[50px] h-[25px] rounded-full bg-sub" />
-        <div className="bg-sub w-full h-[4px]"></div>
-        <div className="w-[50px] h-[25px] rounded-full bg-sub" />
+        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
+        <div className="bg-[#D6DADE] w-full h-[4px]"></div>
+        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
       </div>
       <div>
-        <h1 className="text-3xl font-semibold">Project Details</h1>
+        <h1 className="md:text-3xl text-xl font-semibold">Project Details</h1>
       </div>
       <div className="mt-4">
         <Form {...form}>
@@ -62,7 +61,7 @@ const AddProjectForms = () => {
                 name="projectTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Project Title
                     </FormLabel>
                     <FormControl className="">
@@ -80,7 +79,7 @@ const AddProjectForms = () => {
                 name="projectLink"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Project Link
                     </FormLabel>
                     <FormControl>
@@ -99,7 +98,7 @@ const AddProjectForms = () => {
                 name="additionalNote"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Additional Note
                     </FormLabel>
                     <FormControl>

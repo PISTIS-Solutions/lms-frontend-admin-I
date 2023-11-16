@@ -5,20 +5,28 @@ import React, { useState } from "react";
 
 import logo from "@/public/assets/full-logo.png";
 import {
+  ArrowLeftCircle,
+  ArrowRightCircle,
   Award,
   BookOpenText,
   GraduationCap,
   LayoutDashboard,
   ListTodo,
   LogOut,
+  Menu,
   Settings,
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import MobileNav from "./mobile-nav";
 
-const SideNav = () => {
+const MobileNav = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const pathname = usePathname();
+
+  const toggleSidebar = () => {
+    setSidebarOpen((prev) => !prev);
+  };
   const navTexts = [
     {
       icon: <LayoutDashboard />,
@@ -48,11 +56,18 @@ const SideNav = () => {
     // },
   ];
 
-  const pathname = usePathname();
-
   return (
-    <div>
-      <nav className="w-64 hidden md:block bg-main h-screen absolute top-0">
+    <div className="relative w-36 z-[98]">
+      <div className={`absolute bg-main rounded-full top-6 z-[99] ${sidebarOpen ? "-right-4" : "ml-2"}`}>
+        <button className="p-2 text-white" onClick={toggleSidebar}>
+          {sidebarOpen ? <ArrowLeftCircle /> : <Menu />}
+        </button>
+      </div>
+      <nav
+        className={`w-36 bg-main h-screen absolute top-0 transform transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <Image className=" m-auto py-5 px-5" src={logo} priority alt="logo" />
         <div className="flex justify-between flex-col h-[88%]">
           <div>
@@ -64,28 +79,28 @@ const SideNav = () => {
                       pathname === `/${nav.link}`
                         ? "bg-sub text-black border-r-[#6E6EF7] border-r-2"
                         : "text-white"
-                    } flex items-center pl-5 gap-3  text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-3`}
+                    } flex items-center pl-1 gap-1 text-center duration-150 ease-in-out cursor-pointer my-1 py-2`}
                   >
-                    <span> {nav.icon} </span>
-                    <span className="text-lg">{nav.title}</span>
+                    <span className=""> {nav.icon} </span>
+                    <span className="text-xs">{nav.title}</span>
                   </div>
                 </Link>
               );
             })}
           </div>
           <div>
-            <div className="text-white text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-1">
+            <div className="text-white text-center duration-150 ease-in-out cursor-pointer my-1 py-1">
               <Link href={"/settings"} className="">
                 <div
                   className={`link ${
                     pathname === "/settings"
                       ? "bg-sub text-black border-r-[#6E6EF7] border-r-2"
                       : "text-white"
-                  } flex items-center pl-5 gap-3  text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-2`}
+                  } flex items-center pl-1 gap-1 text-center duration-150 ease-in-out cursor-pointer my-1 py-2`}
                 >
                   {" "}
                   <Settings />
-                  <span className="text-lg">Settings</span>
+                  <span className="text-xs">Settings</span>
                 </div>
               </Link>
             </div>
@@ -95,21 +110,18 @@ const SideNav = () => {
                   pathname === "/log-out"
                     ? "bg-sub text-black border-r-[#6E6EF7] border-r-2"
                     : "text-white"
-                } flex items-center pl-5 gap-3  text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-2`}
+                } flex items-center pl-1 gap-1 text-center duration-150 ease-in-out cursor-pointer my-1 py-2`}
               >
                 {" "}
                 <LogOut />
-                <span className="text-lg">Log Out</span>
+                <span className="text-xs">Log Out</span>
               </div>
             </Link>
           </div>
         </div>
       </nav>
-      <div className="md:hidden block">
-        <MobileNav />
-      </div>
     </div>
   );
 };
 
-export default SideNav;
+export default MobileNav;

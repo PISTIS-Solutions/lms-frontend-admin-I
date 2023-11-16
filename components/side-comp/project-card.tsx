@@ -43,12 +43,12 @@ const ProjectCard = ({
           className="rounded-tr-[4px] w-full rounded-tl-[4px]"
         />
         <div className="p-2">
-          <div className="mb-14">
-            <h1 className="text-xl font-medium">{title}</h1>
-            <p className="text-lg text-[#3E3E3E]">{paragraph}</p>
+          <div className="md:mb-14 mb-5">
+            <h1 className="md:text-xl text-sm font-medium">{title}</h1>
+            <p className="md:text-lg text-xs text-[#3E3E3E]">{paragraph}</p>
           </div>
           <div className="mt-4">
-            <div className="flex items-center gap-x-1">
+          <div className="flex md:text-base text-xs items-center gap-x-1">
               <BookText className="text-main" />
               {project.length} projects
             </div>

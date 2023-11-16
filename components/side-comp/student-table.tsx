@@ -47,16 +47,18 @@ const StudentsTable = () => {
   };
 
   return (
-    <div>
+    <div className=" overflow-x-scroll md:overflow-x-auto">
       <table className="w-full mt-2 text-center">
         <thead className="text-main">
           <tr className="bg-[#F8F9FF] py-2 w-full">
-            <th className="py-4">Full name</th>
-            <th className="py-4">Email</th>
-            <th className="py-4">Courses Completed</th>
-            <th className="py-4">Phone Number</th>
-            <th className="py-4">Plan</th>
-            <th className="py-4">Access</th>
+            <th className="md:py-4 md:text-base text-xs py-2">Full name</th>
+            <th className="md:py-4 md:text-base text-xs py-2">Email</th>
+            <th className="md:py-4 md:text-base text-xs py-2">
+              Courses Completed
+            </th>
+            <th className="md:py-4 md:text-base text-xs py-2">Phone Number</th>
+            <th className="md:py-4 md:text-base text-xs py-2">Plan</th>
+            <th className="md:py-4 md:text-base text-xs py-2">Access</th>
           </tr>
         </thead>
         <tbody className="relative">
@@ -65,16 +67,24 @@ const StudentsTable = () => {
               <tr key={index}>
                 <td
                   onClick={() => handleCardClick(person.id)}
-                  className="py-4 cursor-pointer"
+                  className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 cursor-pointer"
                 >
                   {person.name}
                 </td>
-                <td className="py-4">{person.email}</td>
-                <td className="py-4">{person.courseCompleted}</td>
-                <td className="py-4">{person.phoneNumber}</td>
-                <td className="py-4">{person.plan}</td>
+                <td className="md:py-4 md:text-base text-xs py-2">
+                  {person.email}
+                </td>
+                <td className="md:py-4 md:text-base text-xs py-2">
+                  {person.courseCompleted}
+                </td>
+                <td className="md:py-4 md:text-base text-xs py-2">
+                  {person.phoneNumber}
+                </td>
+                <td className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2">
+                  {person.plan}
+                </td>
                 <td
-                  className="py-4 cursor-pointer text-[#00173A] underline"
+                  className="md:py-4 md:text-base text-xs py-2 cursor-pointer text-[#00173A] underline"
                   onClick={() => toggleStudentOptions(index)}
                 >
                   Manage
@@ -83,21 +93,21 @@ const StudentsTable = () => {
 
               {expandedStudent === index && (
                 <div
-                  className="bg-[#FFFFFF] p-2 w-60 rounded-[8px] shadow-md absolute right-0"
+                  className="bg-[#FFFFFF] p-2 w-30 md:w-60 rounded-[8px] shadow-md absolute right-0"
                   key={`options-${index}`}
                 >
-                  <h1 className="text-xl font-medium text-center pb-2">
+                  <h1 className="md:text-xl text-sm font-medium text-center pb-2">
                     Manage Access
                   </h1>
                   <hr />
                   <div>
-                    <p className="text-lg py-1 text-left cursor-pointer">
+                    <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
                       Paid
                     </p>
-                    <p className="text-lg py-1 text-left cursor-pointer">
+                    <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
                       Free
                     </p>
-                    <p className="text-lg py-1 text-left cursor-pointer">
+                    <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
                       Revoke
                     </p>
                   </div>

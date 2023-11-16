@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
+import Fulllogo from "@/public/assets/full-logo.png";
 
 const formSchema = z.object({
   Password: z.string().min(6, {
@@ -72,16 +73,26 @@ const newPassword = () => {
   };
 
   return (
-    <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-10">
+    <main className="md:bg-form-back bg-white h-screen w-full bg-no-repeat bg-cover relative">
+      <div className="bg-white w-full md:w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 block md:flex flex-col justify-around px-0 md:px-10">
+        <div className="h-auto block md:hidden w-full bg-main p-2">
+          <Image src={Fulllogo} alt="logo" />
+        </div>
         <div className="flex justify-end">
-          <Image src={logo} alt="pistis_logo" className="" priority />
+          <Image
+            src={logo}
+            alt="pistis_logo"
+            className="md:block hidden"
+            priority
+          />
         </div>
-        <div className="">
-          <h1 className="text-4xl font-semibold">Reset Password</h1>
-          <h3 className="text-2xl">Create a safe and secured password</h3>
+        <div className="px-2 my-10 md:my-0 md:px-0">
+          <h1 className="md:text-4xl text-3xl font-semibold">Reset Password</h1>
+          <h3 className="md:text-2xl text-lg ">
+            Create a safe and secured password
+          </h3>
         </div>
-        <div>
+        <div className="px-2 md:px-0">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <FormField
@@ -89,7 +100,7 @@ const newPassword = () => {
                 name="Password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-medium">
+                    <FormLabel className="md:text-xl text-sm font-medium">
                       Create password
                     </FormLabel>
                     <FormControl>
@@ -118,7 +129,7 @@ const newPassword = () => {
                   </FormItem>
                 )}
               />
-              <p className="text-[#3E3E3E] text-base text-right">
+              <p className="text-[#3E3E3E] text-xs md:text-base text-right">
                 Password must contain special characters
               </p>
               <FormField
@@ -126,7 +137,7 @@ const newPassword = () => {
                 name="Confirm"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-medium">
+                    <FormLabel className="md:text-xl text-sm font-medium">
                       Confirm password
                     </FormLabel>
                     <FormControl>
@@ -158,16 +169,14 @@ const newPassword = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-[#33CC99] py-6 font-medium text-2xl text-black hover:text-white"
+                className="w-full bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
               >
                 Submit
               </Button>
             </form>
           </Form>
         </div>
-        <div>
-       
-        </div>
+        <div></div>
       </div>
     </main>
   );

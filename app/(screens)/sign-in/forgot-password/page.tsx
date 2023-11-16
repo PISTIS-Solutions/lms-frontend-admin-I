@@ -20,6 +20,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+import Fulllogo from "@/public/assets/full-logo.png";
+
 const formSchema = z.object({
   Email: z.string().min(2, {
     message: "Input correct email address",
@@ -39,22 +41,32 @@ const forgotPassword = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
 
-    router.push("/sign-in/forgot-password/verify")
+    router.push("/sign-in/forgot-password/verify");
   }
 
   return (
-    <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 flex flex-col gap-28 px-10">
-        <div className="flex justify-end">
-          <Image src={logo} alt="pistis_logo" className="" priority />
+    <main className="md:bg-form-back bg-white h-screen w-full bg-no-repeat bg-cover relative">
+      <div className="bg-white w-full md:w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 block md:flex flex-col justify-around px-0 md:px-10">
+        <div className="h-auto block md:hidden w-full bg-main p-2">
+          <Image src={Fulllogo} alt="logo" />
         </div>
-        <div className="">
-          <h1 className="text-4xl font-semibold">Forgot Password?</h1>
-          <h3 className="text-2xl">
+        <div className="flex justify-end">
+          <Image
+            src={logo}
+            alt="pistis_logo"
+            className="md:block hidden"
+            priority
+          />
+        </div>
+        <div className="px-2 my-10 md:my-0 md:px-0">
+          <h1 className="md:text-4xl text-3xl font-semibold">
+            Forgot Password?
+          </h1>
+          <h3 className="md:text-2xl text-lg ">
             Please provide your registered email address
           </h3>
         </div>
-        <div className="flex flex-col">
+        <div className="flex px-2 md:px-0 flex-col">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <FormField

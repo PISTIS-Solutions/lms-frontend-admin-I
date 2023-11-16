@@ -19,6 +19,7 @@ import { Eye, EyeOff, KeyRound, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Fulllogo from "@/public/assets/full-logo.png";
 // import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 
@@ -53,16 +54,24 @@ const SignIn = () => {
     route.push("/dashboard");
   }
   return (
-    <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-10">
+    <main className="md:bg-form-back bg-white h-screen w-full bg-no-repeat bg-cover relative">
+      <div className="bg-white w-full md:w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 block md:flex flex-col justify-around px-0 md:px-10">
+        <div className="h-auto block md:hidden w-full bg-main p-2">
+          <Image src={Fulllogo} alt="logo" />
+        </div>
         <div className="flex justify-end">
-          <Image src={logo} alt="pistis_logo" className="" priority />
+          <Image
+            src={logo}
+            alt="pistis_logo"
+            className="md:block hidden"
+            priority
+          />
         </div>
-        <div className="">
-          <h1 className="text-4xl font-semibold">Sign In</h1>
-          <h3 className="text-2xl">Glad to have you back!</h3>
+        <div className="px-2 my-10 md:my-0 md:px-0">
+          <h1 className="md:text-4xl text-3xl font-semibold">Sign In</h1>
+          <h3 className="md:text-2xl text-lg ">Glad to have you back!</h3>
         </div>
-        <div>
+        <div className="px-2 md:px-0">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <FormField
@@ -70,7 +79,7 @@ const SignIn = () => {
                 name="Email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-medium">
+                    <FormLabel className="md:text-xl text-sm font-medium">
                       Email Address
                     </FormLabel>
                     <FormControl>
@@ -93,7 +102,7 @@ const SignIn = () => {
                 name="Password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-medium">
+                    <FormLabel className="md:text-xl text-sm font-medium">
                       Password
                     </FormLabel>
                     <FormControl>
@@ -118,16 +127,15 @@ const SignIn = () => {
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
-              <p className="text-[#3E3E3E] text-base text-right">
+              <p className="text-[#3E3E3E] text-xs md:text-base text-right">
                 <Link href="/sign-in/forgot-password">Forgot Password?</Link>
               </p>
               <Button
                 type="submit"
-                className="w-full bg-[#33CC99] py-6 font-medium text-2xl text-black hover:text-white"
+                className="w-full bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
               >
                 Sign In
               </Button>
@@ -135,7 +143,7 @@ const SignIn = () => {
           </Form>
         </div>
         <div>
-          <p className="text-center text-lg font-normal ">
+          <p className="text-center text-sm absolute bottom-4 md:sticky w-full md:text-lg font-normal ">
             Don't have an account?{" "}
             <Link href="/create-account">Create Account</Link>
           </p>

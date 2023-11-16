@@ -73,8 +73,8 @@ const Module = () => {
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
-      <div className="ml-64 overflow-y-scroll h-screen">
-        <div className="h-[96px] flex justify-between items-center bg-white shadow-md p-4 w-full">
+      <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
+      <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <ArrowLeft
             onClick={() => {
               router.back();
@@ -93,24 +93,24 @@ const Module = () => {
           </div>
         </div>
         <div className="">
-          <div className=" px-4 mt-3 text-sm font-medium flex items-center">
+          <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
             <p className="text-[#000066]">Course Content</p>
             <ChevronRight className="text-[#000066]" />
             <p className="text-[#9C9C9C] ">Modules</p>
           </div>
           <div>
-            <h1 className=" px-4 text-[#1A1A1A] text-2xl my-4 font-medium">
+            <h1 className=" px-4 text-[#1A1A1A] text-lg md:text-2xl my-4 font-medium">
               {moduleData.title}
             </h1>
-            <div className="grid p-4 gap-x-4 grid-cols-10">
+            <div className="md:grid block p-4 gap-x-4 grid-cols-10">
               <Image
-                className="w-full h-[428px] col-span-7"
+                className="w-full h-[428px] md:col-span-7"
                 src={img}
                 priority
                 alt="course-module"
               />
-              <ScrollArea className="h-[428px] rounded-[8px] shadow-md bg-white col-span-3">
-                <div className="text-main p-4 text-2xl font-medium flex justify-between items-center py-2">
+              <ScrollArea className="h-[428px] rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
+                <div className="text-main md:text-base p-4 text-lg font-medium flex justify-between items-center py-2">
                   <h3>Modules</h3>
                   <span className="flex items-center gap-1 cursor-pointer">
                     <p className="underline">Add</p>
@@ -127,11 +127,11 @@ const Module = () => {
                         }`}
                         onClick={() => handleItemClick(index)}
                       >
-                        <h2 className="text-lg font-medium">
+                        <h2 className="md:text-lg text-sm font-medium">
                           {index + 1}. {moduleHead}
                         </h2>
                         <p
-                          className={`text-sm font-normal ${
+                          className={`md:text-sm text-xs font-normal ${
                             index === selectedIndex ? "block" : "hidden"
                           }`}
                         >
@@ -147,16 +147,16 @@ const Module = () => {
             </div>
             <div className="bg-white shadow-md p-4">
               <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-medium">
+                <h1 className="md:text-2xl text-lg font-medium">
                   Module 1: Introduction to Ansible
                 </h1>
-                <span className=" text-xl text-main underline gap-x-2 cursor-pointer flex items-center">
+                <span className=" md:text-xl text-sm text-main underline gap-x-2 cursor-pointer flex items-center">
                   <p className="">Edit</p>
                   <Edit3 />
                 </span>
               </div>
               <div>
-                <p className="text-xl py-4 text-[#3E3E3E]">
+                <p className="md:text-xl py-4 text-[#3E3E3E]">
                   The current course builds upon the previous one seamlessly.
                   You'll delve into the core concepts of Ansible and have
                   hands-on experience with a project. Just like in previous

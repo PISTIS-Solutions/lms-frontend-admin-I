@@ -67,22 +67,22 @@ const SettingsPage = () => {
   };
 
   return (
-    <main>
+    <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
-      <div className="ml-64  bg-[#F8F9FF] overflow-y-scroll h-screen">
-        <div className="h-[96px] flex justify-end bg-white shadow-md p-4 w-full">
-          <div className="flex items-center gap-2">
+      <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
+        <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
+          <div className="flex items-center gap-1 md:gap-2">
             <Avatar>
               {/* <AvatarImage src={avatar} /> */}
               <AvatarFallback>JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-base font-medium ">John Mark</h1>
-              <p className="text-sm text-[#5D5B5B]">Admin</p>
+              <h1 className="md:text-base text-sm font-medium">John Mark</h1>
+              <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
             </div>
           </div>
         </div>
-        <div className="p-5">
+        <div className="md:p-5 p-2">
           <div>
             <div className=" flex justify-center items-center">
               <div className="relative">
@@ -98,14 +98,14 @@ const SettingsPage = () => {
               </div>
             </div>
             <div>
-              <div className="px-5">
+              <div className="md:px-5 px-2">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-3"
                   >
-                    <div className="grid grid-cols-6 py-5">
-                      <h1 className="text-[22px] col-span-2 font-medium ">
+                    <div className="block md:grid grid-cols-6 py-5">
+                      <h1 className="text-lg md:text-[22px] col-span-2 font-medium ">
                         General
                       </h1>
                       <div className="col-span-4">
@@ -114,13 +114,13 @@ const SettingsPage = () => {
                           name="fullName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-lg font-normal">
+                              <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                                 Full name
                               </FormLabel>
                               <FormControl>
                                 <div className="">
                                   <Input
-                                    className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] w-full rounded-[6px] indent-6"
+                                    className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] w-full rounded-[6px]"
                                     placeholder="John Mark"
                                     {...field}
                                   />
@@ -134,7 +134,7 @@ const SettingsPage = () => {
                           name="Email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-lg font-normal">
+                              <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                                 Email Address
                               </FormLabel>
                               <FormControl>
@@ -153,7 +153,7 @@ const SettingsPage = () => {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-6 py-5">
+                    <div className="block md:grid grid-cols-6 py-5">
                       <h1 className="text-[22px] col-span-2 font-medium ">
                         Password
                       </h1>
@@ -163,7 +163,7 @@ const SettingsPage = () => {
                           name="currentPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-lg font-normal">
+                              <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                                 Current password
                               </FormLabel>
                               <FormControl>
@@ -196,7 +196,7 @@ const SettingsPage = () => {
                           name="newPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-lg font-normal">
+                              <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                                 New password
                               </FormLabel>
                               <FormControl>
@@ -229,7 +229,7 @@ const SettingsPage = () => {
                           name="confirmPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-lg font-normal">
+                              <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                                 Confirm password
                               </FormLabel>
                               <FormControl>
@@ -264,10 +264,10 @@ const SettingsPage = () => {
                         />
                       </div>
                     </div>
-                    <div className="flex justify-end">
+                    <div className="lg:flex block justify-end">
                       <Button
                         type="submit"
-                        className="w-1/3 bg-[#33CC99] py-6 font-medium  text-2xl text-black hover:text-white"
+                        className="w-full lg:w-1/3 bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
                       >
                         Save Changes
                       </Button>
@@ -275,13 +275,13 @@ const SettingsPage = () => {
                   </form>
                 </Form>
               </div>
-              <div className="flex justify-between items-center p-5">
-                <h2 className="text-[22px] font-medium ">Delete Account</h2>
-                <p className="text-xl font-normal w-96">
+              <div className="lg:flex block justify-between items-center p-2 md:p-5">
+                <h2 className="md:text-[22px] text-lg font-medium ">Delete Account</h2>
+                <p className="md:text-xl text-sm font-normal w-full lg:w-96">
                   All data associated with this account will be deleted if you
                   deactivate this account
                 </p>
-                <h2 className="text-red-500 cursor-pointer text-xl font-medium ">
+                <h2 className="text-red-500 cursor-pointer text-base text-center lg:text-left my-4 lg:my-0 md:text-xl font-medium ">
                   Deactivate
                 </h2>
               </div>

@@ -21,6 +21,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
 
+import Fulllogo from "@/public/assets/full-logo.png";
+
 const formSchema = z.object({
   Firstname: z.string().min(2, {
     message: "Input First name",
@@ -40,16 +42,28 @@ const completeProfile = () => {
   }
 
   return (
-    <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-10">
+    <main className="md:bg-form-back bg-white h-screen w-full bg-no-repeat bg-cover relative">
+      <div className="bg-white w-full md:w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 block md:flex flex-col justify-around px-0 md:px-10">
+        <div className="h-auto block md:hidden w-full bg-main p-2">
+          <Image src={Fulllogo} alt="logo" />
+        </div>
         <div className="flex justify-end">
-          <Image src={logo} alt="pistis_logo" className="" priority />
+          <Image
+            src={logo}
+            alt="pistis_logo"
+            className="md:block hidden"
+            priority
+          />
         </div>
-        <div className="">
-          <h1 className="text-4xl font-semibold">Complete your profile</h1>
-          <h3 className="text-2xl">Please provide personal details</h3>
+        <div className="px-2 my-10 md:my-0 md:px-0">
+          <h1 className="md:text-4xl text-3xl font-semibold">
+            Complete your profile
+          </h1>
+          <h3 className="md:text-2xl text-lg ">
+            Please provide personal details
+          </h3>
         </div>
-        <div>
+        <div className="px-2 md:px-0">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <FormField
@@ -57,7 +71,7 @@ const completeProfile = () => {
                 name="Firstname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-medium">
+                    <FormLabel className="md:text-xl text-sm font-medium">
                       First name
                     </FormLabel>
                     <FormControl>
@@ -79,7 +93,7 @@ const completeProfile = () => {
                 name="Lastname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-medium">
+                    <FormLabel className="md:text-xl text-sm font-medium">
                       Last Name
                     </FormLabel>
                     <FormControl>
@@ -97,7 +111,7 @@ const completeProfile = () => {
               />
               <Button
                 type="submit"
-                className="w-full mt-10 bg-[#33CC99] py-6 font-medium text-2xl text-black hover:text-white"
+                className="w-full bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
               >
                 Proceed
               </Button>
@@ -105,7 +119,7 @@ const completeProfile = () => {
           </Form>
         </div>
         <div>
-          <p className="text-center text-lg font-normal ">
+          <p className="text-center text-sm absolute bottom-4 md:sticky w-full md:text-lg font-normal ">
             Already have an account? <Link href="/sign-in">Sign In</Link>
           </p>
         </div>

@@ -72,15 +72,17 @@ const ProjectReview = () => {
   const [openModalApproved, setOpenModalApproved] = useState(false);
 
   return (
-    <div className="">
+    <div className="overflow-x-scroll md:overflow-x-auto">
       <table className="w-full mt-2 text-left">
         <thead className="text-main">
           <tr className="bg-[#F8F9FF] py-2 w-full">
-            <th className="py-4">Course Title</th>
-            <th className="py-4">Deadline</th>
-            <th className="py-4">Date Submitted</th>
-            <th className="py-4">Status</th>
-            <th className="py-4">Link</th>
+            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">Course Title</th>
+            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">Deadline</th>
+            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">
+              Date Submitted
+            </th>
+            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">Status</th>
+            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">Link</th>
           </tr>
         </thead>
         <tbody className="relative">
@@ -89,16 +91,18 @@ const ProjectReview = () => {
               <tr key={index}>
                 <td
                   //   onClick={() => handleCardClick(person.id)}
-                  className="py-4 capitalize cursor-pointer"
+                  className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2 capitalize cursor-pointer"
                 >
                   {person.courseTitle}
                 </td>
-                <td className="py-4">{person.deadLine}</td>
-                <td className="py-4">
+                <td className="md:py-4 md:text-base text-xs py-2">
+                  {person.deadLine}
+                </td>
+                <td className="md:py-4 md:text-base text-xs py-2">
                   {!person.DateSubmitted ? "-" : person.DateSubmitted}
                 </td>
                 <td
-                  className={`py-4 capitalize ${
+                  className={`md:py-4 md:text-base text-xs py-2 capitalize ${
                     !person.status
                       ? "text-gray-600"
                       : person.status === "Pending"
@@ -110,7 +114,7 @@ const ProjectReview = () => {
                 >
                   {!person.status ? "No Submission" : person.status}
                 </td>
-                <td className="py-4 text-main">
+                <td className="md:py-4 md:text-base text-xs py-2 text-main">
                   {!person.status ? (
                     "-"
                   ) : person.status === "Pending" ? (

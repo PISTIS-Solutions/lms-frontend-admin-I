@@ -46,17 +46,17 @@ const AddModuleForms = () => {
   return (
     <div>
       <div className="flex items-center my-10 mx-20 relative ">
-        <div className="bg-white shadow-md w-[72px] h-[36px] flex justify-center items-center p-2 absolute -top-10 left-[46%] rounded-[8px]">
+        <div className="bg-white shadow-md w-[72px] h-[36px] flex justify-center items-center p-2 absolute -top-10 left-[30%] md:left-[46%] rounded-[8px]">
           <p className="text-main text-xs font-medium">Module</p>
         </div>
-        <div className="w-[50px] h-[25px] block rounded-full bg-sub" />
+        <div className="w-[50px] h-[18px] md:h-[25px] block rounded-full bg-sub" />
         <div className="bg-sub w-full h-[4px]"></div>
-        <div className="w-[50px] h-[25px] rounded-full bg-sub" />
+        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
         <div className="bg-[#D6DADE] w-full h-[4px]"></div>
-        <div className="w-[50px] h-[25px] rounded-full bg-sub" />
+        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
       </div>
       <div>
-        <h1 className="text-3xl font-semibold">Module Details</h1>
+        <h1 className="md:text-3xl text-xl font-semibold">Module Details</h1>
       </div>
       <div className="mt-4">
         <Form {...form}>
@@ -67,7 +67,7 @@ const AddModuleForms = () => {
                 name="moduleTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Module Title
                     </FormLabel>
                     <FormControl className="">
@@ -85,7 +85,7 @@ const AddModuleForms = () => {
                 name="modulesubTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Sub-Title
                     </FormLabel>
                     <FormControl>
@@ -103,7 +103,7 @@ const AddModuleForms = () => {
                 name="moduleLink"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Video Link
                     </FormLabel>
                     <FormControl>
@@ -121,7 +121,7 @@ const AddModuleForms = () => {
                 name="moduleDetails"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Content Details
                     </FormLabel>
                     <FormControl>

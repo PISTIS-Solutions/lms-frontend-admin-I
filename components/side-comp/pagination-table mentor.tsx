@@ -107,9 +107,9 @@ const PaginatedTableMentor = ({ handleMentors, handleStudent }: any) => {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="bg-white p-2 h-[397px] rounded-[8px] shadow-md">
+    <div className="bg-white p-2 overflow-x-scroll h-auto rounded-[8px] shadow-md">
       <div className="flex justify-between items-center">
-        <h1 className="font-medium text-xl">Database</h1>
+        <h1 className="font-medium text-lg md:text-xl">Database</h1>
         <div>
           <Button
             onClick={handleStudent}
@@ -126,33 +126,47 @@ const PaginatedTableMentor = ({ handleMentors, handleStudent }: any) => {
         </div>
       </div>
 
-      <table className="w-full mt-2 text-center">
+      <table className="w-full overflow-x-scroll mt-2 text-center">
         <thead className="text-main">
           <tr className="bg-[#F8F9FF] py-2 w-full">
-            <th className="py-4">Name</th>
-            <th className="py-4">Email</th>
-            <th className="py-4">Current Course</th>
-            <th className="py-4">Location</th>
-            <th className="py-4">Assigned Monitor</th>
+            <th className="md:py-4 md:text-base text-xs py-2">Name</th>
+            <th className="md:py-4 md:text-base text-xs py-2">Email</th>
+            <th className="md:py-4 md:text-base text-xs py-2">
+              Current Course
+            </th>
+            <th className="md:py-4 md:text-base text-xs py-2">Location</th>
+            <th className="md:py-4 md:text-base text-xs py-2">
+              Assigned Monitor
+            </th>
           </tr>
         </thead>
         <tbody>
           {currentData.map((person, index) => (
             <tr key={index}>
-              <td className="py-4">{person.name}</td>
-              <td className="py-4">{person.email}</td>
-              <td className="py-4">{person.course}</td>
-              <td className="py-4">{person.location}</td>
-              <td className="py-4">{person.monitor}</td>
+              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                {person.name}
+              </td>
+              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                {person.email}
+              </td>
+              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                {person.course}
+              </td>
+              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                {person.location}
+              </td>
+              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                {person.monitor}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="flex items-center justify-end gap-5 mt-2">
+      <div className="flex items-center justify-end gap-2 md:gap-5 mt-2">
         <div>
           <Button
-            className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+            className="bg-transparent text-main cursor-pointer text-[10px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
             onClick={prevPage}
             disabled={currentPage === 1}
           >
@@ -160,7 +174,7 @@ const PaginatedTableMentor = ({ handleMentors, handleStudent }: any) => {
             Previous
           </Button>
         </div>
-        <div className="flex space-x-4">
+        <div className="flex space-x-2 md:space-x-4">
           {pageNumbers.map((page) => (
             <p
               key={page}
@@ -178,7 +192,7 @@ const PaginatedTableMentor = ({ handleMentors, handleStudent }: any) => {
         <div>
           <Button
             onClick={nextPage}
-            className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+            className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
             disabled={currentPage === totalPages}
           >
             <ArrowRight />

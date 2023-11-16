@@ -48,14 +48,14 @@ const AddCourseForms = () => {
         <div className="bg-white shadow-md w-[72px] h-[36px] flex justify-center items-center p-2 absolute -top-10 -left-5 rounded-[8px]">
           <p className="text-main text-xs font-medium">Course</p>
         </div>
-        <div className="w-[50px] h-[25px] block rounded-full bg-sub" />
+        <div className="w-[50px] h-[18px] md:h-[25px] block rounded-full bg-sub" />
+        <div className="bg-sub w-full h-[4px]"></div>
+        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
         <div className="bg-[#D6DADE] w-full h-[4px]"></div>
-        <div className="w-[50px] h-[25px] rounded-full bg-sub" />
-        <div className="bg-[#D6DADE] w-full h-[4px]"></div>
-        <div className="w-[50px] h-[25px] rounded-full bg-sub" />
+        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
       </div>
       <div>
-        <h1 className="text-3xl font-semibold">Course Details</h1>
+        <h1 className="md:text-3xl text-xl font-semibold">Course Details</h1>
       </div>
       <div className="mt-4">
         <Form {...form}>
@@ -66,7 +66,7 @@ const AddCourseForms = () => {
                 name="courseTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Course Title (required)
                     </FormLabel>
                     <FormControl className="">
@@ -84,7 +84,7 @@ const AddCourseForms = () => {
                 name="subTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Sub-Title
                     </FormLabel>
                     <FormControl>
@@ -102,7 +102,7 @@ const AddCourseForms = () => {
                 name="Description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Description
                     </FormLabel>
                     <FormControl>
@@ -120,7 +120,7 @@ const AddCourseForms = () => {
                 name="courseLink"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Course Link
                     </FormLabel>
                     <FormControl>
@@ -138,7 +138,7 @@ const AddCourseForms = () => {
                 name="courseDuration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl my-3 text-[#3E3E3E]">
+                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
                       Set Course Duration
                     </FormLabel>
                     <FormControl>

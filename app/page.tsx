@@ -28,36 +28,41 @@ import gitops from "@/public/assets/course/gitops.png";
 
 export default function Home() {
   return (
-    <main className="">
+    <main className="relative">
       <div>
         <NavigationBar />
       </div>
-      <section className="flex items-center bg-hero-back bg-no-repeat bg-cover h-screen px-10">
+      <section className="flex items-center bg-hero-back bg-no-repeat bg-cover md:py-0 py-10 h-1/2 md:h-screen px-5 md:px-10">
         <div className="">
-          <h1 className="text-7xl text-white font-semibold mb-10">
+          <h1 className="text-7xl text-white md:block hidden font-semibold mb-10">
             Empower Minds;
             <br />
             Ignite Futures
           </h1>
-          <p className="text-2xl text-white">
+          <h1 className="text-5xl text-center md:hidden block text-white font-semibold mb-10">
+            Empower Minds;
+            <br />
+            Ignite Futures
+          </h1>
+          <p className="text-2xl text-center md:text-left text-white">
             Comprehensive curriculum designed to equip students <br />
             with the latest technological skills
           </p>{" "}
           <Link href="/sign-in">
-            <Button className="bg-sub hover:text-white text-xl font-medium py-[25px] px-[40px] mt-20">
+            <Button className="bg-sub w-full md:w-auto hover:text-white text-xl font-medium py-[25px] px-[40px] mt-20">
               Start Learning
             </Button>
           </Link>
         </div>
       </section>
-      <section className=" flex items-center px-10 justify-between bg-mid-back h-[117px] bg-no-repeat bg-cover">
+      <section className=" flex items-center px-5 md:px-10 justify-between bg-mid-back h-[117px] bg-no-repeat bg-cover">
         <div className="flex justify-between w-full">
-          <p className="text-white text-2xl font-medium">30+ Students</p>
-          <p className="text-white text-2xl font-medium">Expert Mentors</p>
-          <p className="text-white text-2xl font-medium">20+ courses</p>
+          <p className="text-white text-lg md:text-2xl font-medium">30+ Students</p>
+          <p className="text-white text-lg md:text-2xl font-medium">Expert Mentors</p>
+          <p className="text-white text-lg md:text-2xl font-medium">20+ courses</p>
         </div>
       </section>
-      <section className="flex items-center justify-around my-14">
+      <section className="flex flex-wrap gap-4 items-center justify-around my-14">
         <LandingCard
           image={cap}
           headText="Smooth learning experience"
@@ -74,38 +79,38 @@ export default function Home() {
           bodyText="To ensure maximum benefit, we curated course content that is both relevant and engaging"
         />
       </section>
-      <section className="bg-[#FBFBFF] flex relative justify-between py-5 px-10 items-center">
+      <section className="bg-[#FBFBFF] flex md:flex-row flex-col-reverse  relative justify-between py-5 px-5 md:px-10 items-center">
         <Image
           src={cir}
           alt=""
-          className="absolute bottom-0 left-16"
+          className="absolute hidden md:block bottom-0 left-16"
           priority
         />
-        <Image src={cir2} alt="" className="absolute top-0 left-0" priority />
-        <Image src={girl} alt="girl" priority className="z-10" />
+        <Image src={cir2} alt="" className="absolute hidden md:block top-0 left-0" priority />
+        <Image src={girl} alt="girl" priority className="z-10 " />
         <div>
-          <p className="text-2xl text-[#727272]">LEARNING EXPERIENCE</p>
-          <p className="text-5xl font-semibold leading-snug py-4">
+          <p className="md:text-2xl text-lg text-[#727272] text-left relative">LEARNING EXPERIENCE</p>
+          <p className="md:text-5xl text-3xl font-semibold leading-snug py-4 relative text-left">
             A One-of-a-Kind <br />
             <span className="text-[#33CC99]">Experience</span> Customized <br />
             Just For You
           </p>
-          <p className="text-2xl max-w-[639px]">
+          <p className="md:text-2xl text-lg max-w-[639px] relative text-left">
             Access to a mentor that provides individualized attention, tailoring
             their teaching style to your specific learning needs, strengths, and
             weaknesses.
           </p>
         </div>
       </section>
-      <section className="bg-white relative flex justify-between py-5 px-10 items-center">
+      <section className="bg-white relative block md:flex justify-between py-5 px-5 md:px-10 items-center">
         <div>
-          <p className="text-2xl text-[#727272]">EASY INTERFACE</p>
-          <p className="text-5xl font-semibold leading-snug py-4">
+          <p className="md:text-2xl text-lg text-[#727272] relative">EASY INTERFACE</p>
+          <p className="md:text-5xl text-3xl font-semibold leading-snug py-4 relative">
             Easy To Use Online <br />
             Learning Platform To <br />
             <span className="text-main">Elevate</span> Your Skills
           </p>
-          <p className="text-2xl max-w-[639px]">
+          <p className="md:text-2xl text-lg max-w-[639px] relative">
             Access to a mentor that provides individualized attention, tailoring
             their teaching style to your specific learning needs, strengths, and
             weaknesses.
@@ -114,27 +119,27 @@ export default function Home() {
         <Image
           src={circle}
           alt=""
-          className="absolute top-0 right-0"
+          className="absolute hidden md:block top-0 right-0"
           priority
         />
         <Image
           src={circle2}
           alt=""
-          className="absolute bottom-0 right-16"
+          className="absolute hidden md:block bottom-0 right-16"
           priority
         />
         <Image src={boy} className="z-10" alt="girl" priority />
       </section>
       <section className="bg-[#FAFAFD] ">
         <div className="py-7">
-          <p className="text-[#7d7d7d] text-2xl font-medium text-center">
+          <p className="text-[#7d7d7d] text-lg md:text-2xl font-medium text-center">
             TESTIMONIALS
           </p>
-          <h1 className="text-4xl text-center font-bold">
+          <h1 className="md:text-4xl text-2xl text-center font-bold">
             What Our Students Say
           </h1>
         </div>
-        <div className="flex justify-around py-16 items-center">
+        <div className="flex flex-wrap gap-5 justify-around py-16 items-center">
           <TestimonialCard
             avatar={avatar}
             name="Sylvia Okoro"
@@ -153,11 +158,11 @@ export default function Home() {
         </div>
       </section>
       <section className="py-20 bg-[#FDFBFB]">
-        <h1 className="mb-5 text-4xl text-center font-bold">
+        <h1 className="mb-5 text-2xl md:text-4xl text-center font-bold">
           Our Popular courses
         </h1>
-        <div className="relative mx-40">
-          <div className="grid grid-cols-3 gap-[16px]">
+        <div className="relative mx-5 lg:mx-40">
+          <div className="grid grid-cols-1 md:grid-cols-2 place-items-center lg:grid-cols-3 gap-[16px]">
             <Coursecard
               image={ansible}
               header="Ansible"
@@ -190,17 +195,17 @@ export default function Home() {
               modules={2}
             />
           </div>
-          <Button className="py-[18px] px-[20px] absolute right-10 mt-8 hover:text-white bg-sub text-black text-2xl">
+          <Button className="py-[18px] px-[20px] md:absolute static right-10 mt-8 hover:text-white bg-sub text-black text-lg md:text-2xl">
             Find Out More
           </Button>
         </div>
       </section>
-      <footer className="mt-5 px-10 py-20 flex justify-center items-center">
+      <footer className="mt-5 px-5 md:px-10 py-20 flex justify-center items-center">
         <div className="bg-footer-back max-w-[1280px] flex flex-col justify-center items-center p-10 h-[571px]">
-          <h1 className="text-5xl font-semibold text-white text-center">
+          <h1 className="md:text-5xl text-3xl font-semibold text-white text-center">
             Sign Up Now To Start Learning
           </h1>
-          <p className="text-2xl text-center text-white py-5">
+          <p className="md:text-2xl text-lg text-center text-white py-5">
             Embark on a voyage of discovery, expand your horizons, and enrich
             your mind by joining our community of eager learners. The doors to a
             world of knowledge are swinging wide open, and it's time for you to
