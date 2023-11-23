@@ -28,15 +28,14 @@ const formSchema = z.object({
   }),
 });
 
-const forgotPassword = () => {
+const ForgotPassword = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       Email: "",
     },
   });
-
-  const router = useRouter();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -106,4 +105,4 @@ const forgotPassword = () => {
   );
 };
 
-export default forgotPassword;
+export default ForgotPassword;

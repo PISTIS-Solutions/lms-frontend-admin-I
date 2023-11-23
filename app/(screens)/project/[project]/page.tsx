@@ -9,6 +9,8 @@ import { dummydata } from "@/app/data/dummyModules";
 import { Button } from "@/components/ui/button";
 
 const SingleProject = () => {
+  const router = useRouter();
+  const [showList, setShowList] = useState(false);
   const params = useParams<{ project: string }>();
 
   const projectData = dummydata.find(
@@ -21,7 +23,6 @@ const SingleProject = () => {
     );
   }
 
-  const router = useRouter();
   const dummyHeader = [
     {
       title: "User Management Project",
@@ -106,7 +107,6 @@ const SingleProject = () => {
     },
   ];
 
-  const [showList, setShowList] = useState(false);
   const handleShowList = () => {
     setShowList((prev) => !prev);
   };

@@ -32,10 +32,11 @@ const formSchema = z.object({
   }),
 });
 
-const completeProfile = () => {
+const Completeprofile = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -128,4 +129,4 @@ const completeProfile = () => {
   );
 };
 
-export default completeProfile;
+export default Completeprofile;
