@@ -49,9 +49,9 @@ const Courses = () => {
             </Link>
           </div>
           <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
-            {dummydata.map((fake) => {
+            {dummydata.map((fake, index) => {
               return (
-                <div key={fake.id}>
+                <div key={index}>
                   <CoursesCard
                     id={fake.id}
                     handleCardClick={handleCardClick}

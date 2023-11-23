@@ -12,7 +12,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { dummydata } from "@/app/data/dummyModules";
 
 const Module = () => {
+  const router = useRouter();
   const params = useParams<{ modules: string }>();
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const moduleData = dummydata.find(
     (item) => item.id === parseInt(params.modules, 10)
@@ -24,8 +26,6 @@ const Module = () => {
     );
   }
 
-  const router = useRouter();
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleItemClick = (index: number) => {
     setSelectedIndex(index === selectedIndex ? -1 : index);
@@ -158,9 +158,9 @@ const Module = () => {
               <div>
                 <p className="md:text-xl py-4 text-[#3E3E3E]">
                   The current course builds upon the previous one seamlessly.
-                  You'll delve into the core concepts of Ansible and have
+                  You&apos;ll delve into the core concepts of Ansible and have
                   hands-on experience with a project. Just like in previous
-                  classes, we strongly advise you to engage in practice, as it's
+                  classes, we strongly advise you to engage in practice, as it&apos;s
                   the most effective way to grasp the material. Ansible is an
                   open-source automation tool designed for configuration
                   management, application deployment, task automation, and
