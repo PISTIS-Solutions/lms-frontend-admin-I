@@ -1,4 +1,6 @@
 "use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { dummydata } from "@/app/data/dummyModules";
 import CoursesCard from "@/components/side-comp/courses-card";
 import ProjectCard from "@/components/side-comp/project-card";
@@ -8,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
 
 const Project = () => {
   const router = useRouter();
@@ -50,7 +50,8 @@ const Project = () => {
           <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {dummydata.map((fake) => {
               return (
-                <ProjectCard
+                <div key={fake.id}>
+                  <ProjectCard
                   id={fake.id}
                   handleCardClick={handleCardClick}
                   handleOpen={handleOpen}
@@ -61,6 +62,7 @@ const Project = () => {
                   duration={fake.duration}
                   project={fake.project}
                 />
+                </div>
               );
             })}
           </div>

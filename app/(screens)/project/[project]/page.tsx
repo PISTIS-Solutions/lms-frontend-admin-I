@@ -1,10 +1,10 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
+import React, { useState } from "react";
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, ChevronRight, Edit3, Plus, X } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
 import { dummydata } from "@/app/data/dummyModules";
 import { Button } from "@/components/ui/button";
 
@@ -136,9 +136,9 @@ const SingleProject = () => {
         <div className="grid grid-cols-10 relative gap-x-4 p-5">
           <div className="col-span-10 lg:col-span-7 bg-white shadow-md rounded-[8px]  ">
             <div>
-              {dummyObjectives.map((obj) => {
+              {dummyObjectives.map((obj, index) => {
                 return (
-                  <div>
+                  <div key={index}>
                     <div className="p-4">
                       <h2 className="font-medium text-lg md:text-2xl text-main">
                         {obj.objHead}
@@ -176,11 +176,8 @@ const SingleProject = () => {
                 <div className="">
                   {dummyHeader.map((head, index) => {
                     return (
-                      <div className="cursor-pointer hover:bg-main">
-                        <h3
-                          key={index}
-                          className="text-base md:text-lg py-3 px-4 hover:text-white flex justify-between items-center font-medium"
-                        >
+                      <div key={index} className="cursor-pointer hover:bg-main">
+                        <h3 className="text-base md:text-lg py-3 px-4 hover:text-white flex justify-between items-center font-medium">
                           {index + 1}. {head.title}
                           <ChevronRight />
                         </h3>
@@ -210,11 +207,8 @@ const SingleProject = () => {
               <div className="">
                 {dummyHeader.map((head, index) => {
                   return (
-                    <div className="cursor-pointer hover:bg-main">
-                      <h3
-                        key={index}
-                        className="text-base md:text-lg py-3 px-4 hover:text-white flex justify-between items-center font-medium"
-                      >
+                    <div key={index} className="cursor-pointer hover:bg-main">
+                      <h3 className="text-base md:text-lg py-3 px-4 hover:text-white flex justify-between items-center font-medium">
                         {index + 1}. {head.title}
                         <ChevronRight />
                       </h3>

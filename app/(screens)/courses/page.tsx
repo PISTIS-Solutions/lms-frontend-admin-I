@@ -51,16 +51,18 @@ const Courses = () => {
           <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {dummydata.map((fake) => {
               return (
-                <CoursesCard
-                  id={fake.id}
-                  handleCardClick={handleCardClick}
-                  handleOpen={handleOpen}
-                  img={fake.img}
-                  title={fake.title}
-                  paragraph={fake.paragraph}
-                  module={fake.module}
-                  duration={fake.duration}
-                />
+                <div key={fake.id}>
+                  <CoursesCard
+                    id={fake.id}
+                    handleCardClick={handleCardClick}
+                    handleOpen={handleOpen}
+                    img={fake.img}
+                    title={fake.title}
+                    paragraph={fake.paragraph}
+                    module={fake.module}
+                    duration={fake.duration}
+                  />
+                </div>
               );
             })}
           </div>

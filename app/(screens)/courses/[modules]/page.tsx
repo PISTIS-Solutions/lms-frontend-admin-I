@@ -1,11 +1,11 @@
 "use client";
+import React, { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, ChevronRight, Edit3, Plus } from "lucide-react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
 
 import img from "@/public/assets/course/ansible.png";
 import { ScrollArea } from "@/components/ui/scroll-area";

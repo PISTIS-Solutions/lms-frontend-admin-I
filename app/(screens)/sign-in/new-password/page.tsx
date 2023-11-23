@@ -3,10 +3,10 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
 import logo from "../../../../public/assets/pistis_logo.png";
 import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -31,7 +31,7 @@ const formSchema = z.object({
   }),
 });
 
-const newPassword = () => {
+const NewPassowrd = () => {
   //submit function
   const router = useRouter();
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -182,4 +182,4 @@ const newPassword = () => {
   );
 };
 
-export default newPassword;
+export default NewPassowrd;

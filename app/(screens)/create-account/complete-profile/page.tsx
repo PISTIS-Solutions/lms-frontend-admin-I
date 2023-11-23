@@ -1,11 +1,11 @@
 "use client";
+import { useForm } from "react-hook-form";
 
 import React from "react";
 import Image from "next/image";
 
 import logo from "../../../../public/assets/pistis_logo.png";
 
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
