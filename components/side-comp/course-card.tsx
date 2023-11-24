@@ -24,7 +24,7 @@ const Coursecard = ({ image, header, title, modules }: Componentprops) => {
       <div className="p-3 flex flex-col justify-between h-[160px]">
         <div>
           <h3 className="text-xl font-semibold">{header}</h3>
-          <p className="text-lg font-medium text-[#3E3E3E]">{title}</p>
+          <p className="md:text-lg text-base font-medium text-[#3E3E3E]">{title}</p>
         </div>
         <div className="flex justify-between items-center">
           <div className="text-main flex gap-x-1">

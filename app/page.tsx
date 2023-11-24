@@ -39,12 +39,11 @@ export default function Home() {
             <br />
             Ignite Futures
           </h1>
-          <h1 className="text-5xl text-center md:hidden block text-white font-semibold mb-10">
+          <h1 className="text-4xl text-center md:hidden block text-white font-semibold mb-10">
             Empower Minds;
-            <br />
             Ignite Futures
           </h1>
-          <p className="text-2xl text-center md:text-left text-white">
+          <p className="md:text-2xl text-sm text-center md:text-left text-white">
             Comprehensive curriculum designed to equip students <br />
             with the latest technological skills
           </p>{" "}
@@ -57,12 +56,12 @@ export default function Home() {
       </section>
       <section className=" flex items-center px-5 md:px-10 justify-between bg-mid-back h-[117px] bg-no-repeat bg-cover">
         <div className="flex justify-between w-full">
-          <p className="text-white text-lg md:text-2xl font-medium">30+ Students</p>
-          <p className="text-white text-lg md:text-2xl font-medium">Expert Mentors</p>
-          <p className="text-white text-lg md:text-2xl font-medium">20+ courses</p>
+          <p className="text-white text-sm md:text-2xl font-medium">30+ Students</p>
+          <p className="text-white text-sm md:text-2xl font-medium">Expert Mentors</p>
+          <p className="text-white text-sm md:text-2xl font-medium">20+ courses</p>
         </div>
       </section>
-      <section className="flex flex-wrap gap-4 items-center justify-around my-14">
+      <section className="flex flex-wrap gap-4 md:px-0 px-2 items-center justify-around my-14">
         <LandingCard
           image={cap}
           headText="Smooth learning experience"
@@ -177,7 +176,7 @@ export default function Home() {
             />
             <Coursecard
               image={dns}
-              header="Domain Namse System"
+              header="Domain Name System"
               title=""
               modules={2}
             />
@@ -202,10 +201,10 @@ export default function Home() {
       </section>
       <footer className="mt-5 px-5 md:px-10 py-20 flex justify-center items-center">
         <div className="bg-footer-back max-w-[1280px] flex flex-col justify-center items-center p-10 h-[571px]">
-          <h1 className="md:text-5xl text-3xl font-semibold text-white text-center">
+          <h1 className="md:text-5xl text-2xl font-semibold text-white text-center">
             Sign Up Now To Start Learning
           </h1>
-          <p className="md:text-2xl text-lg text-center text-white py-5">
+          <p className="md:text-2xl text-base text-center text-white py-5">
             Embark on a voyage of discovery, expand your horizons, and enrich
             your mind by joining our community of eager learners. The doors to a
             world of knowledge are swinging wide open, and it's time for you to
