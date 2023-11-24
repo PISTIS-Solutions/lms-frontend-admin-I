@@ -12,7 +12,7 @@ interface Componentprops {
 
 const TestimonialCard = ({ avatar, name, quote }: Componentprops) => {
   return (
-    <main className="md:w-[409px] w-[345px] h-[276px] shadow-md relative rounded-[16px] p-4 bg-white">
+    <main className="md:w-[409px] w-[345px] md:h-[276px] shadow-md relative rounded-[16px] p-4 bg-white">
       <Image
         src={avatar}
         alt="avatar"

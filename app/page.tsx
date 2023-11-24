@@ -1,6 +1,7 @@
 import LandingCard from "@/components/side-comp/landing-card";
 import NavigationBar from "@/components/side-comp/nav";
 import { Button } from "@/components/ui/button";
+import { Carousel } from 'flowbite-react';
 
 import Image from "next/image";
 import Link from "next/link";
@@ -32,23 +33,26 @@ export default function Home() {
       <div>
         <NavigationBar />
       </div>
-      <section className="flex items-center bg-hero-back bg-no-repeat bg-cover md:py-0 py-10 h-1/2 md:h-screen px-5 md:px-10">
+      <section className="flex items-center bg-hero-back bg-no-repeat bg-cover md:py-0 py-10 h-screen px-5 md:px-10">
         <div className="">
           <h1 className="text-7xl text-white md:block hidden font-semibold mb-10">
             Empower Minds;
             <br />
             Ignite Futures
           </h1>
-          <h1 className="text-4xl text-center md:hidden block text-white font-semibold mb-10">
-            Empower Minds;
-            Ignite Futures
+          <h1 className="text-5xl text-center md:hidden block text-white font-semibold mb-10">
+            Empower Minds; Ignite Futures
           </h1>
-          <p className="md:text-2xl text-sm text-center md:text-left text-white">
+          <p className="text-sm md:hidden block text-center md:text-left text-white">
+            Comprehensive curriculum designed to equip students with the latest
+            technological skills
+          </p>
+          <p className="md:text-2xl text-sm md:block hidden text-center md:text-left text-white">
             Comprehensive curriculum designed to equip students <br />
             with the latest technological skills
-          </p>{" "}
+          </p>
           <Link href="/sign-in">
-            <Button className="bg-sub w-full md:w-auto hover:text-white text-xl font-medium py-[25px] px-[40px] mt-20">
+            <Button className="bg-sub w-full md:w-auto hover:text-white text-sm md:text-xl font-medium py-[25px] px-[40px] mt-20">
               Start Learning
             </Button>
           </Link>
@@ -56,9 +60,15 @@ export default function Home() {
       </section>
       <section className=" flex items-center px-5 md:px-10 justify-between bg-mid-back h-[117px] bg-no-repeat bg-cover">
         <div className="flex justify-between w-full">
-          <p className="text-white text-sm md:text-2xl font-medium">30+ Students</p>
-          <p className="text-white text-sm md:text-2xl font-medium">Expert Mentors</p>
-          <p className="text-white text-sm md:text-2xl font-medium">20+ courses</p>
+          <p className="text-white text-sm md:text-2xl font-medium">
+            30+ Students
+          </p>
+          <p className="text-white text-sm md:text-2xl font-medium">
+            Expert Mentors
+          </p>
+          <p className="text-white text-sm md:text-2xl font-medium">
+            20+ courses
+          </p>
         </div>
       </section>
       <section className="flex flex-wrap gap-4 md:px-0 px-2 items-center justify-around my-14">
@@ -85,10 +95,17 @@ export default function Home() {
           className="absolute hidden md:block bottom-0 left-16"
           priority
         />
-        <Image src={cir2} alt="" className="absolute hidden md:block top-0 left-0" priority />
+        <Image
+          src={cir2}
+          alt=""
+          className="absolute hidden md:block top-0 left-0"
+          priority
+        />
         <Image src={girl} alt="girl" priority className="z-10 " />
         <div>
-          <p className="md:text-2xl text-lg text-[#727272] text-left relative">LEARNING EXPERIENCE</p>
+          <p className="md:text-2xl text-lg text-[#727272] text-left relative">
+            LEARNING EXPERIENCE
+          </p>
           <p className="md:text-5xl text-3xl font-semibold leading-snug py-4 relative text-left">
             A One-of-a-Kind <br />
             <span className="text-[#33CC99]">Experience</span> Customized <br />
@@ -103,7 +120,9 @@ export default function Home() {
       </section>
       <section className="bg-white relative block md:flex justify-between py-5 px-5 md:px-10 items-center">
         <div>
-          <p className="md:text-2xl text-lg text-[#727272] relative">EASY INTERFACE</p>
+          <p className="md:text-2xl text-lg text-[#727272] relative">
+            EASY INTERFACE
+          </p>
           <p className="md:text-5xl text-3xl font-semibold leading-snug py-4 relative">
             Easy To Use Online <br />
             Learning Platform To <br />
@@ -139,21 +158,23 @@ export default function Home() {
           </h1>
         </div>
         <div className="flex flex-wrap gap-5 justify-around py-16 items-center">
-          <TestimonialCard
-            avatar={avatar}
-            name="Sylvia Okoro"
-            quote="I can access my courses at any time, which means I can fit learning into my busy schedule"
-          />
-          <TestimonialCard
-            avatar={avatar}
-            name="Bayo Adegboyega"
-            quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience"
-          />
-          <TestimonialCard
-            avatar={avatar}
-            name="David Gilbert"
-            quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience."
-          />
+          
+            <TestimonialCard
+              avatar={avatar}
+              name="Sylvia Okoro"
+              quote="I can access my courses at any time, which means I can fit learning into my busy schedule"
+            />
+            <TestimonialCard
+              avatar={avatar}
+              name="Bayo Adegboyega"
+              quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience"
+            />
+            <TestimonialCard
+              avatar={avatar}
+              name="David Gilbert"
+              quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience."
+            />
+          
         </div>
       </section>
       <section className="py-20 bg-[#FDFBFB]">

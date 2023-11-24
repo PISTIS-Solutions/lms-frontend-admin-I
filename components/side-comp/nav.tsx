@@ -15,7 +15,7 @@ const NavigationBar = () => {
   return (
     <nav className="md:h-32 h-[37px] md:py-0 py-10 bg-main flex items-center justify-between px-5 md:px-10">
       <div>
-        <Image src={pistis} className="" alt="pistis" priority />
+        <Image src={pistis} className="md:w-auto w-5/6" alt="pistis" priority />
       </div>
       <div className=" md:flex hidden items-center gap-x-5">
         <Link href="/sign-in">
