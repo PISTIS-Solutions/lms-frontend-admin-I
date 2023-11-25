@@ -17,7 +17,7 @@ const NavigationBar = () => {
       <div>
         <Image src={pistis} className="md:w-auto w-5/6" alt="pistis" priority />
       </div>
-      <div className=" md:flex hidden items-center gap-x-5">
+      {/* <div className=" md:flex hidden items-center gap-x-5">
         <Link href="/sign-in">
           <Button className="bg-sub py-[13px] hover:text-white px-[20px] text-xl text-black font-medium">
             Sign In
@@ -27,6 +27,13 @@ const NavigationBar = () => {
         <Link href="/create-account">
           <p className="text-xl hover:text-gray-200 text-white font-medium cursor-pointer">
             Create account
+          </p>
+        </Link>
+      </div> */}
+      <div>
+        <Link href="/dashboard">
+          <p className="text-xl hover:text-gray-200 text-white font-medium cursor-pointer">
+            Dashboard
           </p>
         </Link>
       </div>
