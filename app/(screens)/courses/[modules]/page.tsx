@@ -26,45 +26,54 @@ const Module = () => {
     );
   }
 
-
-  const handleItemClick = (index: number) => {
+  const handleItemClick = (index: number, id: any) => {
     setSelectedIndex(index === selectedIndex ? -1 : index);
+    router.push(`/courses/modules/${id}`);
   };
 
   const testData = [
     {
+      id: "1",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "2",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "3",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "4",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "5",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "6",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "7",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "8",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
     {
+      id: "9",
       moduleHead: "What is Ansible?",
       summary: "Introduction to ansible",
     },
@@ -74,7 +83,7 @@ const Module = () => {
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
-      <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
+        <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <ArrowLeft
             onClick={() => {
               router.back();
@@ -88,89 +97,54 @@ const Module = () => {
             </Avatar>
             <div>
               <h1 className="text-base font-medium">John Mark</h1>
-              <p className="text-sm text-[#5D5B5B]">Admin</p>
+              <p className="text-sm text-[#5D5B5B]">Student</p>
             </div>
           </div>
         </div>
-        <div className="">
-          <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
-            <p className="text-[#000066]">Course Content</p>
-            <ChevronRight className="text-[#000066]" />
-            <p className="text-[#9C9C9C] ">Modules</p>
-          </div>
-          <div>
-            <h1 className=" px-4 text-[#1A1A1A] text-lg md:text-2xl my-4 font-medium">
-              {moduleData.title}
-            </h1>
-            <div className="md:grid block p-4 gap-x-4 grid-cols-10">
-              <Image
-                className="w-full h-[428px] md:col-span-7"
-                src={img}
-                priority
-                alt="course-module"
-              />
-              <ScrollArea className="h-[428px] rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
-                <div className="text-main md:text-base p-4 text-lg font-medium flex justify-between items-center py-2">
-                  <h3>Modules</h3>
-                  <span className="flex items-center gap-1 cursor-pointer">
-                    <p className="underline">Add</p>
-                    <Plus />
-                  </span>
-                </div>
-                <div>
-                  {testData.map(({ moduleHead, summary }, index) => (
-                    <>
-                      <div
-                        key={index}
-                        className={`py-3 px-4 cursor-pointer ${
-                          index === selectedIndex ? "bg-main text-white" : ""
-                        }`}
-                        onClick={() => handleItemClick(index)}
-                      >
-                        <h2 className="md:text-lg text-sm font-medium">
-                          {index + 1}. {moduleHead}
-                        </h2>
-                        <p
-                          className={`md:text-sm text-xs font-normal ${
-                            index === selectedIndex ? "block" : "hidden"
-                          }`}
-                        >
-                          {summary}
-                        </p>
-                      </div>
-
-                      <hr />
-                    </>
-                  ))}
-                </div>
-              </ScrollArea>
+        <div className="p-4">
+          <span className="flex gap-1 items-center">
+            <p className="text-sm text-main">Course Content</p>{" "}
+            <ChevronRight className="text-main" />{" "}
+            <p className="text-sm text-[#9C9C9C]">Modules</p>{" "}
+          </span>
+          <div className="grid grid-cols-10 gap-x-2 my-2 ">
+            <div className="bg-white col-span-7 p-2 rounded-[8px] shadow-sm">
+              <h1 className="text-2xl text-main py-2">{moduleData.title}</h1>
+              <p className="text-[#3E3E3E] text-base md:text-md">
+              
+                Ansible is a powerful and user-friendly open-source automation
+                tool that simplifies and streamlines various IT tasks, making
+                them more manageable, efficient, and consistent. Even if you're
+                new to automation and IT management, Ansible provides a
+                straightforward approach to automating tasks without requiring
+                extensive programming knowledge.
+              </p>
             </div>
-            <div className="bg-white shadow-md p-4">
-              <div className="flex justify-between items-center">
-                <h1 className="md:text-2xl text-lg font-medium">
-                  Module 1: Introduction to Ansible
-                </h1>
-                <span className=" md:text-xl text-sm text-main underline gap-x-2 cursor-pointer flex items-center">
-                  <p className="">Edit</p>
-                  <Edit3 />
-                </span>
-              </div>
-              <div>
-                <p className="md:text-xl py-4 text-[#3E3E3E]">
-                  The current course builds upon the previous one seamlessly.
-                  You&apos;ll delve into the core concepts of Ansible and have
-                  hands-on experience with a project. Just like in previous
-                  classes, we strongly advise you to engage in practice, as it&apos;s
-                  the most effective way to grasp the material. Ansible is an
-                  open-source automation tool designed for configuration
-                  management, application deployment, task automation, and
-                  orchestration. It allows you to manage and control a large
-                  number of servers or devices from a single control machine.
-                  Ansible uses a simple and human-readable syntax, which makes
-                  it easy to learn and use. You have a timeline of 2weeks to
-                  finish this course. <br /> Best of luck!
-                </p>
-              </div>
+            <div className="bg-white rounded-[8px] my-2 md:my-0 p-2 col-span-3 shadow-sm">
+              {testData.map(({ moduleHead, summary, id }, index) => (
+                <>
+                  <div
+                    key={index}
+                    className={`py-3 px-4 cursor-pointer ${
+                      index === selectedIndex ? "bg-main text-white" : ""
+                    }`}
+                    onClick={() => handleItemClick(index, id)}
+                  >
+                    <h2 className="md:text-lg text-sm font-medium">
+                      {index + 1}. {moduleHead}
+                    </h2>
+                    <p
+                      className={`md:text-sm text-xs font-normal ${
+                        index === selectedIndex ? "block" : "hidden"
+                      }`}
+                    >
+                      {summary}
+                    </p>
+                  </div>
+
+                  <hr />
+                </>
+              ))}
             </div>
           </div>
         </div>
