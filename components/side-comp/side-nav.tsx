@@ -74,7 +74,7 @@ const SideNav = () => {
             })}
           </div>
           <div>
-            <div className="text-white text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-1">
+            <div className="">
               <Link href={"/settings"} className="">
                 <div
                   className={`link ${

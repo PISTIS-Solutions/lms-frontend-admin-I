@@ -3,7 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Favicon from '../public/favicon.ico';
 
-const monte = Montserrat({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "Pistis Admin",
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       
-      <body className={monte.className}>{children}</body>
+      <body className={montserrat.className}>{children}</body>
     </html>
   );
 }

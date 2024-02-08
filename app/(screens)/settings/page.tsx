@@ -151,6 +151,14 @@ const SettingsPage = () => {
                             </FormItem>
                           )}
                         />
+                      <div className="lg:flex block justify-end">
+                        <Button
+                          type="submit"
+                          className="w-full lg:w-1/3 bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
+                        >
+                          Save Changes
+                        </Button>
+                      </div>
                       </div>
                     </div>
                     <div className="block md:grid grid-cols-6 py-5">
@@ -276,7 +284,9 @@ const SettingsPage = () => {
                 </Form>
               </div>
               <div className="lg:flex block justify-between items-center p-2 md:p-5">
-                <h2 className="md:text-[22px] text-lg font-medium ">Delete Account</h2>
+                <h2 className="md:text-[22px] text-lg font-medium ">
+                  Delete Account
+                </h2>
                 <p className="md:text-xl text-sm font-normal w-full lg:w-96">
                   All data associated with this account will be deleted if you
                   deactivate this account
