@@ -37,9 +37,9 @@ const NavigationBar = () => {
           </p>
         </Link>
       </div>
-      <div className="md:hidden block" onClick={handleOpen}>
+      {/* <div className="md:hidden block" onClick={handleOpen}>
         <Menu className="text-2xl text-white" />
-      </div>
+      </div> */}
 
       {open && (
         <div className="absolute right-0 bg-white p-2 h-[200px] top-20 w-full flex justify-center items-center gap-y-4">
