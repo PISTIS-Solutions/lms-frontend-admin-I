@@ -35,7 +35,7 @@ export default function Home() {
       </div>
       <section className="flex items-center bg-hero-back bg-no-repeat bg-cover md:py-0 py-10 h-screen px-5 md:px-10">
         <div className="">
-          <h1 className="text-7xl text-white md:block hidden font-semibold mb-10">
+          <h1 className="text-6xl text-white md:block hidden font-semibold mb-10">
             Empower Minds;
             <br />
             Ignite Futures
@@ -43,7 +43,7 @@ export default function Home() {
           <h1 className="text-5xl text-center md:hidden block text-white font-semibold mb-10">
             Empower Minds; Ignite Futures
           </h1>
-          <p className="text-sm md:hidden block text-center md:text-left text-white">
+          <p className="text-2xl md:hidden block text-center md:text-left text-white">
             Comprehensive curriculum designed to equip students with the latest
             technological skills
           </p>
@@ -52,7 +52,7 @@ export default function Home() {
             with the latest technological skills
           </p>
           <Link href="/sign-in">
-            <Button className="bg-sub w-full md:w-auto hover:text-white text-sm md:text-xl font-medium py-[25px] px-[40px] mt-20">
+            <Button className="bg-sub w-full md:w-auto hover:text-white text-black text-[20px] md:text-xl font-medium py-[25px] px-[40px] mt-20">
               Start Learning
             </Button>
           </Link>
@@ -71,7 +71,7 @@ export default function Home() {
           </p>
         </div>
       </section>
-      <section className="flex flex-wrap gap-4 md:px-0 px-2 items-center justify-around my-14">
+      <section className="flex flex-wrap gap-4 md:px-[20px] px-2 items-center justify-around my-14">
         <LandingCard
           image={cap}
           headText="Smooth learning experience"
@@ -111,7 +111,7 @@ export default function Home() {
             <span className="text-[#33CC99]">Experience</span> Customized <br />
             Just For You
           </p>
-          <p className="md:text-2xl text-lg max-w-[639px] relative text-left">
+          <p className="md:text-lg text-lg max-w-[639px] relative text-left">
             Access to a mentor that provides individualized attention, tailoring
             their teaching style to your specific learning needs, strengths, and
             weaknesses.
@@ -128,7 +128,7 @@ export default function Home() {
             Learning Platform To <br />
             <span className="text-main">Elevate</span> Your Skills
           </p>
-          <p className="md:text-2xl text-lg max-w-[639px] relative">
+          <p className="md:text-lg text-lg max-w-[639px] relative">
             Access to a mentor that provides individualized attention, tailoring
             their teaching style to your specific learning needs, strengths, and
             weaknesses.
@@ -153,7 +153,7 @@ export default function Home() {
           <p className="text-[#7d7d7d] text-lg md:text-2xl font-medium text-center">
             TESTIMONIALS
           </p>
-          <h1 className="md:text-4xl text-2xl text-center font-bold">
+          <h1 className="md:text-3xl text-2xl text-center font-bold">
             What Our Students Say
           </h1>
         </div>
@@ -181,7 +181,7 @@ export default function Home() {
         <h1 className="mb-5 text-2xl md:text-4xl text-center font-bold">
           Our Popular courses
         </h1>
-        <div className="relative mx-5 lg:mx-40">
+        <div className="relative mx-5 lg:mx-40 p-5">
           <div className="grid grid-cols-1 md:grid-cols-2 place-items-center lg:grid-cols-3 gap-[16px]">
             <Coursecard
               image={ansible}

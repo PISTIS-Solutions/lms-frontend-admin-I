@@ -20,7 +20,7 @@ const TestimonialCard = ({ avatar, name, quote }: Componentprops) => {
         className="md:w-[108px] w-[100px] h-[100px] md:h-[108px] absolute right-5 -top-10"
       />
       <div>
-        <h3 className="md:text-2xl text-lg font-semibold">{name}</h3>
+        <h3 className="md:text-xl text-lg font-semibold">{name}</h3>
         <div className="flex gap-x-1 text-main">
           <Star />
           <Star />
@@ -30,7 +30,7 @@ const TestimonialCard = ({ avatar, name, quote }: Componentprops) => {
         </div>
       </div>
       <div>
-        <p className="md:text-xl text-base mt-10 text-[#3E3E3E]">“{quote}”</p>
+        <p className="md:text-lg text-base mt-10 text-[#3E3E3E]">“{quote}”</p>
       </div>
     </main>
   );
