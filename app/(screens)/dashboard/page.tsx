@@ -1,14 +1,18 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { BookOpenText, GraduationCap, ListChecks } from "lucide-react";
+import { BookOpenText, GraduationCap, ListChecks, Loader2 } from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
 import PaginatedTableMentor from "@/components/side-comp/pagination-table mentor";
 import { LineChart } from "@/components/side-comp/line-chart";
+import axios from "axios";
+import { urls } from "@/utils/config";
+import { useRouter } from "next/navigation";
+import { refreshAccessToken } from "@/utils/refreshToken";
 
 const tags = [
   "Project submission by Femi Oyewale",
@@ -23,29 +27,84 @@ const tags = [
   "Project submission by Femi Oyewale",
 ];
 
+interface AdminData {
+  total_courses: number;
+  total_students: number;
+  total_mentors: number;
+}
+
 const Dashboard = () => {
   const [table, setTable] = useState("students");
-
   const changeTableMentors = () => {
     setTable("mentors");
   };
   const changeTableStudents = () => {
     setTable("students");
   };
+  //get admin dashboard info
+  const [adminData, setAdminData] = useState<AdminData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const route = useRouter();
+  //fetch dashboard data with acceess token and use refresh token to refresh expired token
+  const fetchAdminData = async () => {
+    let refreshToken;
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      refreshToken = localStorage.getItem("refreshToken")!;
+
+      const response = await axios.get(urls.adminDashboard, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setAdminData(response.data);
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const newAccessToken = await refreshAccessToken(refreshToken);
+
+          if (newAccessToken) {
+            localStorage.setItem("accessToken", newAccessToken);
+            // Retry fetching admin data
+            fetchAdminData();
+          } else {
+            // Handle the case where refreshAccessToken returns null or undefined
+            route.push("/sign-in");
+          }
+        } catch (refreshError) {
+          // Handle refresh error
+          route.push("/sign-in");
+        }
+      } else {
+        console.error("Error fetching admin data:", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAdminData();
+  }, []);
 
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
-          <h1 className="md:text-2xl text-lg font-medium">Hello, John</h1>
+          <h1 className="md:text-2xl text-lg font-medium">
+            Hello, {localStorage.getItem("userName")}
+          </h1>
           <div className="flex items-center gap-1 md:gap-2">
             <Avatar>
               {/* <AvatarImage src={avatar} /> */}
               <AvatarFallback>JN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="md:text-base text-sm font-medium">John Mark</h1>
+              <h1 className="md:text-base text-sm font-medium">
+                {localStorage.getItem("userName")}
+              </h1>
               <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
             </div>
           </div>
@@ -56,7 +115,15 @@ const Dashboard = () => {
               <div className="flex flex-wrap justify-between pr-4">
                 <div className="lg:w-[209px] w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
                   <div>
-                    <h1 className="text-2xl text-[#5D5B5B] font-medium">15</h1>
+                    {loading ? (
+                      <Loader2 className="animate-spin text-xl" />
+                    ) : (
+                      adminData && (
+                        <h1 className="text-2xl text-[#5D5B5B] font-medium">
+                          {adminData.total_courses}
+                        </h1>
+                      )
+                    )}
                     <p className="text-base text-[#00173A]">Total Courses</p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
@@ -65,7 +132,15 @@ const Dashboard = () => {
                 </div>
                 <div className="lg:w-[209px] w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
                   <div>
-                    <h1 className="text-2xl text-[#5D5B5B] font-medium">60</h1>
+                    {loading ? (
+                      <Loader2 className="animate-spin text-xl" />
+                    ) : (
+                      adminData && (
+                        <h1 className="text-2xl text-[#5D5B5B] font-medium">
+                          {adminData.total_students}
+                        </h1>
+                      )
+                    )}
                     <p className="text-base text-[#00173A]">Total Students</p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
@@ -74,7 +149,15 @@ const Dashboard = () => {
                 </div>
                 <div className="lg:w-[209px] w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
                   <div>
-                    <h1 className="text-2xl text-[#5D5B5B] font-medium">6</h1>
+                    {loading ? (
+                      <Loader2 className="animate-spin text-xl" />
+                    ) : (
+                      adminData && (
+                        <h1 className="text-2xl text-[#5D5B5B] font-medium">
+                          {adminData.total_mentors}
+                        </h1>
+                      )
+                    )}
                     <p className="text-base text-[#00173A]">Total Mentors</p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">

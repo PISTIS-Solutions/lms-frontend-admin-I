@@ -48,7 +48,7 @@ const Courses = () => {
               </Button>
             </Link>
           </div>
-          <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
+          {/* <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {dummydata.map((fake, index) => {
               return (
                 <div key={index}>
@@ -65,7 +65,7 @@ const Courses = () => {
                 </div>
               );
             })}
-          </div>
+          </div> */}
         </div>
         {modal && (
           <section className="absolute top-0 flex justify-center items-center left-0 bg-slate-100/50 h-screen w-full">
