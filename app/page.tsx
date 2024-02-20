@@ -34,7 +34,7 @@ export default function Home() {
       </div>
       <section className="flex items-center bg-hero-back bg-no-repeat bg-cover md:py-0 py-10 h-screen px-5 md:px-10">
         <div className="">
-          <h1 className="text-7xl text-white md:block hidden font-semibold mb-10">
+          <h1 className="text-6xl text-white md:block hidden font-semibold mb-10">
             Empower Minds;
             <br />
             Ignite Futures
@@ -42,7 +42,7 @@ export default function Home() {
           <h1 className="text-5xl text-center md:hidden block text-white font-semibold mb-10">
             Empower Minds; Ignite Futures
           </h1>
-          <p className="text-sm md:hidden block text-center md:text-left text-white">
+          <p className="text-2xl md:hidden block text-center md:text-left text-white">
             Comprehensive curriculum designed to equip students with the latest
             technological skills
           </p>
@@ -51,7 +51,7 @@ export default function Home() {
             with the latest technological skills
           </p>
           <Link href="/sign-in">
-            <Button className="bg-sub w-full md:w-auto hover:text-white text-sm md:text-xl font-medium py-[25px] px-[40px] mt-20">
+            <Button className="bg-sub w-full md:w-auto hover:text-white text-black text-[20px] md:text-xl font-medium py-[25px] px-[40px] mt-20">
               Start Learning
             </Button>
           </Link>

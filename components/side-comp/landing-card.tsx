@@ -22,5 +22,3 @@ const LandingCard = ({ image, headText, bodyText }: Componentprops) => {
 };
 
 export default LandingCard;
-
-// md:grid-cols-3 grid-cols-1 sm:grid-cols-2
