@@ -12,6 +12,7 @@ const NavigationBar = () => {
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
+
   return (
     <nav className="md:h-32 h-[37px] md:py-0 py-10 bg-main flex items-center justify-between px-5 md:px-10">
       <div>
@@ -36,10 +37,10 @@ const NavigationBar = () => {
             Dashboard
           </p>
         </Link>
+     */}
       <div className="md:hidden block" onClick={handleOpen}>
         <Menu className="text-2xl text-white" />
-      </div> */}
-
+      </div>
       {open && (
         <div className="absolute right-0 bg-white p-2 h-[200px] top-20 w-full flex justify-center items-center gap-y-4">
           <div className="w-full ">
@@ -50,11 +51,11 @@ const NavigationBar = () => {
               <Button className="bg-main w-full">Sign In</Button>
             </Link>
 
-            <Link href="/create-account">
+            {/* <Link href="/create-account">
               <p className="text-xl text-center font-medium py-4">
                 Create account
               </p>
-            </Link>
+            </Link> */}
           </div>
         </div>
       )}
