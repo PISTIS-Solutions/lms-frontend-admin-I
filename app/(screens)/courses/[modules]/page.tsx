@@ -111,7 +111,6 @@ const Module = () => {
             <div className="bg-white col-span-7 p-2 rounded-[8px] shadow-sm">
               <h1 className="text-2xl text-main py-2">{moduleData.title}</h1>
               <p className="text-[#3E3E3E] text-base md:text-md">
-              
                 Ansible is a powerful and user-friendly open-source automation
                 tool that simplifies and streamlines various IT tasks, making
                 them more manageable, efficient, and consistent. Even if you're
