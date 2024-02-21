@@ -12,7 +12,7 @@ interface Componentprops {
 
 const Coursecard = ({ image, header, title, modules }: Componentprops) => {
   return (
-    <div className="md:w-[357px] w-[340px] cursor-pointer hover:scale-100 md:hover:scale-105 duration-75 ease-in-out shadow-md h-[351px] rounded-[16px] bg-white mb-10">
+    <div className="md:w-[357px] w-auto max-w-[340px] cursor-pointer hover:scale-100 md:hover:scale-105 duration-75 ease-in-out shadow-md h-auto md:h-[351px] rounded-[16px] bg-white">
       <div>
         <Image
           src={image}
@@ -21,10 +21,10 @@ const Coursecard = ({ image, header, title, modules }: Componentprops) => {
           className=" rounded-tl-[16px] rounded-tr-[16px]"
         />
       </div>
-      <div className="p-3 flex flex-col justify-between h-[160px]">
+      <div className="p-3 flex flex-col justify-between h-auto md:h-[160px]">
         <div>
-          <h3 className="text-xl font-semibold">{header}</h3>
-          <p className="md:text-lg text-base font-medium text-[#3E3E3E]">{title}</p>
+          <h3 className="md:text-xl sm:text-lg text-sm font-semibold">{header}</h3>
+          <p className="md:text-lg text-xs sm:text-base font-medium text-[#3E3E3E]">{title}</p>
         </div>
         <div className="flex justify-between items-center">
           <div className="text-main flex gap-x-1">
@@ -34,7 +34,7 @@ const Coursecard = ({ image, header, title, modules }: Componentprops) => {
             <AiFillStar />
             <AiFillStar />
           </div>
-          <p className="text-lg text-[#3E3E3E]">{modules} modules</p>
+          <p className="md:text-lg sm:text:sm text-xs text-[#3E3E3E]">{modules} modules</p>
         </div>
       </div>
     </div>

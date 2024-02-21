@@ -1,31 +1,30 @@
-import LandingCard from "@/components/side-comp/landing-card";
-import NavigationBar from "@/components/side-comp/nav";
-import { Button } from "@/components/ui/button";
-import { Carousel } from 'flowbite-react';
-
 import Image from "next/image";
 import Link from "next/link";
 
-import cap from "@/public/assets/svg/teacher.svg";
-import user from "@/public/assets/svg/user.svg";
-import book from "@/public/assets/svg/book.svg";
-import girl from "@/public/assets/girl.png";
-import boy from "@/public/assets/boy.png";
-import cir from "@/public/assets/semi.png";
-import cir2 from "@/public/assets/semi2.png";
-import circle from "@/public/assets/circle.png";
-import circle2 from "@/public/assets/circle2.png";
-import TestimonialCard from "@/components/side-comp/testimony-card";
+import {
+  cap,
+  user,
+  book,
+  girl,
+  boy,
+  cir,
+  cir2,
+  circle,
+  circle2,
+  cicd,
+  dns,
+  docker,
+  git,
+  gitops,
+  TestimonialCard,
+  avatar,
+  ansible,
+  Coursecard,
+  LandingCard,
+  NavigationBar,
+} from "./index";
 
-import avatar from "@/public/assets/avatar.png";
-import Coursecard from "@/components/side-comp/course-card";
-
-import ansible from "@/public/assets/course/ansible.png";
-import cicd from "@/public/assets/course/cicd.png";
-import dns from "@/public/assets/course/dns.png";
-import docker from "@/public/assets/course/docker.png";
-import git from "@/public/assets/course/git.png";
-import gitops from "@/public/assets/course/gitops.png";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -71,7 +70,7 @@ export default function Home() {
           </p>
         </div>
       </section>
-      <section className="flex flex-wrap gap-4 md:px-[20px] px-2 items-center justify-around my-14">
+      <section className="grid md:grid-cols-3 grid-cols-1 sm:grid-cols-2 gap-4 md:px-0 mx-2 items-center justify-around my-14">
         <LandingCard
           image={cap}
           headText="Smooth learning experience"
@@ -88,7 +87,7 @@ export default function Home() {
           bodyText="To ensure maximum benefit, we curated course content that is both relevant and engaging"
         />
       </section>
-      <section className="bg-[#FBFBFF] flex md:flex-row flex-col-reverse  relative justify-between py-5 px-5 md:px-10 items-center">
+      <section className="bg-[#FBFBFF] flex lg:flex-row flex-col-reverse relative justify-center lg:justify-between py-5 px-5 md:px-10 items-center">
         <Image
           src={cir}
           alt=""
@@ -101,34 +100,39 @@ export default function Home() {
           className="absolute hidden md:block top-0 left-0"
           priority
         />
-        <Image src={girl} alt="girl" priority className="z-10 " />
+        <Image
+          src={girl}
+          alt="girl"
+          priority
+          className="z-10 md:w-auto w-1/2 max-w-[568px] h-auto"
+        />
         <div>
-          <p className="md:text-2xl text-lg text-[#727272] text-left relative">
+          <p className="md:text-2xl sm:text-xl text-sm text-[#727272] text-center md:text-left relative">
             LEARNING EXPERIENCE
           </p>
-          <p className="md:text-5xl text-3xl font-semibold leading-snug py-4 relative text-left">
+          <p className="md:text-5xl text-xl sm:text-2xl text-center font-semibold leading-snug py-4 relative md:text-left">
             A One-of-a-Kind <br />
             <span className="text-[#33CC99]">Experience</span> Customized <br />
             Just For You
           </p>
-          <p className="md:text-lg text-lg max-w-[639px] relative text-left">
+          <p className="md:text-2xl text-sm sm:text-lg max-w-[639px] relative text-center md:text-left">
             Access to a mentor that provides individualized attention, tailoring
             their teaching style to your specific learning needs, strengths, and
             weaknesses.
           </p>
         </div>
       </section>
-      <section className="bg-white relative block md:flex justify-between py-5 px-5 md:px-10 items-center">
+      <section className="bg-white relative lg:flex-row flex-col flex justify-center lg:justify-between py-5 px-5 md:px-10 items-center">
         <div>
-          <p className="md:text-2xl text-lg text-[#727272] relative">
+          <p className="md:text-2xl sm:text-xl text-sm text-[#727272] text-center md:text-left relative">
             EASY INTERFACE
           </p>
-          <p className="md:text-5xl text-3xl font-semibold leading-snug py-4 relative">
+          <p className="md:text-5xl text-xl z-10 sm:text-2xl text-center font-semibold leading-snug py-4 relative md:text-left">
             Easy To Use Online <br />
             Learning Platform To <br />
             <span className="text-main">Elevate</span> Your Skills
           </p>
-          <p className="md:text-lg text-lg max-w-[639px] relative">
+          <p className="md:text-2xl z-10 text-sm sm:text-lg max-w-[639px] relative text-center md:text-left">
             Access to a mentor that provides individualized attention, tailoring
             their teaching style to your specific learning needs, strengths, and
             weaknesses.
@@ -146,43 +150,46 @@ export default function Home() {
           className="absolute hidden md:block bottom-0 right-16"
           priority
         />
-        <Image src={boy} className="z-10" alt="girl" priority />
+        <Image
+          src={boy}
+          className="z-10 md:w-auto w-1/2 max-w-[568px] h-auto"
+          alt="boy"
+          priority
+        />
       </section>
       <section className="bg-[#FAFAFD] ">
         <div className="py-7">
-          <p className="text-[#7d7d7d] text-lg md:text-2xl font-medium text-center">
+          <p className="text-[#7d7d7d] z-10 text-xs sm:text-lg md:text-2xl font-medium text-center">
             TESTIMONIALS
           </p>
-          <h1 className="md:text-3xl text-2xl text-center font-bold">
+          <h1 className="md:text-4xl z-20 sm:text-xl text-lg  text-center font-bold">
             What Our Students Say
           </h1>
         </div>
-        <div className="flex flex-wrap gap-5 justify-around py-16 items-center">
-          
-            <TestimonialCard
-              avatar={avatar}
-              name="Sylvia Okoro"
-              quote="I can access my courses at any time, which means I can fit learning into my busy schedule"
-            />
-            <TestimonialCard
-              avatar={avatar}
-              name="Bayo Adegboyega"
-              quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience"
-            />
-            <TestimonialCard
-              avatar={avatar}
-              name="David Gilbert"
-              quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience."
-            />
-          
+        <div className="flex flex-wrap gap-5 justify-around py-16 px-2 items-center">
+          <TestimonialCard
+            avatar={avatar}
+            name="Sylvia Okoro"
+            quote="I can access my courses at any time, which means I can fit learning into my busy schedule"
+          />
+          <TestimonialCard
+            avatar={avatar}
+            name="Bayo Adegboyega"
+            quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience"
+          />
+          <TestimonialCard
+            avatar={avatar}
+            name="David Gilbert"
+            quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience."
+          />
         </div>
       </section>
       <section className="py-20 bg-[#FDFBFB]">
-        <h1 className="mb-5 text-2xl md:text-4xl text-center font-bold">
+        <h1 className="mb-5 text-xl sm:text-2xl md:text-4xl text-center font-bold">
           Our Popular courses
         </h1>
-        <div className="relative mx-5 lg:mx-40 p-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 place-items-center lg:grid-cols-3 gap-[16px]">
+        <div className="relative mx-5 lg:mx-40">
+          <div className="grid px-2 grid-cols-1 md:grid-cols-2 place-items-center xl:grid-cols-3 gap-[16px]">
             <Coursecard
               image={ansible}
               header="Ansible"
@@ -222,10 +229,10 @@ export default function Home() {
       </section>
       <footer className="mt-5 px-5 md:px-10 py-20 flex justify-center items-center">
         <div className="bg-footer-back max-w-[1280px] flex flex-col justify-center items-center p-10 h-[571px]">
-          <h1 className="md:text-5xl text-2xl font-semibold text-white text-center">
+          <h1 className="md:text-5xl text-xl sm:text-2xl font-semibold text-white text-center">
             Sign Up Now To Start Learning
           </h1>
-          <p className="md:text-2xl text-base text-center text-white py-5">
+          <p className="md:text-2xl text-xs sm:text-base text-center text-white py-5">
             Embark on a voyage of discovery, expand your horizons, and enrich
             your mind by joining our community of eager learners. The doors to a
             world of knowledge are swinging wide open, and it's time for you to
