@@ -35,7 +35,10 @@ const SignIn = () => {
         route.replace("/dashboard");
         localStorage.setItem("accessToken", response.data.access);
         localStorage.setItem("refreshToken", response.data.access);
-        localStorage.setItem("userName", response.data.user.full_name);
+        localStorage.setItem(
+          "userName",
+          response.data.user.full_name || "Guest"
+        );
       }
     } catch (error: any) {
       console.error("Error completing profile:", error.message);

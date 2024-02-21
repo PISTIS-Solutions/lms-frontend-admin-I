@@ -2,7 +2,7 @@
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { BookOpenText, GraduationCap, ListChecks, Loader2 } from "lucide-react";
@@ -44,7 +44,6 @@ const Dashboard = () => {
   //get admin dashboard info
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const route = useRouter();
   //fetch dashboard data with acceess token and use refresh token to refresh expired token
   const fetchAdminData = async () => {
@@ -94,7 +93,9 @@ const Dashboard = () => {
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <h1 className="md:text-2xl text-lg font-medium">
-            Hello, {localStorage.getItem("userName")}
+            Hello, 
+            {/* {localStorage.getItem("userName") || "Guest"} */}
+            {/* work on adding the user's name */}
           </h1>
           <div className="flex items-center gap-1 md:gap-2">
             <Avatar>
@@ -103,7 +104,9 @@ const Dashboard = () => {
             </Avatar>
             <div>
               <h1 className="md:text-base text-sm font-medium">
-                {localStorage.getItem("userName")}
+                Hello,
+                {/* {localStorage.getItem("userName")} */}
+                {/* work on adding the user's name */}
               </h1>
               <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
             </div>
