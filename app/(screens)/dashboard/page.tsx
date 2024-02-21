@@ -83,6 +83,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="p-2">
+                <h1 className="pl-4 text-xs md:text-xl font-semibold">Enrollment activity </h1>
                 <LineChart />
               </div>
             </div>

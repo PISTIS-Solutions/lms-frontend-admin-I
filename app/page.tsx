@@ -59,14 +59,14 @@ export default function Home() {
         </div>
       </section>
       <section className=" flex items-center px-5 md:px-10 justify-between bg-mid-back h-[117px] bg-no-repeat bg-cover">
-        <div className="flex justify-between w-full">
+        <div className="flex justify-evenly w-full divide-x-[4px]">
           <p className="text-white text-sm md:text-2xl font-medium">
             30+ Students
           </p>
-          <p className="text-white text-sm md:text-2xl font-medium">
+          <p className="text-white text-sm md:text-2xl font-medium pl-10">
             Expert Mentors
           </p>
-          <p className="text-white text-sm md:text-2xl font-medium">
+          <p className="text-white text-sm md:text-2xl font-medium pl-10">
             20+ courses
           </p>
         </div>
