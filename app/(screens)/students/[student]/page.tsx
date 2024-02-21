@@ -49,28 +49,28 @@ const Student = () => {
                   className="w-28 h-auto"
                 />
                 <div>
-                  <h3 className="lg:text-2xl text-lg font-medium">
+                  <h3 className="lg:text-lg text-lg font-medium text-500">
                     {studentData.name}
                   </h3>
-                  <p className="lg:text-xl text-sm font-normal">Name</p>
+                  <p className="lg:text-sm text-xs font-normal text-[#3E3E3E]">Name</p>
                 </div>
               </div>
               <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
               <div>
-                <h3 className="lg:text-2xl text-lg font-medium">{studentData.email}</h3>
-                <p className="text-sm lg:text-xl font-normal">Email address</p>
+                <h3 className="lg:text-lg text-lg font-medium">{studentData.email}</h3>
+                <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">Email address</p>
               </div>
               <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
               <div>
-                <h3 className="text-lg lg:text-2xl font-medium">
+                <h3 className="text-lg lg:text-lg font-medium">
                   {studentData.phoneNumber}
                 </h3>
-                <p className="text-sm lg:text-xl font-normal">Phone number</p>
+                <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">Phone number</p>
               </div>
               <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
               <div>
-                <h3 className="text-lg lg:text-2xl font-medium">Lagos</h3>
-                <p className="text-s, lg:text-xl font-normal">Location</p>
+                <h3 className="text-lg lg:text-lg font-medium">Lagos</h3>
+                <p className="text-sm, lg:text-sm font-normal text-[#3E3E3E]">Location</p>
               </div>
             </div>
             <div className="flex justify-end gap-x-2 text-[#939393] text-xs md:text-lg pr-2">
