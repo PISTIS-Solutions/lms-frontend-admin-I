@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import logo from "../../../../public/assets/pistis_logo.png";
@@ -14,13 +12,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, KeyRound, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-import Fulllogo from "@/public/assets/full-logo.png";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const formSchema = z.object({
   Email: z.string().min(2, {
@@ -29,7 +28,6 @@ const formSchema = z.object({
 });
 
 const ForgotPassword = () => {
-  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,35 +35,38 @@ const ForgotPassword = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const [Unsuccess, setUnsuccess] = useState(false);
 
-    router.push("/sign-in/forgot-password/verify");
-  }
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const email = values.Email;
+    try {
+      const url =
+        "https://pistis-lms-backend.onrender.com/api/v1/auth/users/student/reset_password/";
+      await axios.post(url, { email });
+      router.push("/sign-in/forgot-password/verify");
+    } catch (error) {
+      console.error("Error:", error);
+      setUnsuccess(true);
+    }
+
+    //
+  };
 
   return (
-    <main className="md:bg-form-back bg-white h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-full md:w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 block md:flex flex-col justify-around px-0 md:px-10">
-        <div className="h-auto block md:hidden w-full bg-main p-2">
-          <Image src={Fulllogo} alt="logo" />
-        </div>
+    <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
+      <div className="bg-white w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 flex flex-col gap-28 px-10">
         <div className="flex justify-end">
-          <Image
-            src={logo}
-            alt="pistis_logo"
-            className="md:block hidden"
-            priority
-          />
+          <Image src={logo} alt="pistis_logo" className="" priority />
         </div>
-        <div className="px-2 my-10 md:my-0 md:px-0">
-          <h1 className="md:text-4xl text-3xl font-semibold">
-            Forgot Password?
-          </h1>
-          <h3 className="md:text-2xl text-lg ">
+        <div className="">
+          <h1 className="text-4xl font-semibold">Forgot Password?</h1>
+          <h3 className="text-2xl">
             Please provide your registered email address
           </h3>
         </div>
-        <div className="flex px-2 md:px-0 flex-col">
+        <div className="flex flex-col">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <FormField
@@ -85,6 +86,7 @@ const ForgotPassword = () => {
                           placeholder="example@gmail.com"
                           {...field}
                         />
+                        {Unsuccess && <p className="text-red-500 font-bold">Unsuccessful</p>}
                       </div>
                     </FormControl>
                     <FormMessage />

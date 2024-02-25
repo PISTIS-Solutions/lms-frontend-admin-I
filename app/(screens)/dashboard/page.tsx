@@ -12,7 +12,8 @@ import { LineChart } from "@/components/side-comp/line-chart";
 import axios from "axios";
 import { urls } from "@/utils/config";
 import { useRouter } from "next/navigation";
-import { refreshAccessToken } from "@/utils/refreshToken";
+import Cookies from "js-cookie";
+import { Button } from "@/components/ui/button";
 
 const tags = [
   "Project submission by Femi Oyewale",
@@ -47,36 +48,32 @@ const Dashboard = () => {
   const route = useRouter();
   //fetch dashboard data with acceess token and use refresh token to refresh expired token
   const fetchAdminData = async () => {
-    let refreshToken;
     try {
-      const accessToken = localStorage.getItem("accessToken");
-      refreshToken = localStorage.getItem("refreshToken")!;
-
+      const adminAccessToken = Cookies.get("authToken");
       const response = await axios.get(urls.adminDashboard, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${adminAccessToken}`,
         },
       });
       setAdminData(response.data);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         try {
-          const newAccessToken = await refreshAccessToken(refreshToken);
-
-          if (newAccessToken) {
-            localStorage.setItem("accessToken", newAccessToken);
-            // Retry fetching admin data
-            fetchAdminData();
-          } else {
-            // Handle the case where refreshAccessToken returns null or undefined
-            route.push("/sign-in");
-          }
-        } catch (refreshError) {
-          // Handle refresh error
-          route.push("/sign-in");
+          const adminRefreshToken = Cookies.get("adminRefreshToken");
+          const adminAccessToken = Cookies.get("authToken");
+          const refreshResponse = await axios.post(urls.adminRefreshToken, {
+            refresh: adminRefreshToken,
+            access: adminAccessToken,
+          });
+          Cookies.set("authToken", refreshResponse.data.access);
+          // Retry the fetch after token refresh
+          console.log(Cookies.get("authToken"), "auth T");
+          await fetchAdminData();
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
         }
       } else {
-        console.error("Error fetching admin data:", error.message);
+        console.error("Error:", error.message);
       }
     } finally {
       setLoading(false);
@@ -84,8 +81,24 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchAdminData();
+    // fetchAdminData();
   }, []);
+
+  const months = [
+    "",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
@@ -93,8 +106,9 @@ const Dashboard = () => {
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <h1 className="md:text-2xl text-lg font-medium">
-            Hello, 
+            Hello,
             {/* {localStorage.getItem("userName") || "Guest"} */}
+            {Cookies.get("userName")}
             {/* work on adding the user's name */}
           </h1>
           <div className="flex items-center gap-1 md:gap-2">
@@ -115,7 +129,7 @@ const Dashboard = () => {
         <div className="">
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
             <div className=" col-span-1 lg:col-span-7">
-              <div className="flex flex-wrap justify-between pr-4">
+              <div className="flex gap-x-4 overflow-x-scroll justify-between pr-4">
                 <div className="lg:w-[209px] w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
                   <div>
                     {loading ? (
@@ -127,13 +141,13 @@ const Dashboard = () => {
                         </h1>
                       )
                     )}
-                    <p className="text-base text-[#00173A]">Total Courses</p>
+                    <p className="md:text-base text-xs text-[#00173A]">Total Courses</p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
                     <BookOpenText className="text-main" />
                   </span>
                 </div>
-                <div className="lg:w-[209px] w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
+                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -144,7 +158,7 @@ const Dashboard = () => {
                         </h1>
                       )
                     )}
-                    <p className="text-base text-[#00173A]">Total Students</p>
+                    <p className="md:text-base text-xs text-[#00173A]">Total Students</p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
                     <GraduationCap className="text-main" />
@@ -161,7 +175,7 @@ const Dashboard = () => {
                         </h1>
                       )
                     )}
-                    <p className="text-base text-[#00173A]">Total Mentors</p>
+                    <p className="md:text-base text-xs text-[#00173A]">Total Mentors</p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
                     <ListChecks className="text-main" />
@@ -169,7 +183,18 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="p-2">
-                <h1 className="pl-4 text-xs md:text-xl font-semibold">Enrollment activity </h1>
+                <div className="flex justify-between items-center">
+                  <h1 className="pl-4 text-xs md:text-xl font-semibold">
+                    Enrollment activity{" "}
+                  </h1>
+                  <select className="border border-main rounded-[8px]" name="months" id="months">
+                    {months.map((month, index) => (
+                      <option key={index} value={month}>
+                        {month || "Select Month"}{" "}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <LineChart />
               </div>
             </div>

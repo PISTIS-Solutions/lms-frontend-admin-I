@@ -1,13 +1,30 @@
-import axios from 'axios';
-import { urls } from './config';
+// adminRefreshToken.ts
 
-export const refreshAccessToken = async (refreshToken:any) => {
+import axios from "axios";
+import { urls } from "./config";
+
+export const adminRefreshToken = async (): Promise<string | null> => {
   try {
-    const refreshResponse = await axios.post(urls.refreshToken, {
-      refreshToken,
+    const refresh_token = localStorage.getItem("adminRefreshToken");
+
+    if (!refresh_token) {
+      // Handle the case where refresh token is not available
+      // return null;
+      console.log("no refresh token!");
+    }
+
+    const refreshResponse: any = await axios.post(urls.adminRefreshToken, {
+      refresh_token,
     });
-    return refreshResponse.data.newAccessToken;
-  } catch (error) {
-    throw error;
+
+    const newadminAccessToken = refreshResponse.data.access_token;
+
+    // Update the existing access token in localStorage
+    localStorage.setItem("adminAccessToken", newadminAccessToken);
+
+    return newadminAccessToken;
+  } catch (error: any) {
+    console.error("Error refreshing token:", error.message);
+    return null;
   }
 };
