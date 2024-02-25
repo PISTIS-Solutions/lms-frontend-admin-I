@@ -1,3 +1,4 @@
+"use client"
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
