@@ -23,6 +23,10 @@ const Courses = () => {
     setModal((prev) => !prev);
   };
 
+  const getCourses = () =>{
+    
+  }
+
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />

@@ -15,6 +15,10 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { urls } from "@/utils/config";
+import { Loader2 } from "lucide-react";
+import Cookies from "js-cookie";
 
 const formSchema = z.object({
   courseTitle: z.string(),
@@ -23,24 +27,62 @@ const formSchema = z.object({
   courseLink: z.string(),
   courseDuration: z.string(),
 });
+type FormData = z.infer<typeof formSchema>;
 
 const AddCourseForms = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      courseTitle: "",
-      courseDuration: "",
-      courseLink: "",
-      Description: "",
-      subTitle: "",
-    },
   });
 
   const router = useRouter();
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    router.push("add-course/add-modules");
-  }
+  const [loading, setLoading] = useState(false);
+  //error re-do
+  const uploadCourses = async (values: FormData, e: any): Promise<void> => {
+    e.preventDefault();
+    try {
+      const adminAccessToken = Cookies.get("authToken");
+      setLoading(true);
+      const response = await axios.post(
+        urls.uploadCourses,
+        {
+          title: values.courseTitle,
+          sub_title: values.subTitle,
+          course_url: values.courseLink,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Success!");
+        setLoading(false);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const adminRefreshToken = Cookies.get("adminRefreshToken");
+          const adminAccessToken = Cookies.get("authToken");
+          const refreshResponse = await axios.post(urls.adminRefreshToken, {
+            refresh: adminRefreshToken,
+            access: adminAccessToken,
+          });
+          Cookies.set("authToken", refreshResponse.data.access);
+          // Retry the fetch after token refresh
+          await uploadCourses(values, e);
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
+        }
+      } else {
+        console.error("Error:", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -59,7 +101,10 @@ const AddCourseForms = () => {
       </div>
       <div className="mt-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(uploadCourses)}
+            className="space-y-8"
+          >
             <div className="my-4">
               <FormField
                 control={form.control}
@@ -71,6 +116,7 @@ const AddCourseForms = () => {
                     </FormLabel>
                     <FormControl className="">
                       <Input
+                        type="text"
                         className="bg-[#FAFAFA]"
                         placeholder="Input Course Title"
                         {...field}
@@ -89,6 +135,7 @@ const AddCourseForms = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        type="text"
                         className="bg-[#FAFAFA]"
                         placeholder="Input Course Sub-Title"
                         {...field}
@@ -107,6 +154,7 @@ const AddCourseForms = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        type="text"
                         className="bg-[#FAFAFA]"
                         placeholder="Input Course Description"
                         {...field}
@@ -125,6 +173,7 @@ const AddCourseForms = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        type="url"
                         className="bg-[#FAFAFA]"
                         placeholder="Input Course Link"
                         {...field}
@@ -155,10 +204,11 @@ const AddCourseForms = () => {
             </div>
             <div className="flex justify-center">
               <Button
+                disabled={loading}
                 className=" py-6 text-main hover:text-white px-28 bg-sub mx-auto font-semibold"
                 type="submit"
               >
-                Continue
+                {loading ? <Loader2 className="animate-spin" /> : "Continue"}
               </Button>
             </div>
           </form>

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-
 import {
   cap,
   user,
@@ -58,14 +57,14 @@ export default function Home() {
         </div>
       </section>
       <section className=" flex items-center px-5 md:px-10 justify-between bg-mid-back h-[117px] bg-no-repeat bg-cover">
-        <div className="flex justify-evenly w-full divide-x-[4px]">
-          <p className="text-white text-sm md:text-2xl font-medium">
+        <div className="flex w-full md:justify-evenly justify-center divide-x-[4px]">
+          <p className="text-white text-xs md:text-2xl font-medium pr-4 md:pr-36">
             30+ Students
           </p>
-          <p className="text-white text-sm md:text-2xl font-medium pl-10">
+          <p className="text-white text-xs md:text-2xl font-medium px-4 md:px-36">
             Expert Mentors
           </p>
-          <p className="text-white text-sm md:text-2xl font-medium pl-10">
+          <p className="text-white text-xs md:text-2xl font-medium pl-4 md:pl-36">
             20+ courses
           </p>
         </div>
