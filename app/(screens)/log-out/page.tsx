@@ -1,3 +1,4 @@
+"use client"
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
@@ -5,8 +6,18 @@ import React from "react";
 
 import sad from "@/public/assets/sad.png";
 import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const LogOut = () => {
+
+  const router = useRouter();
+  const onlogOut = () => {
+    Cookies.remove("authToken");
+    console.log(Cookies.get("authToken"))
+    router.replace("/");
+  };
+
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -29,7 +40,7 @@ const LogOut = () => {
             <p className="text-sm lg:text-xl text-center">
               It’s sad to see you go <br /> Are you sure about this?
             </p>
-            <Button className="bg-sub rounded-[8px] py-4 px-6 w-full lg:w-1/2 text-xl hover:bg-main hover:text-white">
+            <Button onClick={onlogOut} className="bg-sub rounded-[8px] py-4 px-6 w-full lg:w-1/2 text-xl hover:bg-main hover:text-white">
               Confirm
             </Button>
           </div>
