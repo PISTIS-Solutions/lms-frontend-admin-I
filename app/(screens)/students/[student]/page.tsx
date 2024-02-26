@@ -40,7 +40,7 @@ const Student = () => {
           </div>
         </div>
         <div>
-          <div>
+          <div className="bg-slate-100">
             <div className="sm:flex block px-3 md:px-0 items-center justify-around py-4">
               <div className="flex items-center gap-x-4">
                 <Image
