@@ -8,6 +8,8 @@ import logo from "@/public/assets/pistis_logo.png";
 import { Mail, KeyRound, Eye, EyeOff, Loader2 } from "lucide-react";
 import useForgotPassStore from "@/store/forgot-password";
 import { urls } from "@/utils/config";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NewPassword = () => {
   const passwordStore = useForgotPassStore();
@@ -40,7 +42,15 @@ const NewPassword = () => {
           }),
         });
         if (response.ok) {
-          setModal(true);
+          toast.success("Password changed Successfully!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
           // router.push("/create-account/activate/[uid]");
         } else {
           // setModal(false);
@@ -67,6 +77,7 @@ const NewPassword = () => {
           <h1 className="text-4xl font-semibold">Reset Password</h1>
           <h3 className="text-2xl">Create a safe and secured password</h3>
         </div>
+        <ToastContainer />
         <div>
           <form onSubmit={onSubmitChangePassword} className="space-y-3">
             <p className="text-xl font-semibold">Create Password</p>
@@ -122,11 +133,6 @@ const NewPassword = () => {
               />
             </div>
             <div>
-              {modal && (
-                <p className="text-green-500 text-md text-center">
-                  Password Changed Successfully
-                </p>
-              )}
               <p className="text-red-500 text-center">{specialCharacterErr}</p>
               {passwordStore.password != passwordStore.confirm ? (
                 <p className="text-red-500 text-center">
@@ -137,6 +143,7 @@ const NewPassword = () => {
               )}
             </div>
             <button
+              disabled={loading}
               type="submit"
               className="w-full bg-[#33CC99] py-4 flex justify-center items-center rounded-[8px] font-medium text-lg md:text-2xl text-black hover:text-white"
             >

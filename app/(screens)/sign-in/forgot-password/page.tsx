@@ -20,6 +20,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { urls } from "@/utils/config";
 
 const formSchema = z.object({
   Email: z.string().min(2, {
@@ -43,7 +44,7 @@ const ForgotPassword = () => {
     const email = values.Email;
     try {
       const url =
-        "https://pistis-lms-backend.onrender.com/api/v1/auth/users/student/reset_password/";
+        urls.forgotPassword;
       await axios.post(url, { email });
       router.push("/sign-in/forgot-password/verify");
     } catch (error) {

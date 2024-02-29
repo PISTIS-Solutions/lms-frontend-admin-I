@@ -13,8 +13,7 @@ const LogOut = () => {
 
   const router = useRouter();
   const onlogOut = () => {
-    Cookies.remove("authToken");
-    console.log(Cookies.get("authToken"))
+    Cookies.remove("adminAccessToken");
     router.replace("/");
   };
 

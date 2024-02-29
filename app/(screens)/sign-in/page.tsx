@@ -33,9 +33,8 @@ const SignIn = () => {
       });
 
       if (response.status === 200) {
-        Cookies.set("authToken", response.data.access);
+        Cookies.set("adminAccessToken", response.data.access);
         Cookies.set("adminRefreshToken", response.data.refresh);
-        Cookies.set("userName", response.data.user.userName);
         route.replace("/dashboard");
       }
     } catch (error: any) {
@@ -126,14 +125,14 @@ const SignIn = () => {
             </button>
           </form>
         </div>
-        <div>
+        {/* <div>
           <p className="text-center text-base md:text-lg font-normal ">
             Don't have an account?{" "}
             <Link className="text-main font-semibold" href="/create-account">
               Create Account
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </main>
   );

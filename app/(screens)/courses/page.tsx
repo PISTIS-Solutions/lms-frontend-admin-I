@@ -1,16 +1,30 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CoursesCard from "@/components/side-comp/courses-card";
 
 import Link from "next/link";
-import { dummydata } from "@/app/data/dummyModules";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { urls } from "@/utils/config";
+import { dummydata } from "@/app/data/dummyModules";
+
+// interface CoursesData {
+//   id: string;
+//   title: string;
+//   slug: string;
+//   overview: any;
+//   course_url: string;
+//   course_duration: string;
+// }
+// interface CoursesArray {
+//   courses: CoursesData[];
+// }
 
 const Courses = () => {
   const router = useRouter();
@@ -23,9 +37,48 @@ const Courses = () => {
     setModal((prev) => !prev);
   };
 
-  const getCourses = () =>{
-    
-  }
+  const [courses, setCourses] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.get(urls.getCourses, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+      setCourses(response.data);
+      
+    } catch (error: any) {
+      console.error("Error fetching courses:", error.message);
+      if (error.response && error.response.status === 401) {
+        try {
+          const adminTokens = {
+            refresh: Cookies.get("adminRefreshToken"),
+            access: Cookies.get("adminAccessToken"),
+          };
+          const refreshResponse = await axios.post(
+            urls.adminRefreshToken,
+            adminTokens
+          );
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
+
+          await fetchCourses();
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken")
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
@@ -52,24 +105,19 @@ const Courses = () => {
               </Button>
             </Link>
           </div>
-          {/* <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
-            {dummydata.map((fake, index) => {
-              return (
-                <div key={index}>
-                  <CoursesCard
-                    id={fake.id}
-                    handleCardClick={handleCardClick}
-                    handleOpen={handleOpen}
-                    img={fake.img}
-                    title={fake.title}
-                    paragraph={fake.paragraph}
-                    module={fake.module}
-                    duration={fake.duration}
-                  />
+          <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
+            {loading ? (
+              <p>Loading...</p>
+            ) : courses ? (
+              courses.map((course:any) => (
+                <div key={course.id}>
+                  <p>{course.title}</p>
                 </div>
-              );
-            })}
-          </div> */}
+              ))
+            ) : (
+              <p>No courses available.</p>
+            )}
+          </div>
         </div>
         {modal && (
           <section className="absolute top-0 flex justify-center items-center left-0 bg-slate-100/50 h-screen w-full">

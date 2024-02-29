@@ -13,7 +13,6 @@ import axios from "axios";
 import { urls } from "@/utils/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Button } from "@/components/ui/button";
 
 const tags = [
   "Project submission by Femi Oyewale",
@@ -49,7 +48,7 @@ const Dashboard = () => {
   //fetch dashboard data with acceess token and use refresh token to refresh expired token
   const fetchAdminData = async () => {
     try {
-      const adminAccessToken = Cookies.get("authToken");
+      const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(urls.adminDashboard, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
@@ -60,17 +59,18 @@ const Dashboard = () => {
       if (error.response && error.response.status === 401) {
         try {
           const adminRefreshToken = Cookies.get("adminRefreshToken");
-          const adminAccessToken = Cookies.get("authToken");
+          const adminAccessToken = Cookies.get("adminAccessToken");
+          
           const refreshResponse = await axios.post(urls.adminRefreshToken, {
             refresh: adminRefreshToken,
             access: adminAccessToken,
           });
-          Cookies.set("authToken", refreshResponse.data.access);
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
           // Retry the fetch after token refresh
-          console.log(Cookies.get("authToken"), "auth T");
           await fetchAdminData();
         } catch (refreshError: any) {
           console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken")
         }
       } else {
         console.error("Error:", error.message);
@@ -81,7 +81,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // fetchAdminData();
+    fetchAdminData();
   }, []);
 
   const months = [

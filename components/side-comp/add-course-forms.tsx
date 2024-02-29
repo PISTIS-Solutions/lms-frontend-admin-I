@@ -17,30 +17,53 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { urls } from "@/utils/config";
-import { Loader2 } from "lucide-react";
+import { CheckCircle, Loader2 } from "lucide-react";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const formSchema = z.object({
   courseTitle: z.string(),
   subTitle: z.string(),
   Description: z.string(),
   courseLink: z.string(),
-  courseDuration: z.string(),
+  // courseDuration: z.string(),
 });
 type FormData = z.infer<typeof formSchema>;
 
 const AddCourseForms = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      courseTitle: "",
+      courseLink: "",
+      Description: "",
+      subTitle: "",
+    },
   });
+
+  const [hours, setHours] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
+
+  const convertToISO8601 = (
+    hours: number,
+    minutes: number,
+    seconds: number
+  ): string => {
+    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    return `PT${totalSeconds}S`;
+  };
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  //error re-do
+
   const uploadCourses = async (values: FormData, e: any): Promise<void> => {
     e.preventDefault();
     try {
-      const adminAccessToken = Cookies.get("authToken");
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const iso8601Duration = convertToISO8601(hours, minutes, seconds);
+
       setLoading(true);
       const response = await axios.post(
         urls.uploadCourses,
@@ -48,6 +71,7 @@ const AddCourseForms = () => {
           title: values.courseTitle,
           sub_title: values.subTitle,
           course_url: values.courseLink,
+          course_duration: iso8601Duration,
         },
         {
           headers: {
@@ -56,26 +80,46 @@ const AddCourseForms = () => {
           },
         }
       );
-
-      if (response.status === 200) {
-        console.log("Success!");
-        setLoading(false);
+      if (response.status === 201) {
+        toast.success(response.data.title + " added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        Cookies.set("courseId", response.data.id);
+        router.push("add-course/add-modules");
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         try {
           const adminRefreshToken = Cookies.get("adminRefreshToken");
-          const adminAccessToken = Cookies.get("authToken");
+          const adminAccessToken = Cookies.get("adminAccessToken");
+
           const refreshResponse = await axios.post(urls.adminRefreshToken, {
             refresh: adminRefreshToken,
             access: adminAccessToken,
           });
-          Cookies.set("authToken", refreshResponse.data.access);
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
           // Retry the fetch after token refresh
           await uploadCourses(values, e);
         } catch (refreshError: any) {
           console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken")
         }
+      } else if (error.response.status === 400) {
+        toast.error("Check course form and input correct details", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       } else {
         console.error("Error:", error.message);
       }
@@ -91,7 +135,7 @@ const AddCourseForms = () => {
           <p className="text-main text-xs font-medium">Course</p>
         </div>
         <div className="w-[50px] h-[18px] md:h-[25px] block rounded-full bg-sub" />
-        <div className="bg-sub w-full h-[4px]"></div>
+        <div className="bg-[#D6DADE] w-full h-[4px]"></div>
         <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
         <div className="bg-[#D6DADE] w-full h-[4px]"></div>
         <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
@@ -99,6 +143,7 @@ const AddCourseForms = () => {
       <div>
         <h1 className="md:text-3xl text-xl font-semibold">Course Details</h1>
       </div>
+      <ToastContainer />
       <div className="mt-4">
         <Form {...form}>
           <form
@@ -182,7 +227,41 @@ const AddCourseForms = () => {
                   </FormItem>
                 )}
               />
-              <FormField
+              <div>
+                <label className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                  Set Course Duration
+                </label>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      value={hours}
+                      className=" w-14 text-center"
+                      onChange={(e) => setHours(parseInt(e.target.value, 10))}
+                    />
+                    <p>Hour(s)</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      value={minutes}
+                      className="w-14 text-center"
+                      onChange={(e) => setMinutes(parseInt(e.target.value, 10))}
+                    />
+                    <p>Min(s)</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      value={seconds}
+                      className="w-14 text-center"
+                      onChange={(e) => setSeconds(parseInt(e.target.value, 10))}
+                    />
+                    <p>Sec(s)</p>
+                  </div>
+                </div>
+              </div>
+              {/* <FormField
                 control={form.control}
                 name="courseDuration"
                 render={({ field }) => (
@@ -200,9 +279,9 @@ const AddCourseForms = () => {
                     </FormControl>
                   </FormItem>
                 )}
-              />
+              /> */}
             </div>
-            <div className="flex justify-center">
+            <div className="flex items-center justify-center">
               <Button
                 disabled={loading}
                 className=" py-6 text-main hover:text-white px-28 bg-sub mx-auto font-semibold"

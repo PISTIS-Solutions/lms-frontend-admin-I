@@ -30,6 +30,8 @@ const formSchema = z.object({
   confirmPassword: z.string(),
 });
 
+
+
 const SettingsPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
