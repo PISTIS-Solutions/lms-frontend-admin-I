@@ -3,9 +3,10 @@ import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import React, { useEffect, useState } from "react";
 
-import { Plus, Search } from "lucide-react";
+import { Loader2Icon, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CoursesCard from "@/components/side-comp/courses-card";
+import TopNav from "@/components/side-comp/topNav";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import { dummydata } from "@/app/data/dummyModules";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // interface CoursesData {
 //   id: string;
@@ -32,13 +35,10 @@ const Courses = () => {
     router.push(`/courses/${id}`);
   };
 
-  const [modal, setModal] = useState(false);
-  const handleOpen = () => {
-    setModal((prev) => !prev);
-  };
-
   const [courses, setCourses] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
 
   const fetchCourses = async () => {
     try {
@@ -50,7 +50,6 @@ const Courses = () => {
         },
       });
       setCourses(response.data);
-      
     } catch (error: any) {
       console.error("Error fetching courses:", error.message);
       if (error.response && error.response.status === 401) {
@@ -68,7 +67,7 @@ const Courses = () => {
           await fetchCourses();
         } catch (refreshError: any) {
           console.error("Error refreshing token:", refreshError.message);
-          Cookies.remove("adminAccessToken")
+          Cookies.remove("adminAccessToken");
         }
       }
     } finally {
@@ -80,22 +79,72 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
+  const [deleting, setDeleting] = useState(false);
+
+  const deleteCourse = async (courseId: string) => {
+    try {
+      const adminAccessToken = Cookies.get("adminAccessToken");
+
+      setDeleting(true);
+      const response = await axios.delete(`${urls.deleteCourse}/${courseId}`, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+
+      if (response.status === 204) {
+        setDeleting(false);
+        toast.error(`Course with ID ${courseId} deleted successfully.`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        window.location.reload();
+      } else {
+        console.error("Failed to delete course.");
+      }
+    } catch (error: any) {
+      console.error("Error deleting course:", error.message);
+      if (error.response && error.response.status === 401) {
+        try {
+          const adminRefreshToken = Cookies.get("adminRefreshToken");
+          const adminAccessToken = Cookies.get("adminAccessToken");
+
+          const refreshResponse = await axios.post(urls.adminRefreshToken, {
+            refresh: adminRefreshToken,
+            access: adminAccessToken,
+          });
+
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
+
+          await deleteCourse(courseId);
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
+        }
+      }
+    } finally {
+      setModal(false);
+      setDeleting(false);
+    }
+  };
+
+  const handleOpen = (courseId: string) => {
+    setSelectedCourse(courseId);
+    setModal(true);
+  };
+
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
-          <div className="flex items-center gap-1 md:gap-2">
-            <Avatar>
-              {/* <AvatarImage src={avatar} /> */}
-              <AvatarFallback>JN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="md:text-base text-sm font-medium">John Mark</h1>
-              <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
-            </div>
-          </div>
+          <TopNav/>
         </div>
+        <ToastContainer />
         <div className="py-2 px-2 md:px-7">
           <div className="flex justify-end">
             <Link href="/courses/add-course">
@@ -107,15 +156,24 @@ const Courses = () => {
           </div>
           <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {loading ? (
-              <p>Loading...</p>
-            ) : courses ? (
-              courses.map((course:any) => (
+              <span className="flex text-center justify-center items-center">
+                <Loader2Icon className=" animate-spin" />
+                Loading...
+              </span>
+            ) : courses && courses.length > 0 ? (
+              courses.map((course: any) => (
                 <div key={course.id}>
-                  <p>{course.title}</p>
+                  <CoursesCard
+                    id={course.id}
+                    title={course.title}
+                    duration={0}
+                    handleCardClick={handleCardClick}
+                    handleOpen={() => handleOpen(course.id)}
+                  />
                 </div>
               ))
             ) : (
-              <p>No courses available.</p>
+              <p className="text-center">No courses available.</p>
             )}
           </div>
         </div>
@@ -128,12 +186,20 @@ const Courses = () => {
                 able to retrieve it later
               </p>
               <div className="flex md:gap-x-2 gap-x-1 justify-between my-2 md:my-0 md:justify-end items-center">
-                <Button className="bg-red-500 text-white text-sm md:text-lg rounded-[8px]">
-                  Delete
+                <Button
+                  disabled={deleting}
+                  onClick={() => deleteCourse(selectedCourse!)}
+                  className="bg-red-500 text-white text-sm md:text-lg rounded-[8px]"
+                >
+                  {deleting ? (
+                    <Loader2Icon className="animate-spin" />
+                  ) : (
+                    <p>Delete</p>
+                  )}
                 </Button>
                 <p
                   className="cursor-pointer text-sm md:text-lg"
-                  onClick={handleOpen}
+                  onClick={() => setModal(false)}
                 >
                   Cancel
                 </p>

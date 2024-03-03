@@ -13,5 +13,7 @@ export const urls = {
   uploadCourses: `${baseURL}/courses/`,
   uploadModules: `${baseURL}/courses/${courseID}/modules/`,
   uploadProjects: `${baseURL}/courses/${courseID}/projects/`,
-  forgotPassword: `${baseURL}/users/student/reset_password/`
+  forgotPassword: `${baseURL}/users/student/reset_password/`,
+  deleteCourse: `${baseURL}/courses`,
+  getStudents: `${baseURL}/users/student/`
 };

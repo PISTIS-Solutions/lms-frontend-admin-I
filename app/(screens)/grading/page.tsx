@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import PendingModal from "@/components/side-comp/modal/pending-modal";
 import ReviewedModal from "@/components/side-comp/modal/reviewed-modal";
+import TopNav from "@/components/side-comp/topNav";
 
 const Grading = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -52,16 +53,7 @@ const Grading = () => {
       <div className="ml-64  bg-[#F8F9FF] overflow-y-scroll h-screen">
         <div className="h-[96px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <h1 className="text-2xl font-medium">Grading</h1>
-          <div className="flex items-center gap-2">
-            <Avatar>
-              {/* <AvatarImage src={avatar} /> */}
-              <AvatarFallback>JN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-base font-medium">John Mark</h1>
-              <p className="text-sm text-[#5D5B5B]">Admin</p>
-            </div>
-          </div>
+          <TopNav />
         </div>
         <div className="py-5 px-7">
           <div className="flex justify-between items-center">
