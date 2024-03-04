@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, ChevronRight, Edit3, Plus, X } from "lucide-react";
 import { dummydata } from "@/app/data/dummyModules";
 import { Button } from "@/components/ui/button";
+import TopNav from "@/components/side-comp/topNav";
 
 const SingleProject = () => {
   const router = useRouter();
@@ -122,16 +123,7 @@ const SingleProject = () => {
             }}
             className="cursor-pointer"
           />
-          <div className="flex items-center gap-1 md:gap-2">
-            <Avatar>
-              {/* <AvatarImage src={avatar} /> */}
-              <AvatarFallback>JN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="md:text-base text-sm font-medium">John Mark</h1>
-              <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
-            </div>
-          </div>
+          <TopNav/>
         </div>
         <div className="grid grid-cols-10 relative gap-x-4 p-5">
           <div className="col-span-10 lg:col-span-7 bg-white shadow-md rounded-[8px]  ">

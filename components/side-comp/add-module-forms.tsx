@@ -16,6 +16,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Textarea } from "../ui/textarea";
+import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { urls } from "@/utils/config";
+import { Loader2, Plus } from "lucide-react";
 
 const formSchema = z.object({
   moduleTitle: z.string(),
@@ -36,12 +42,84 @@ const AddModuleForms = () => {
     },
   });
 
+  const [loading, setLoading] = useState(false);
+  const [saveModule, setSaveModule] = useState<boolean>(false);
+
   const router = useRouter();
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // router.push("add-course/add-modules/add-project");
-    router.push("add-modules/add-project");
-  }
+  const uploadModules = async (
+    values: z.infer<typeof formSchema>,
+    e: any
+  ): Promise<void> => {
+    e.preventDefault();
+    try {
+      const adminAccessToken = Cookies.get("adminAccessToken");
+
+      setLoading(true);
+      const response = await axios.post(
+        urls.uploadModules,
+        {
+          module_title: values.moduleTitle,
+          module_sub_title: values.modulesubTitle,
+          module_url: values.moduleLink,
+          description: values.moduleDetails,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success(response.data.module_title + " added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        // Cookies.set("courseId", response.data.id);
+        // router.push("add-modules/add-project");
+        setSaveModule(true);
+        
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const adminRefreshToken = Cookies.get("adminRefreshToken");
+          const adminAccessToken = Cookies.get("adminAccessToken");
+
+          const refreshResponse = await axios.post(urls.adminRefreshToken, {
+            refresh: adminRefreshToken,
+            access: adminAccessToken,
+          });
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
+          // Retry the fetch after token refresh
+          await uploadModules(values, e);
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken");
+        }
+      } else if (error.response.status === 500) {
+        //check status again
+        toast.error("Check course form and input correct details", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        console.error("Error:", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -58,92 +136,123 @@ const AddModuleForms = () => {
       <div>
         <h1 className="md:text-3xl text-xl font-semibold">Module Details</h1>
       </div>
+      <ToastContainer />
       <div className="mt-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="my-4">
-              <FormField
-                control={form.control}
-                name="moduleTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                      Module Title
-                    </FormLabel>
-                    <FormControl className="">
-                      <Input
-                        className="bg-[#FAFAFA]"
-                        placeholder="Input Module Title"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="modulesubTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                      Sub-Title
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="bg-[#FAFAFA]"
-                        placeholder="Input Module Sub-Title"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="moduleLink"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                      Video Link
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="bg-[#FAFAFA]"
-                        placeholder="Input Module Description"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="moduleDetails"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                      Content Details
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="bg-[#FAFAFA]"
-                        placeholder="Input module content details"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex justify-center">
+          {/* <form
+            onSubmit={form.handleSubmit(uploadModules)}
+            className="space-y-8"
+          > */}
+          <div className="my-4">
+            <FormField
+              control={form.control}
+              name="moduleTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                    Module Title
+                  </FormLabel>
+                  <FormControl className="">
+                    <Input
+                      type="text"
+                      className="bg-[#FAFAFA]"
+                      placeholder="Input Module Title"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="modulesubTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                    Sub-Title
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      className="bg-[#FAFAFA]"
+                      placeholder="Input Module Sub-Title"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="moduleLink"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                    Video Link
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="url"
+                      className="bg-[#FAFAFA]"
+                      placeholder="Input Module Description"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="moduleDetails"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                    Content Details
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="bg-[#FAFAFA]"
+                      placeholder="Input module content details"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex gap-x-5 justify-center">
+            <Button
+              type="submit"
+              disabled={loading}
+              onClick={form.handleSubmit(uploadModules)}
+              className=" py-6 text-main w-full hover:text-white px-28 bg-sub mx-auto font-semibold"
+            >
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <span>
+                  {saveModule ? (
+                    <span className="flex items-center gap-x-2">
+                      Add new Module <Plus />{" "}
+                    </span>
+                  ) : (
+                    "Save Module"
+                  )}
+                </span>
+              )}
+            </Button>
+            {saveModule && (
               <Button
-                className=" py-6 text-main hover:text-white px-28 bg-sub mx-auto font-semibold"
-                type="submit"
+                onClick={() => {
+                  router.push("add-modules/add-project");
+                }}
+                className=" py-6 text-main w-full hover:text-white px-28 bg-sub mx-auto font-semibold"
               >
                 Continue
               </Button>
-            </div>
-          </form>
+            )}
+          </div>
+          {/* </form> */}
         </Form>
       </div>
     </div>

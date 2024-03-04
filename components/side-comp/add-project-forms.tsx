@@ -15,6 +15,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Textarea } from "../ui/textarea";
+import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { urls } from "@/utils/config";
+import { Loader2, Plus } from "lucide-react";
 
 const formSchema = z.object({
   projectTitle: z.string(),
@@ -32,10 +38,82 @@ const AddProjectForms = () => {
     },
   });
 
+  const [loading, setLoading] = useState(false);
+  const [saveModule, setSaveModule] = useState<boolean>(false);
+
   const router = useRouter();
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const uploadProject = async (
+    values: z.infer<typeof formSchema>,
+    e: any
+  ): Promise<void> => {
+    e.preventDefault();
+    try {
+      const adminAccessToken = Cookies.get("adminAccessToken");
+
+      setLoading(true);
+      const response = await axios.post(
+        urls.uploadProjects,
+        {
+          project_title: values.projectTitle,
+          project_description: values.additionalNote,
+          project_url: values.projectLink,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success(response.data.project_title + " added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        // Cookies.set("courseId", response.data.id);
+        // router.push("add-modules/add-project");
+        setSaveModule(true);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const adminRefreshToken = Cookies.get("adminRefreshToken");
+          const adminAccessToken = Cookies.get("adminAccessToken");
+
+          const refreshResponse = await axios.post(urls.adminRefreshToken, {
+            refresh: adminRefreshToken,
+            access: adminAccessToken,
+          });
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
+          // Retry the fetch after token refresh
+          await uploadProject(values, e);
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken");
+        }
+      } else if (error.response.status === 500) {
+        //check status again
+        toast.error("Check course form and input correct details", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        console.error("Error:", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -46,81 +124,107 @@ const AddProjectForms = () => {
         <div className="w-[50px] h-[18px] md:h-[25px] block rounded-full bg-sub" />
         <div className="bg-sub w-full h-[4px]"></div>
         <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
-        <div className="bg-[#D6DADE] w-full h-[4px]"></div>
+        <div className="bg-sub w-full h-[4px]"></div>
         <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
       </div>
+      <ToastContainer />
       <div>
         <h1 className="md:text-3xl text-xl font-semibold">Project Details</h1>
       </div>
       <div className="mt-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="my-4">
-              <FormField
-                control={form.control}
-                name="projectTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                      Project Title
-                    </FormLabel>
-                    <FormControl className="">
-                      <Input
-                        className="bg-[#FAFAFA]"
-                        placeholder="Input Project Title"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="projectLink"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                      Project Link
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="bg-[#FAFAFA]"
-                        placeholder="Input Project Sub-Title"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+          {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8"> */}
+          <div className="my-4">
+            <FormField
+              control={form.control}
+              name="projectTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                    Project Title
+                  </FormLabel>
+                  <FormControl className="">
+                    <Input
+                      className="bg-[#FAFAFA]"
+                      placeholder="Input Project Title"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="projectLink"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                    Project Link
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="url"
+                      className="bg-[#FAFAFA]"
+                      placeholder="Input Project Sub-Title"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="additionalNote"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                      Additional Note
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="bg-[#FAFAFA]"
-                        placeholder="Input project content details"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex justify-center">
+            <FormField
+              control={form.control}
+              name="additionalNote"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
+                    Additional Note
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="bg-[#FAFAFA]"
+                      placeholder="Input project content details"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex flex-wrap gap-5 justify-center">
+            <Button
+              type="submit"
+              disabled={loading}
+              onClick={form.handleSubmit(uploadProject)}
+              className=" py-6 w-full text-main hover:text-white px-28 bg-sub mx-auto font-semibold"
+            >
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <span>
+                  {saveModule ? (
+                    <span className="flex items-center gap-x-2">
+                      Add Project <Plus />{" "}
+                    </span>
+                  ) : (
+                    "Save Project"
+                  )}
+                </span>
+              )}
+            </Button>
+            {saveModule && (
               <Button
-                className=" py-6 text-main hover:text-white px-28 bg-sub mx-auto font-semibold"
-                type="submit"
+                onClick={() => {
+                  router.push("add-modules/add-project");
+                }}
+                className=" py-6 w-full text-main hover:text-white px-28 bg-sub mx-auto font-semibold"
               >
                 Publish
               </Button>
-            </div>
-          </form>
+            )}
+          </div>
+          {/* </form> */}
         </Form>
       </div>
     </div>
