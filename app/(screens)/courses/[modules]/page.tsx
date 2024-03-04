@@ -10,6 +10,7 @@ import Image from "next/image";
 import img from "@/public/assets/course/ansible.png";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { dummydata } from "@/app/data/dummyModules";
+import TopNav from "@/components/side-comp/topNav";
 
 const Module = () => {
   const router = useRouter();
@@ -90,16 +91,7 @@ const Module = () => {
             }}
             className="cursor-pointer"
           />
-          <div className="flex items-center gap-2">
-            <Avatar>
-              {/* <AvatarImage src={avatar} /> */}
-              <AvatarFallback>JN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-base font-medium">John Mark</h1>
-              <p className="text-sm text-[#5D5B5B]">Student</p>
-            </div>
-          </div>
+         <TopNav/>
         </div>
         <div className="p-4">
           <span className="flex gap-1 items-center">

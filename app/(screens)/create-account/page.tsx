@@ -44,7 +44,6 @@ const SignUp = () => {
         if (!containsSpecialCharacters(values.Password)) {
           throw new Error("Password must contain special characters");
         }
-        console.log(values);
         router.push("/create-account/verify");
       } else {
         throw new Error("Password and Confirm do not match");

@@ -1,31 +1,70 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import img from "@/public/assets/course/ansible.png";
-import { BookText, Hourglass, Trash2 } from "lucide-react";
+import { BookText, Hourglass, LucideLoader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { urls } from "@/utils/config";
+// import img from "@/public/assets/course/ansible.png"
 
 interface cardProps {
   id: number;
-  img: any;
+  // img: any;
   title: string;
-  paragraph: string;
-  module: { moduleHeader: string; moduleBody: string }[];
+  // paragraph: string;
+  // module: { moduleHeader: string; moduleBody: string }[];
   duration: number;
   handleCardClick: any;
-  handleOpen: () => void;
+  handleOpen: any;
 }
 
 const CoursesCard = ({
   id,
-  img,
+  // img,
   title,
-  paragraph,
-  module,
+  // paragraph,
+  // module,
   duration,
   handleCardClick,
   handleOpen,
 }: cardProps) => {
+  const [moduleCount, setModuleCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const getModuleCount = async () => {
+      setLoading(true);
+      try {
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        const response = await axios.get(`${urls.getCourses}${id}/modules/`, {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        });
+
+        if (response.status === 200) {
+          // Assuming the modules are an array in the response
+          const count = response.data.length;
+          setModuleCount(count);
+          setLoading(false);
+        } else {
+          console.error(`Error fetching modules for course ${id}`);
+          setModuleCount(0); // or handle the error as needed
+        }
+      } catch (error: any) {
+        console.error(`Error: ${error.message}`);
+        setModuleCount(0); // or handle the error as needed
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getModuleCount();
+  }, []);
+
   return (
     <div className="relative">
       <div
@@ -42,14 +81,23 @@ const CoursesCard = ({
         />
         <div className="p-2">
           <div className="md:mb-14 mb-5">
-            <h1 className="md:text-xl text-sm font-medium">{title}</h1>
-            <p className="md:text-lg text-xs text-[#3E3E3E]">{paragraph}</p>
+            <h1 className="md:text-xl text-sm capitalize font-medium">{title}</h1>
+            {/* <p className="md:text-lg text-xs text-[#3E3E3E]">dummy text  */}
+            {/* {paragraph} */}
+            {/* </p> */}
           </div>
           <div className="flex items-center gap-x-4 mt-4">
             <div className="flex md:text-base text-xs items-center gap-x-1">
               <BookText className="text-main" />
-              {/* {module} module */}
-              {module.length} module
+              {loading ? (
+                <>
+                  <LucideLoader2 className="animate-spin" />
+                </>
+              ) : (
+                moduleCount
+              )}{" "}
+              module
+              {/* {module.length} module */}
             </div>
             <div className="flex md:text-base text-xs items-center gap-x-1">
               <Hourglass className="text-main" />
