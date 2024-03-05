@@ -16,6 +16,7 @@ import { urls } from "@/utils/config";
 import { dummydata } from "@/app/data/dummyModules";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import refreshAdminToken from "@/utils/refreshToken";
 
 // interface CoursesData {
 //   id: string;
@@ -51,24 +52,29 @@ const Courses = () => {
       });
       setCourses(response.data);
     } catch (error: any) {
-      console.error("Error fetching courses:", error.message);
       if (error.response && error.response.status === 401) {
-        try {
-          const adminTokens = {
-            refresh: Cookies.get("adminRefreshToken"),
-            access: Cookies.get("adminAccessToken"),
-          };
-          const refreshResponse = await axios.post(
-            urls.adminRefreshToken,
-            adminTokens
-          );
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
-
-          await fetchCourses();
-        } catch (refreshError: any) {
-          console.error("Error refreshing token:", refreshError.message);
-          Cookies.remove("adminAccessToken");
-        }
+        await refreshAdminToken();
+        await fetchCourses();
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       }
     } finally {
       setLoading(false);
@@ -110,21 +116,28 @@ const Courses = () => {
     } catch (error: any) {
       console.error("Error deleting course:", error.message);
       if (error.response && error.response.status === 401) {
-        try {
-          const adminRefreshToken = Cookies.get("adminRefreshToken");
-          const adminAccessToken = Cookies.get("adminAccessToken");
-
-          const refreshResponse = await axios.post(urls.adminRefreshToken, {
-            refresh: adminRefreshToken,
-            access: adminAccessToken,
-          });
-
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
-
-          await deleteCourse(courseId);
-        } catch (refreshError: any) {
-          console.error("Error refreshing token:", refreshError.message);
-        }
+        await refreshAdminToken();
+        await deleteCourse(courseId);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       }
     } finally {
       setModal(false);
@@ -142,7 +155,7 @@ const Courses = () => {
       <SideNav />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
-          <TopNav/>
+          <TopNav />
         </div>
         <ToastContainer />
         <div className="py-2 px-2 md:px-7">

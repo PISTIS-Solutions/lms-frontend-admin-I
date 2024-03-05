@@ -261,6 +261,7 @@ import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NextNProgress from "nextjs-progressbar";
 
 const SignIn = () => {
   const formStore = useLoginFormStore();
@@ -287,10 +288,21 @@ const SignIn = () => {
         Cookies.set("adminRefreshToken", response.data.refresh);
         Cookies.set("fullName", response.data.user.full_name);
         route.replace("/dashboard");
+        setLoading(false);
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
-        toast.error("Email address or password is incorrect", {
+      if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -312,6 +324,7 @@ const SignIn = () => {
 
   return (
     <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
+      <NextNProgress />
       <div className="bg-white w-[100%] sm:w-[50%] h-screen rounded-none md:rounded-tl-[40px] md:rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-10">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
@@ -388,13 +401,13 @@ const SignIn = () => {
           </form>
         </div>
         {/* <div>
-          <p className="text-center text-base md:text-lg font-normal ">
-            Don't have an account?{" "}
-            <Link className="text-main font-semibold" href="/create-account">
-              Create Account
-            </Link>
-          </p>
-        </div> */}
+      <p className="text-center text-base md:text-lg font-normal ">
+        Don't have an account?{" "}
+        <Link className="text-main font-semibold" href="/create-account">
+          Create Account
+        </Link>
+      </p>
+    </div> */}
       </div>
     </main>
   );

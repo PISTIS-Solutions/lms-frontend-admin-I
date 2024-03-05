@@ -13,7 +13,7 @@ const TopNav = () => {
       <AvatarFallback>JN</AvatarFallback>
     </Avatar>
     <div>
-      <h1 className="md:text-base text-sm font-medium">{userName}</h1>
+      <h1 className="sm:text-2xl text-xs md:text-lg font-medium">{userName}</h1>
       <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
     </div>
   </div>
