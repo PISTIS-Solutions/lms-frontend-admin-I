@@ -21,6 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { urls } from "@/utils/config";
 import { Loader2, Plus } from "lucide-react";
+import refreshAdminToken from "@/utils/refreshToken";
 
 const formSchema = z.object({
   projectTitle: z.string(),
@@ -81,24 +82,10 @@ const AddProjectForms = () => {
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
-        try {
-          const adminRefreshToken = Cookies.get("adminRefreshToken");
-          const adminAccessToken = Cookies.get("adminAccessToken");
-
-          const refreshResponse = await axios.post(urls.adminRefreshToken, {
-            refresh: adminRefreshToken,
-            access: adminAccessToken,
-          });
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
-          // Retry the fetch after token refresh
-          await uploadProject(values, e);
-        } catch (refreshError: any) {
-          console.error("Error refreshing token:", refreshError.message);
-          Cookies.remove("adminAccessToken");
-        }
-      } else if (error.response.status === 500) {
-        //check status again
-        toast.error("Check course form and input correct details", {
+        await refreshAdminToken();
+        await uploadProject(values, e);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -108,7 +95,15 @@ const AddProjectForms = () => {
           theme: "dark",
         });
       } else {
-        console.error("Error:", error.message);
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       }
     } finally {
       setLoading(false);

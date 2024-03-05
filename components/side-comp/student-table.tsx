@@ -7,48 +7,16 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { urls } from "@/utils/config";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useStudentsStore from "@/store/fetch-students";
 
 const StudentsTable = () => {
-  const [students, setStudents] = useState<any | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const fetchStudents = async () => {
-    try {
-      setLoading(true);
-      const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(urls.getStudents, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-        },
-      });
-      setStudents(response.data);
-    } catch (error: any) {
-      console.error("Error fetching courses:", error.message);
-      if (error.response && error.response.status === 401) {
-        try {
-          const adminTokens = {
-            refresh: Cookies.get("adminRefreshToken"),
-            access: Cookies.get("adminAccessToken"),
-          };
-          const refreshResponse = await axios.post(
-            urls.adminRefreshToken,
-            adminTokens
-          );
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
-
-          await fetchStudents();
-        } catch (refreshError: any) {
-          console.error("Error refreshing token:", refreshError.message);
-          Cookies.remove("adminAccessToken");
-        }
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { students, loading, fetchStudents } = useStudentsStore()
   useEffect(() => {
     fetchStudents();
   }, []);
+
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedStudent, setExpandedStudent] = useState(null);
@@ -90,6 +58,7 @@ const StudentsTable = () => {
 
   return (
     <div className=" overflow-x-scroll md:overflow-x-auto">
+      <ToastContainer />
       <table className="w-full mt-2 text-center">
         <thead className="text-main">
           <tr className="bg-[#F8F9FF] py-2 w-full">
