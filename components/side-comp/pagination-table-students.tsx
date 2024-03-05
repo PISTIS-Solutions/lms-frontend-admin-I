@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2Icon } from "lucide-react";
+import useStudentsStore from "@/store/fetch-students";
 
 const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
   const data = [
@@ -77,14 +78,19 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
     },
   ];
 
+  const { students, loading, fetchStudents } = useStudentsStore();
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
   const itemsPerPage = 4;
   const [currentPage, setCurrentPage] = useState(1);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+  const currentData = students.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(students.length / itemsPerPage);
 
   const nextPage = () => {
     if (currentPage < totalPages) {
@@ -108,7 +114,7 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
 
   return (
     <div className="bg-white overflow-x-scroll p-2 h-auto rounded-[8px] shadow-md">
-      <div className="flex justify-between items-center">
+      <div className="flex w-full justify-between items-center">
         <h1 className="font-medium text-lg md:text-xl">Database</h1>
         <div>
           <Button
@@ -129,37 +135,52 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
       <table className="w-full mt-2 text-center">
         <thead className="text-main">
           <tr className="bg-[#F8F9FF] py-2 w-full">
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">Name</th>
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">Email</th>
+            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
+              Name
+            </th>
+            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
+              Email
+            </th>
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Current Course
             </th>
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">Location</th>
+            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
+              Location
+            </th>
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Assigned Monitor
             </th>
           </tr>
         </thead>
         <tbody>
-          {currentData.map((person, index) => (
-            <tr key={index}>
-              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-                {person.name}
-              </td>
-              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-                {person.email}
-              </td>
-              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-                {person.course}
-              </td>
-              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-                {person.location}
-              </td>
-              <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-                {person.monitor}
-              </td>
-            </tr>
-          ))}
+          {loading ? (
+            <span className="flex text-center justify-center items-center">
+              <Loader2Icon className="animate-spin" />
+              Loading...
+            </span>
+          ) : students && students.length > 0 ? (
+            currentData.map((person: any, index: number) => (
+              <tr key={index}>
+                <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                  {person.full_name}
+                </td>
+                <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                  {person.email}
+                </td>
+                <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                  {person.course}
+                </td>
+                <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                  {person.location}
+                </td>
+                <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+                  {person.monitor}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <p>No data available.</p>
+          )}
         </tbody>
       </table>
 

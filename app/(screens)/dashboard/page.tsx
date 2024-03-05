@@ -14,6 +14,9 @@ import { urls } from "@/utils/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import TopNav from "@/components/side-comp/topNav";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import refreshAdminToken from "@/utils/refreshToken";
 
 const tags = [
   "Project submission by Femi Oyewale",
@@ -58,23 +61,28 @@ const Dashboard = () => {
       setAdminData(response.data);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
-        try {
-          const adminRefreshToken = Cookies.get("adminRefreshToken");
-          const adminAccessToken = Cookies.get("adminAccessToken");
-
-          const refreshResponse = await axios.post(urls.adminRefreshToken, {
-            refresh: adminRefreshToken,
-            access: adminAccessToken,
-          });
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
-          // Retry the fetch after token refresh
-          await fetchAdminData();
-        } catch (refreshError: any) {
-          console.error("Error refreshing token:", refreshError.message);
-          Cookies.remove("adminAccessToken");
-        }
+        await refreshAdminToken();
+        await fetchAdminData();
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       } else {
-        console.error("Error:", error.message);
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       }
     } finally {
       setLoading(false);
@@ -107,23 +115,23 @@ const Dashboard = () => {
       <SideNav />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
-          <h1 className="md:text-2xl text-lg font-medium">
-            Hello,
-            {userName}
+          <h1 className="sm:text-2xl text-xs md:text-lg font-medium">
+            {`Hello, ${userName}`}
           </h1>
-        <TopNav/>
+          <TopNav />
         </div>
+        <ToastContainer />
         <div className="">
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
             <div className=" col-span-1 lg:col-span-7">
               <div className="flex gap-x-4 overflow-x-scroll justify-between pr-4">
-                <div className="lg:w-[209px] w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
+                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
                     ) : (
                       adminData && (
-                        <h1 className="text-2xl text-[#5D5B5B] font-medium">
+                        <h1 className="sm:text-2xl text-sm md:text-lg text-[#5D5B5B] font-medium">
                           {adminData.total_courses}
                         </h1>
                       )
@@ -142,7 +150,7 @@ const Dashboard = () => {
                       <Loader2 className="animate-spin text-xl" />
                     ) : (
                       adminData && (
-                        <h1 className="text-2xl text-[#5D5B5B] font-medium">
+                        <h1 className="sm:text-2xl text-sm md:text-lg text-[#5D5B5B] font-medium">
                           {adminData.total_students}
                         </h1>
                       )
@@ -155,13 +163,13 @@ const Dashboard = () => {
                     <GraduationCap className="text-main" />
                   </span>
                 </div>
-                <div className="lg:w-[209px] w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
+                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
                     ) : (
                       adminData && (
-                        <h1 className="text-2xl text-[#5D5B5B] font-medium">
+                        <h1 className="sm:text-2xl text-sm md:text-lg text-[#5D5B5B] font-medium">
                           {adminData.total_mentors}
                         </h1>
                       )
@@ -181,7 +189,7 @@ const Dashboard = () => {
                     Enrollment activity{" "}
                   </h1>
                   <select
-                    className="border border-main rounded-[8px]"
+                    className="border md:text-xl text-sm sm:text-lg border-main rounded-[8px]"
                     name="months"
                     id="months"
                   >
