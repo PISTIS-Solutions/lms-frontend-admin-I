@@ -1,21 +1,63 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2Icon } from "lucide-react";
 import { data } from "@/app/data/data";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { urls } from "@/utils/config";
 
 const StudentsTable = () => {
+  const [students, setStudents] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchStudents = async () => {
+    try {
+      setLoading(true);
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.get(urls.getStudents, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+      setStudents(response.data);
+    } catch (error: any) {
+      console.error("Error fetching courses:", error.message);
+      if (error.response && error.response.status === 401) {
+        try {
+          const adminTokens = {
+            refresh: Cookies.get("adminRefreshToken"),
+            access: Cookies.get("adminAccessToken"),
+          };
+          const refreshResponse = await axios.post(
+            urls.adminRefreshToken,
+            adminTokens
+          );
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
+
+          await fetchStudents();
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken");
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchStudents();
+  }, []);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedStudent, setExpandedStudent] = useState(null);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+  const currentData = students?.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(students?.length / itemsPerPage);
 
   const nextPage = () => {
     if (currentPage < totalPages) {
@@ -62,59 +104,58 @@ const StudentsTable = () => {
           </tr>
         </thead>
         <tbody className="relative">
-          {currentData.map((person, index) => (
-            <>
-              <tr key={index}>
-                <td
+          {loading ? (
+            <span className="flex text-center justify-center items-center">
+              <Loader2Icon className="animate-spin" />
+              Loading...
+            </span>
+          ) : students && students.length > 0 ? (
+            currentData.map((person: any) => (
+              <React.Fragment key={person.id}>
+                <tr
                   onClick={() => handleCardClick(person.id)}
                   className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 cursor-pointer"
                 >
-                  {person.name}
-                </td>
-                <td className="md:py-4 md:text-base text-xs py-2">
-                  {person.email}
-                </td>
-                <td className="md:py-4 md:text-base text-xs py-2">
-                  {person.courseCompleted}
-                </td>
-                <td className="md:py-4 md:text-base text-xs py-2">
-                  {person.phoneNumber}
-                </td>
-                <td className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2">
-                  {person.plan}
-                </td>
-                <td
-                  className="md:py-4 md:text-base text-xs py-2 cursor-pointer text-[#00173A] underline"
-                  onClick={() => toggleStudentOptions(index)}
-                >
-                  Manage
-                </td>
-              </tr>
+                  <td>{person.full_name}</td>
+                  <td>{person.email}</td>
+                  <td>{person.courses_completed}</td>
+                  <td>{person.phone_number}</td>
+                  <td>{person.plan}</td>
+                  <td
+                    onClick={() => toggleStudentOptions(person.id)}
+                    className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
+                  >
+                    Manage
+                  </td>
+                </tr>
 
-              {expandedStudent === index && (
-                <div
-                  className="bg-[#FFFFFF] p-2 w-30 md:w-60 rounded-[8px] shadow-md absolute right-0"
-                  key={`options-${index}`}
-                >
-                  <h1 className="md:text-xl text-sm font-medium text-center pb-2">
-                    Manage Access
-                  </h1>
-                  <hr />
-                  <div>
-                    <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
-                      Paid
-                    </p>
-                    <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
-                      Free
-                    </p>
-                    <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
-                      Revoke
-                    </p>
+                {expandedStudent === person.id && (
+                  <div
+                    className="bg-[#FFFFFF] p-2 w-30 md:w-60 rounded-[8px] shadow-md absolute right-0"
+                    key={`options-${person.id}`}
+                  >
+                    <h1 className="md:text-xl text-sm font-medium text-center pb-2">
+                      Manage Access
+                    </h1>
+                    <hr />
+                    <div>
+                      <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
+                        Paid
+                      </p>
+                      <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
+                        Free
+                      </p>
+                      <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
+                        Revoke
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
-            </>
-          ))}
+                )}
+              </React.Fragment>
+            ))
+          ) : (
+            <p>No students available</p>
+          )}
         </tbody>
       </table>
 

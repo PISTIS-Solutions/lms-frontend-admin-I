@@ -13,7 +13,7 @@ import axios from "axios";
 import { urls } from "@/utils/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Button } from "@/components/ui/button";
+import TopNav from "@/components/side-comp/topNav";
 
 const tags = [
   "Project submission by Femi Oyewale",
@@ -49,7 +49,7 @@ const Dashboard = () => {
   //fetch dashboard data with acceess token and use refresh token to refresh expired token
   const fetchAdminData = async () => {
     try {
-      const adminAccessToken = Cookies.get("authToken");
+      const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(urls.adminDashboard, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
@@ -60,17 +60,18 @@ const Dashboard = () => {
       if (error.response && error.response.status === 401) {
         try {
           const adminRefreshToken = Cookies.get("adminRefreshToken");
-          const adminAccessToken = Cookies.get("authToken");
+          const adminAccessToken = Cookies.get("adminAccessToken");
+
           const refreshResponse = await axios.post(urls.adminRefreshToken, {
             refresh: adminRefreshToken,
             access: adminAccessToken,
           });
-          Cookies.set("authToken", refreshResponse.data.access);
+          Cookies.set("adminAccessToken", refreshResponse.data.access);
           // Retry the fetch after token refresh
-          console.log(Cookies.get("authToken"), "auth T");
           await fetchAdminData();
         } catch (refreshError: any) {
           console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken");
         }
       } else {
         console.error("Error:", error.message);
@@ -81,7 +82,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // fetchAdminData();
+    fetchAdminData();
   }, []);
 
   const months = [
@@ -100,6 +101,7 @@ const Dashboard = () => {
     "December",
   ];
 
+  const userName = Cookies.get("fullName");
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -107,24 +109,9 @@ const Dashboard = () => {
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <h1 className="md:text-2xl text-lg font-medium">
             Hello,
-            {/* {localStorage.getItem("userName") || "Guest"} */}
-            {Cookies.get("userName")}
-            {/* work on adding the user's name */}
+            {userName}
           </h1>
-          <div className="flex items-center gap-1 md:gap-2">
-            <Avatar>
-              {/* <AvatarImage src={avatar} /> */}
-              <AvatarFallback>JN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="md:text-base text-sm font-medium">
-                Hello,
-                {/* {localStorage.getItem("userName")} */}
-                {/* work on adding the user's name */}
-              </h1>
-              <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
-            </div>
-          </div>
+        <TopNav/>
         </div>
         <div className="">
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
@@ -141,7 +128,9 @@ const Dashboard = () => {
                         </h1>
                       )
                     )}
-                    <p className="md:text-base text-xs text-[#00173A]">Total Courses</p>
+                    <p className="md:text-base text-xs text-[#00173A]">
+                      Total Courses
+                    </p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
                     <BookOpenText className="text-main" />
@@ -158,7 +147,9 @@ const Dashboard = () => {
                         </h1>
                       )
                     )}
-                    <p className="md:text-base text-xs text-[#00173A]">Total Students</p>
+                    <p className="md:text-base text-xs text-[#00173A]">
+                      Total Students
+                    </p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
                     <GraduationCap className="text-main" />
@@ -175,7 +166,9 @@ const Dashboard = () => {
                         </h1>
                       )
                     )}
-                    <p className="md:text-base text-xs text-[#00173A]">Total Mentors</p>
+                    <p className="md:text-base text-xs text-[#00173A]">
+                      Total Mentors
+                    </p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
                     <ListChecks className="text-main" />
@@ -187,7 +180,11 @@ const Dashboard = () => {
                   <h1 className="pl-4 text-xs md:text-xl font-semibold">
                     Enrollment activity{" "}
                   </h1>
-                  <select className="border border-main rounded-[8px]" name="months" id="months">
+                  <select
+                    className="border border-main rounded-[8px]"
+                    name="months"
+                    id="months"
+                  >
                     {months.map((month, index) => (
                       <option key={index} value={month}>
                         {month || "Select Month"}{" "}

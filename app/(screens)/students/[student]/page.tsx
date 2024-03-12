@@ -7,6 +7,7 @@ import SideNav from "@/components/side-comp/side-nav";
 import Image from "next/image";
 import student from "@/public/assets/testImg.png";
 import ProjectReview from "@/components/side-comp/project-review-table";
+import TopNav from "@/components/side-comp/topNav";
 
 const Student = () => {
   const params = useParams<{ student: string }>();
@@ -28,16 +29,7 @@ const Student = () => {
       <SideNav />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
-          <div className="flex items-center gap-1 md:gap-2">
-            <Avatar>
-              {/* <AvatarImage src={avatar} /> */}
-              <AvatarFallback>JN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="md:text-base text-sm font-medium">John Mark</h1>
-              <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
-            </div>
-          </div>
+          <TopNav />
         </div>
         <div>
           <div className="bg-slate-100">
@@ -52,25 +44,35 @@ const Student = () => {
                   <h3 className="lg:text-lg text-lg font-medium text-500">
                     {studentData.name}
                   </h3>
-                  <p className="lg:text-sm text-xs font-normal text-[#3E3E3E]">Name</p>
+                  <p className="lg:text-sm text-xs font-normal text-[#3E3E3E]">
+                    Name
+                  </p>
                 </div>
               </div>
               <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
               <div>
-                <h3 className="lg:text-lg text-lg font-medium">{studentData.email}</h3>
-                <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">Email address</p>
+                <h3 className="lg:text-lg text-lg font-medium">
+                  {studentData.email}
+                </h3>
+                <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">
+                  Email address
+                </p>
               </div>
               <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
               <div>
                 <h3 className="text-lg lg:text-lg font-medium">
                   {studentData.phoneNumber}
                 </h3>
-                <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">Phone number</p>
+                <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">
+                  Phone number
+                </p>
               </div>
               <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
               <div>
                 <h3 className="text-lg lg:text-lg font-medium">Lagos</h3>
-                <p className="text-sm, lg:text-sm font-normal text-[#3E3E3E]">Location</p>
+                <p className="text-sm, lg:text-sm font-normal text-[#3E3E3E]">
+                  Location
+                </p>
               </div>
             </div>
             <div className="flex justify-end gap-x-2 text-[#939393] text-xs md:text-lg pr-2">

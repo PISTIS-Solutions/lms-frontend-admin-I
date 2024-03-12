@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import TopNav from "@/components/side-comp/topNav";
 
 const formSchema = z.object({
   Email: z.string().min(2, {
@@ -71,16 +72,7 @@ const SettingsPage = () => {
       <SideNav />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
-          <div className="flex items-center gap-1 md:gap-2">
-            <Avatar>
-              {/* <AvatarImage src={avatar} /> */}
-              <AvatarFallback>JN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="md:text-base text-sm font-medium">John Mark</h1>
-              <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
-            </div>
-          </div>
+          <TopNav />
         </div>
         <div className="md:p-5 p-2">
           <div>
@@ -151,14 +143,14 @@ const SettingsPage = () => {
                             </FormItem>
                           )}
                         />
-                      <div className="lg:flex block justify-end">
-                        <Button
-                          type="submit"
-                          className="w-full lg:w-1/3 bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
-                        >
-                          Save Changes
-                        </Button>
-                      </div>
+                        <div className="lg:flex block justify-end">
+                          <Button
+                            type="submit"
+                            className="w-full lg:w-1/3 bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
+                          >
+                            Save Changes
+                          </Button>
+                        </div>
                       </div>
                     </div>
                     <div className="block md:grid grid-cols-6 py-5">
