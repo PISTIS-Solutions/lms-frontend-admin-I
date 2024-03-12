@@ -261,6 +261,7 @@ import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import NextNProgress from "nextjs-progressbar";
 
 const SignIn = () => {
   const formStore = useLoginFormStore();
@@ -287,10 +288,21 @@ const SignIn = () => {
         Cookies.set("adminRefreshToken", response.data.refresh);
         Cookies.set("fullName", response.data.user.full_name);
         route.replace("/dashboard");
+        setLoading(false);
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
-        toast.error("Email address or password is incorrect", {
+      if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -312,6 +324,7 @@ const SignIn = () => {
 
   return (
     <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
+      {/* <NextNProgress /> */}
       <div className="bg-white w-[100%] sm:w-[50%] h-screen rounded-none md:rounded-tl-[40px] md:rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-10">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
@@ -320,38 +333,9 @@ const SignIn = () => {
           <h1 className="md:text-4xl sm:text-2xl text-xl font-semibold">
             Sign In
           </h1>
-<<<<<<< HEAD
-          <p className="text-2xl md:hidden block text-center md:text-left text-white">
-            Comprehensive curriculum designed to equip students with the latest
-            technological skills
-          </p>
-          <p className="md:text-2xl text-sm md:block hidden text-center md:text-left text-white">
-            Comprehensive curriculum designed to equip students <br />
-            with the latest technological skills
-          </p>
-          <Link href="/sign-in">
-            <Button className="bg-sub w-full md:w-auto hover:text-white text-black text-[20px] md:text-xl font-medium py-[25px] px-[40px] mt-20">
-              Start Learning
-            </Button>
-          </Link>
-        </div>
-      </section>
-      <section className=" flex items-center px-5 md:px-10 justify-between bg-mid-back h-[117px] bg-no-repeat bg-cover">
-        <div className="flex w-full md:justify-evenly justify-center divide-x-[4px]">
-          <p className="text-white text-sm md:text-2xl font-medium pr-4 md:pr-36">
-            30+ Students
-          </p>
-          <p className="text-white text-sm md:text-2xl font-medium px-4 md:px-36">
-            Expert Mentors
-          </p>
-          <p className="text-white text-ms md:text-2xl font-medium pl-4 md:pl-36">
-            20+ courses
-          </p>
-=======
           <h3 className="md:text-2xl sm:text-lg text-base">
             Glad to have you back!
           </h3>
->>>>>>> 969550d5da3bfedc6fede7e83f2d369967edf0b1
         </div>
         <ToastContainer />
         <div>
@@ -417,128 +401,14 @@ const SignIn = () => {
           </form>
         </div>
         {/* <div>
-          <p className="text-center text-base md:text-lg font-normal ">
-            Don't have an account?{" "}
-            <Link className="text-main font-semibold" href="/create-account">
-              Create Account
-            </Link>
-          </p>
-<<<<<<< HEAD
-          <p className="md:text-2xl z-10 text-sm sm:text-lg max-w-[639px] relative text-center md:text-left">
-            Access to a mentor that provides individualized attention, tailoring
-            their teaching style to your specific learning needs, strengths, and
-            weaknesses.
-          </p>
-        </div>
-        <Image
-          src={circle}
-          alt=""
-          className="absolute hidden md:block top-0 right-0"
-          priority
-        />
-        <Image
-          src={circle2}
-          alt=""
-          className="absolute hidden md:block bottom-0 right-16"
-          priority
-        />
-        <Image
-          src={boy}
-          className="z-10 md:w-auto w-1/2 max-w-[568px] h-auto"
-          alt="boy"
-          priority
-        />
-      </section>
-      <section className="bg-[#FAFAFD] ">
-        <div className="py-7">
-          <p className="text-[#7d7d7d] z-10 text-xs sm:text-lg md:text-2xl font-medium text-center">
-            TESTIMONIALS
-          </p>
-          <h1 className="md:text-4xl z-20 sm:text-xl text-lg  text-center font-bold">
-            What Our Students Say
-          </h1>
-        </div>
-        <div className="flex flex-wrap  justify-around py-16 px-[40px] items-center">
-          <TestimonialCard
-            avatar={avatar}
-            name="Sylvia Okoro"
-            quote="I can access my courses at any time, which means I can fit learning into my busy schedule"
-          />
-          <TestimonialCard
-            avatar={avatar}
-            name="Bayo Adegboyega"
-            quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience"
-          />
-          <TestimonialCard
-            avatar={avatar}
-            name="David Gilbert"
-            quote="I've been using Pistis LMS for the past six months, and I can confidently say that it has transformed my learning experience."
-          />
-        </div>
-      </section>
-      <section className="py-20 bg-[#FDFBFB]">
-        <h1 className="mb-5 text-xl sm:text-2xl md:text-4xl text-center font-bold">
-          Our Popular courses
-        </h1>
-        <div className="relative md:mr-[169px] md:ml-[169px] lg:mx-40">
-          <div className="grid px-2 grid-cols-1 md:grid-cols-2 place-items-center xl:grid-cols-3 gap-[16px]">
-            <Coursecard
-              image={ansible}
-              header="Ansible"
-              title="Simplifying automation"
-              modules={2}
-            />
-            <Coursecard
-              image={cicd}
-              header="CI/CD"
-              title="Continous Intergration and Development"
-              modules={2}
-            />
-            <Coursecard
-              image={dns}
-              header="Domain Name System"
-              title=""
-              modules={2}
-            />
-            <Coursecard image={docker} header="Docker" title="" modules={2} />
-            <Coursecard
-              image={git}
-              header="GIT"
-              title="Distributed version control system"
-              modules={2}
-            />
-            <Coursecard
-              image={gitops}
-              header="GITOPS"
-              title="Building a strong operational framework"
-              modules={2}
-            />
-          </div>
-          <Button className="py-[18px] px-[20px] md:absolute static right-10 mt-8 hover:text-white bg-sub text-black text-lg md:text-2xl">
-            Find Out More
-          </Button>
-        </div>
-      </section>
-      <footer className="mt-5 px-5 md:px-10 py-20 flex justify-center items-center">
-        <div className="bg-footer-back max-w-[1280px] flex flex-col justify-center items-center p-10 h-[571px]">
-          <h1 className="md:text-5xl text-xl sm:text-2xl font-semibold text-white text-center">
-            Sign Up Now To Start Learning
-          </h1>
-          <p className="md:text-2xl text-xs sm:text-base text-center text-white py-5">
-            Embark on a voyage of discovery, expand your horizons, and enrich
-            your mind by joining our community of eager learners. The doors to a
-            world of knowledge are swinging wide open, and it's time for you to
-            step through
-          </p>
-          <Button className="bg-sub text-black px-16 hover:text-white font-semibold">
-            Get Started
-          </Button>
-        </div>
-      </footer>
-=======
-        </div> */}
+      <p className="text-center text-base md:text-lg font-normal ">
+        Don't have an account?{" "}
+        <Link className="text-main font-semibold" href="/create-account">
+          Create Account
+        </Link>
+      </p>
+    </div> */}
       </div>
->>>>>>> 969550d5da3bfedc6fede7e83f2d369967edf0b1
     </main>
   );
 };

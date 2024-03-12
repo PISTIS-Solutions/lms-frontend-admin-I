@@ -21,6 +21,7 @@ import { CheckCircle, Loader2 } from "lucide-react";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import refreshAdminToken from "@/utils/refreshToken";
 
 const formSchema = z.object({
   courseTitle: z.string(),
@@ -95,23 +96,10 @@ const AddCourseForms = () => {
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
-        try {
-          const adminRefreshToken = Cookies.get("adminRefreshToken");
-          const adminAccessToken = Cookies.get("adminAccessToken");
-
-          const refreshResponse = await axios.post(urls.adminRefreshToken, {
-            refresh: adminRefreshToken,
-            access: adminAccessToken,
-          });
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
-          // Retry the fetch after token refresh
-          await uploadCourses(values, e);
-        } catch (refreshError: any) {
-          console.error("Error refreshing token:", refreshError.message);
-          Cookies.remove("adminAccessToken")
-        }
-      } else if (error.response.status === 400) {
-        toast.error("Check course form and input correct details", {
+        await refreshAdminToken();
+        await uploadCourses(values, e);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -121,7 +109,15 @@ const AddCourseForms = () => {
           theme: "dark",
         });
       } else {
-        console.error("Error:", error.message);
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       }
     } finally {
       setLoading(false);
