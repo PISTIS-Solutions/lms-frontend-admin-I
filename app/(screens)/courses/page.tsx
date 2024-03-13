@@ -179,7 +179,7 @@ const Courses = () => {
                   <CoursesCard
                     id={course.id}
                     title={course.title}
-                    duration={0}
+                    duration={course.course_duration}
                     handleCardClick={handleCardClick}
                     handleOpen={() => handleOpen(course.id)}
                   />

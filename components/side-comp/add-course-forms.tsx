@@ -108,6 +108,19 @@ const AddCourseForms = () => {
           draggable: false,
           theme: "dark",
         });
+      } else if (error.message === "Request failed with status code 400") {
+        toast.error(
+          "Check formm fields to make sure the information is correct!",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          }
+        );
       } else {
         toast.error(error?.response?.data?.detail, {
           position: "top-right",
@@ -119,6 +132,7 @@ const AddCourseForms = () => {
           theme: "dark",
         });
       }
+      console.log(error.message, "err");
     } finally {
       setLoading(false);
     }
@@ -229,34 +243,44 @@ const AddCourseForms = () => {
                 </label>
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-2">
-                    <Input
+                    <input
                       type="number"
                       value={hours}
-                      className=" w-14 text-center"
-                      onChange={(e) => setHours(parseInt(e.target.value, 10))}
+                      className="w-14 text-center"
+                      onChange={(e) =>
+                        setHours(Math.min(parseInt(e.target.value, 10), 99))
+                      }
+                      max={99}
                     />
                     <p>Hour(s)</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Input
+                    <input
                       type="number"
                       value={minutes}
                       className="w-14 text-center"
-                      onChange={(e) => setMinutes(parseInt(e.target.value, 10))}
+                      onChange={(e) =>
+                        setMinutes(Math.min(parseInt(e.target.value, 10), 59))
+                      }
+                      max={59}
                     />
                     <p>Min(s)</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Input
+                    <input
                       type="number"
                       value={seconds}
                       className="w-14 text-center"
-                      onChange={(e) => setSeconds(parseInt(e.target.value, 10))}
+                      onChange={(e) =>
+                        setSeconds(Math.min(parseInt(e.target.value, 10), 59))
+                      }
+                      max={59}
                     />
                     <p>Sec(s)</p>
                   </div>
                 </div>
               </div>
+
               {/* <FormField
                 control={form.control}
                 name="courseDuration"
