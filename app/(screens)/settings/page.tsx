@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 
 import user from "@/public/assets/avatar.png";
-import { EditIcon, Eye, EyeOff, KeyRound, Mail } from "lucide-react";
+import { EditIcon, Eye, EyeOff, KeyRound, Loader2, Mail } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,19 +16,47 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
+import axios from "axios";
+import { urls } from "@/utils/config";
+import refreshToken from "@/utils/refreshToken";
+import Cookies from "js-cookie";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const formSchema = z.object({
   Email: z.string().min(2, {
     message: "Input correct email address",
   }),
   fullName: z.string(),
+});
+const passwordSchema = z.object({
   currentPassword: z.string(),
-  newPassword: z.string(),
-  confirmPassword: z.string(),
+  newPassword: z
+    .string()
+    .min(8, "Password should have at least 8  characters")
+    .refine(
+      (value) =>
+        /^(?=.*[!@#$%^&*()_+{}|:<>?~_-])[a-zA-Z\d!@#$%^&*()_+{}|:<>?~_-]+$/.test(
+          value
+        ),
+      "Password should contain at least one special character"
+    ),
+  confirmPassword: z
+    .string()
+    .min(8, "Password should have at least 6 characters")
+    .refine(
+      (value) =>
+        /^(?=.*[!@#$%^&*()_+{}|:<>?~_-])[a-zA-Z\d!@#$%^&*()_+{}|:<>?~_-]+$/.test(
+          value
+        ),
+      "Password should contain at least one special character"
+    ),
 });
 
 const SettingsPage = () => {
@@ -37,6 +65,11 @@ const SettingsPage = () => {
     defaultValues: {
       Email: "",
       fullName: "",
+    },
+  });
+  const passwordForm = useForm<z.infer<typeof passwordSchema>>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
@@ -45,14 +78,163 @@ const SettingsPage = () => {
 
   const [notSame, setNotSame] = useState("");
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  //add loading state for both
+  //add no network state for both
+  //add success toast
+  //add error toast
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const onSubmit = async (values: z.infer<typeof passwordSchema>, e: any) => {
+    e.preventDefault();
     if (values.confirmPassword === values.newPassword) {
-      console.log(values);
       setNotSame("");
+      try {
+        setPasswordLoading(true);
+        const token = Cookies.get("adminAccessToken");
+        const response = await axios.post(
+          urls.setStudentPassword,
+          {
+            new_password: values.newPassword,
+            re_new_password: values.confirmPassword,
+            current_password: values.currentPassword,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        console.log(response, "pass");
+
+        if (response.status === 204) {
+          setPasswordLoading(false);
+          toast.success("Password changed successfully!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+         
+        }
+      } catch (error: any) {
+        console.log(error);
+        if (error.response && error.response.status === 401) {
+          try {
+            await refreshToken();
+            await onSubmit(values, e);
+          } catch (refreshError: any) {
+            console.error("Error refreshing token:", refreshError.message);
+          }
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else if (
+          error.response.data.new_password[0] ===
+            "The password is too similar to the First Name." ||
+          error.response.data.new_password[0] ===
+            "The password is too similar to the Last Name."
+        ) {
+          toast.error("Password is too similar to name", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else if (
+          error.response.data.current_password[0] === "Invalid password."
+        ) {
+          toast.error("Invalid current password!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          console.log("Password change failed:", error);
+        }
+      } finally {
+        setPasswordLoading(false);
+      }
     } else {
-      setNotSame("New Password and Confirm Password must be the same");
+      setNotSame("New password and confirm new Password must be the same");
     }
-  }
+  };
+  const [generalLoading, setGeneralLoading] = useState(false);
+  const onSubmitGeneral = async (
+    values: z.infer<typeof formSchema>,
+    e: any
+  ) => {
+    e.preventDefault();
+
+    try {
+      setGeneralLoading(true);
+      const token = Cookies.get("adminAccessToken");
+      const response = await axios.patch(
+        urls.updateStudentProfile,
+        {
+          full_name: values.fullName,
+          email: values.Email,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        setGeneralLoading(false);
+        toast.success("General details changed successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        try {
+          await refreshToken();
+          await onSubmitGeneral(values, e);
+        } catch (refreshError: any) {
+          console.error("Error refreshing token:", refreshError.message);
+          Cookies.remove("adminAccessToken");
+        }
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        console.log("Password change failed:", error);
+      }
+    } finally {
+      setGeneralLoading(false);
+    }
+  };
 
   const [showPassword, setShowPassword] = useState(true);
   const togglePassword = () => {
@@ -70,6 +252,7 @@ const SettingsPage = () => {
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
+      <ToastContainer />
       <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
           <TopNav />
@@ -93,7 +276,7 @@ const SettingsPage = () => {
               <div className="md:px-5 px-2">
                 <Form {...form}>
                   <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    onSubmit={form.handleSubmit(onSubmitGeneral)}
                     className="space-y-3"
                   >
                     <div className="block md:grid grid-cols-6 py-5">
@@ -140,26 +323,39 @@ const SettingsPage = () => {
                                   />
                                 </div>
                               </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
-                        <div className="lg:flex block justify-end">
-                          <Button
-                            type="submit"
-                            className="w-full lg:w-1/3 bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
-                          >
-                            Save Changes
-                          </Button>
-                        </div>
                       </div>
                     </div>
+                    <div className="lg:flex block justify-end">
+                      <Button
+                        disabled={generalLoading}
+                        type="submit"
+                        className="w-full lg:w-1/3 bg-[#33CC99] disabled:bg-[#33CC99]/25 disabled:cursor-none py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
+                      >
+                        {generalLoading ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          "Save Changes"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+                <Form {...passwordForm}>
+                  <form
+                    onSubmit={passwordForm.handleSubmit(onSubmit)}
+                    className="space-y-3"
+                  >
                     <div className="block md:grid grid-cols-6 py-5">
                       <h1 className="text-[22px] col-span-2 font-medium ">
                         Password
                       </h1>
                       <div className="col-span-4">
                         <FormField
-                          control={form.control}
+                          control={passwordForm.control}
                           name="currentPassword"
                           render={({ field }) => (
                             <FormItem>
@@ -192,7 +388,7 @@ const SettingsPage = () => {
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={passwordForm.control}
                           name="newPassword"
                           render={({ field }) => (
                             <FormItem>
@@ -221,11 +417,12 @@ const SettingsPage = () => {
                                   />
                                 </div>
                               </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
                         <FormField
-                          control={form.control}
+                          control={passwordForm.control}
                           name="confirmPassword"
                           render={({ field }) => (
                             <FormItem>
@@ -254,11 +451,12 @@ const SettingsPage = () => {
                                     placeholder="Password"
                                     {...field}
                                   />
-                                  <p className="text-xl text-red-500 text-center">
+                                  <p className="text-sm text-red-500 text-center">
                                     {notSame}
                                   </p>
                                 </div>
                               </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
@@ -266,10 +464,15 @@ const SettingsPage = () => {
                     </div>
                     <div className="lg:flex block justify-end">
                       <Button
+                        disabled={passwordLoading}
                         type="submit"
-                        className="w-full lg:w-1/3 bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
+                        className="w-full lg:w-1/3 bg-[#33CC99] disabled:bg-[#33CC99]/25 disabled:cursor-none py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
                       >
-                        Save Changes
+                        {passwordLoading ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          "Save Changes"
+                        )}
                       </Button>
                     </div>
                   </form>

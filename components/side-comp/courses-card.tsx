@@ -33,6 +33,7 @@ const CoursesCard = ({
 }: cardProps) => {
   const [moduleCount, setModuleCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
     const getModuleCount = async () => {
@@ -81,7 +82,9 @@ const CoursesCard = ({
         />
         <div className="p-2">
           <div className="md:mb-14 mb-5">
-            <h1 className="md:text-xl text-sm capitalize font-medium">{title}</h1>
+            <h1 className="md:text-xl text-sm capitalize font-medium">
+              {title}
+            </h1>
             {/* <p className="md:text-lg text-xs text-[#3E3E3E]">dummy text  */}
             {/* {paragraph} */}
             {/* </p> */}
@@ -97,11 +100,10 @@ const CoursesCard = ({
                 moduleCount
               )}{" "}
               module
-              {/* {module.length} module */}
             </div>
             <div className="flex md:text-base text-xs items-center gap-x-1">
               <Hourglass className="text-main" />
-              {duration} week
+              {duration}
             </div>
           </div>
         </div>
