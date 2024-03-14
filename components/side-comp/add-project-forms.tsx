@@ -112,16 +112,7 @@ const AddProjectForms = () => {
 
   return (
     <div>
-      <div className="flex items-center my-10 mx-20 relative ">
-        <div className="bg-white shadow-md w-[72px] h-[36px] flex justify-center items-center p-2 absolute -top-10 -right-5 rounded-[8px]">
-          <p className="text-main text-xs font-medium">Project</p>
-        </div>
-        <div className="w-[50px] h-[18px] md:h-[25px] block rounded-full bg-sub" />
-        <div className="bg-sub w-full h-[4px]"></div>
-        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
-        <div className="bg-sub w-full h-[4px]"></div>
-        <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
-      </div>
+    
       <ToastContainer />
       <div>
         <h1 className="md:text-3xl text-xl font-semibold">Project Details</h1>
@@ -136,11 +127,11 @@ const AddProjectForms = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                    Project Title
+                    <p>Project Title</p>
                   </FormLabel>
                   <FormControl className="">
                     <Input
-                      className="bg-[#FAFAFA]"
+                      className="bg-[#FAFAFA] placeholder:italic"
                       placeholder="Input Project Title"
                       {...field}
                     />
@@ -154,12 +145,12 @@ const AddProjectForms = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                    Project Link
+                    <p className="mt-2">Project Link</p>
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="url"
-                      className="bg-[#FAFAFA]"
+                      className="bg-[#FAFAFA] placeholder:italic"
                       placeholder="Input Project Sub-Title"
                       {...field}
                     />
@@ -174,11 +165,11 @@ const AddProjectForms = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-                    Additional Note
+                    <p className="mt-2">Additional Note</p>
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      className="bg-[#FAFAFA]"
+                      className="bg-[#FAFAFA] placeholder:italic"
                       placeholder="Input project content details"
                       {...field}
                     />
@@ -192,7 +183,7 @@ const AddProjectForms = () => {
               type="submit"
               disabled={loading}
               onClick={form.handleSubmit(uploadProject)}
-              className=" py-6 w-full text-main hover:text-white px-28 bg-sub mx-auto font-semibold"
+              className=" py-6 w-full text-black hover:text-white px-28 bg-sub mx-auto font-semibold"
             >
               {loading ? (
                 <Loader2 className="animate-spin" />
@@ -213,7 +204,7 @@ const AddProjectForms = () => {
                 onClick={() => {
                   router.push("add-modules/add-project");
                 }}
-                className=" py-6 w-full text-main hover:text-white px-28 bg-sub mx-auto font-semibold"
+                className=" py-6 w-full text-black hover:text-white px-28 bg-sub mx-auto font-semibold"
               >
                 Publish
               </Button>
