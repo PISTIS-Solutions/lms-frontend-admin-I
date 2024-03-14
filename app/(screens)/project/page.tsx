@@ -6,7 +6,7 @@ import ProjectCard from "@/components/side-comp/project-card";
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon, Plus, Search } from "lucide-react";
+import { Loader2Icon, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -15,6 +15,7 @@ import { dummydata } from "@/app/data/dummyModules";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopNav from "@/components/side-comp/topNav";
+import AddProjectModal from "@/components/side-comp/modal/add-project-modal";
 
 const Project = () => {
   const router = useRouter();
@@ -22,6 +23,11 @@ const Project = () => {
     router.push(`/project/${id}`);
   };
 
+  const [projectModal, setProjectModal] = useState(false);
+
+  const handleProjectModal = () => {
+    setProjectModal((prev) => !prev);
+  };
   const [projects, setProjects] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
@@ -133,12 +139,15 @@ const Project = () => {
         </div>
         <div className="py-2 px-2 md:px-7">
           <div className="flex justify-end">
-            <Link href="/courses/add-course">
-              <Button className="flex items-center md:text-base text-xs gap-x-2 cursor-pointer text-black hover:text-white bg-sub">
-                New Project
-                <Plus />
-              </Button>
-            </Link>
+            {/* <Link href="/courses/add-course"> */}
+            <Button
+              onClick={handleProjectModal}
+              className="flex items-center md:text-base text-xs gap-x-2 cursor-pointer text-black hover:text-white bg-sub"
+            >
+              New Project
+              <Plus />
+            </Button>
+            {/* </Link> */}
           </div>
           <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {loading ? (
@@ -198,6 +207,7 @@ const Project = () => {
           </section>
         )}
       </div>
+      <div>{projectModal && <AddProjectModal handleProjectModal={handleProjectModal} />}</div>
     </main>
   );
 };

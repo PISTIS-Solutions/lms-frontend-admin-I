@@ -15,5 +15,7 @@ export const urls = {
   uploadProjects: `${baseURL}/courses/${courseID}/projects/`,
   forgotPassword: `${baseURL}/users/student/reset_password/`,
   deleteCourse: `${baseURL}/courses`,
-  getStudents: `${baseURL}/users/student/`
+  getStudents: `${baseURL}/users/student/`,
+  updateStudentProfile: `${baseURL}/users/student/me/`,
+  setStudentPassword: `${baseURL}/users/student/set_password/`,
 };
