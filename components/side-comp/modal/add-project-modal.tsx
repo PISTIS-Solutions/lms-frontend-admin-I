@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
   course: z.string(),
-  module: z.string(),
+  // module: z.string(),
   projectTitle: z.string(),
   projectLink: z.string(),
   additionalNote: z.string(),
@@ -41,7 +41,7 @@ const AddProjectModal = ({ handleProjectModal }: any) => {
     e.preventDefault();
     if (
       data.course &&
-      data.module &&
+      // data.module &&
       data.projectTitle &&
       data.projectLink &&
       data.additionalNote !== ""
@@ -101,7 +101,7 @@ const AddProjectModal = ({ handleProjectModal }: any) => {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="module"
                 render={({ field }) => (
@@ -133,7 +133,7 @@ const AddProjectModal = ({ handleProjectModal }: any) => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="projectTitle"
