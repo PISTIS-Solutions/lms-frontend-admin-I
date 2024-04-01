@@ -88,9 +88,9 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = students.slice(indexOfFirstItem, indexOfLastItem);
+  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(students.length / itemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const nextPage = () => {
     if (currentPage < totalPages) {

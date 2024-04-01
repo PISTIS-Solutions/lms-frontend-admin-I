@@ -51,6 +51,7 @@ const Courses = () => {
         },
       });
       setCourses(response.data);
+      console.log(response);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();

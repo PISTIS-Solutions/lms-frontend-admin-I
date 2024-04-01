@@ -100,6 +100,7 @@ const AddCourseForms = () => {
           },
         }
       );
+      console.log(response)
       if (response.status === 201) {
         toast.success(response.data.title + " added", {
           position: "top-right",

@@ -59,6 +59,7 @@ const Dashboard = () => {
         },
       });
       setAdminData(response.data);
+      console.log(response);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -157,6 +158,7 @@ const Dashboard = () => {
                     )}
                     <p className="md:text-base text-xs text-[#00173A]">
                       Total Students
+                      {/* {AdminData.total_courses} */}
                     </p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
