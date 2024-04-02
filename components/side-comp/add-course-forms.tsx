@@ -25,10 +25,8 @@ import refreshAdminToken from "@/utils/refreshToken";
 
 const formSchema = z.object({
   courseTitle: z.string(),
-  // subTitle: z.string(),
   Description: z.string(),
   courseLink: z.string(),
-  // courseDuration: z.string(),
 });
 type FormData = z.infer<typeof formSchema>;
 
@@ -39,7 +37,6 @@ const AddCourseForms = () => {
       courseTitle: "",
       courseLink: "",
       Description: "",
-      // subTitle: "",
     },
   });
 
@@ -75,87 +72,8 @@ const AddCourseForms = () => {
     return `PT${totalSeconds}S`;
   };
 
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  const uploadCourses = async (values: FormData, e: any): Promise<void> => {
-    e.preventDefault();
-    try {
-      const adminAccessToken = Cookies.get("adminAccessToken");
-      const iso8601Duration = convertToISO8601(hours, minutes, seconds);
-
-      setLoading(true);
-      const response = await axios.post(
-        urls.uploadCourses,
-        {
-          title: values.courseTitle,
-          // sub_title: values.subTitle,
-          course_url: values.courseLink,
-          course_duration: iso8601Duration,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 201) {
-        toast.success(response.data.title + " added", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-        Cookies.set("courseId", response.data.id);
-        router.push("add-course/add-modules");
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await uploadCourses(values, e);
-      } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      } else if (error.message === "Request failed with status code 400") {
-        toast.error(
-          "Check form fields to make sure the information is correct!",
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          }
-        );
-      } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      }
-      console.log(error.message, "err");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const router = useRouter();
+  // const [loading, setLoading] = useState(false);
 
   return (
     <div>
@@ -166,7 +84,7 @@ const AddCourseForms = () => {
       <div className="mt-4">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(uploadCourses)}
+            // onSubmit={form.handleSubmit(uploadCourses)}
             className="space-y-8"
           >
             <div className="my-4">
@@ -189,25 +107,6 @@ const AddCourseForms = () => {
                   </FormItem>
                 )}
               />
-              {/* <FormField
-                control={form.control}
-                name="subTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="md:text-xl text-sm text-[#3E3E3E]">
-                      <p className="pt-2">Sub-Title</p>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        className="bg-[#FAFAFA] placeholder:italic mt-0"
-                        placeholder="Input Course Sub-Title"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              /> */}
               <div>
                 <label className="md:text-xl text-sm text-[#3E3E3E]">
                   <p className="py-2">Course Cover</p>
@@ -223,7 +122,9 @@ const AddCourseForms = () => {
                     {selectedFile ? (
                       <p className="text-black text-sm">{selectedFile.name}</p>
                     ) : (
-                      <p className="italic text-[#919BA7] text-sm">Select image</p>
+                      <p className="italic text-[#919BA7] text-sm">
+                        Select image
+                      </p>
                     )}
                     <input
                       type="file"
@@ -339,11 +240,12 @@ const AddCourseForms = () => {
             </div>
             <div className="flex items-center justify-center">
               <Button
-                disabled={loading}
+                // disabled={loading}
                 className=" py-6 text-black hover:text-white bg-sub mx-auto w-full font-semibold"
                 type="submit"
               >
-                {loading ? <Loader2 className="animate-spin" /> : "Continue"}
+                {/* {loading ? <Loader2 className="animate-spin" /> : "Continue"} */}
+                Continue
               </Button>
             </div>
           </form>
