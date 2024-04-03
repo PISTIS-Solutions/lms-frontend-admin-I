@@ -95,7 +95,6 @@ const Dashboard = () => {
   }, []);
 
   const months = [
-    "",
     "January",
     "February",
     "March",

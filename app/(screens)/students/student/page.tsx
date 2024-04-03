@@ -1,31 +1,18 @@
 "use client";
 import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import SideNav from "@/components/side-comp/side-nav";
 import Image from "next/image";
 import student from "@/public/assets/testImg.png";
 import ProjectReview from "@/components/side-comp/project-review-table";
 import TopNav from "@/components/side-comp/topNav";
-import useStudentsStore from "@/store/fetch-students";
 import { Loader2 } from "lucide-react";
+import "react-toastify/dist/ReactToastify.css";
+import useStudentInfoStore from "@/store/read-student";
 
 const Student = () => {
-  const { students, loading, fetchStudents } = useStudentsStore();
-  const params = useParams<{ student: string }>();
-  useEffect(() => {
-    fetchStudents();
-  }, []);
-  
-  const studentData = students.find((item) => item.id === params.student);
-
-  // if (!studentData) {
-  //   return (
-  //     <div className="text-4xl text-red-500 text-center">
-        
-  //     </div>
-  //   );
-  // }
+  const { studentData, loading } = useStudentInfoStore();
 
   return (
     <main className="relative">
@@ -47,7 +34,7 @@ const Student = () => {
 =======
         {loading ? (
           <span className="flex h-screen justify-center items-center">
-            <Loader2 className="animate-spin w-10 h-10 text-primary"/>
+            <Loader2 className="animate-spin w-10 h-10 text-primary" />
           </span>
         ) : (
           <div>
@@ -89,7 +76,9 @@ const Student = () => {
                 </div>
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
                 <div>
-                  <h3 className="text-lg lg:text-lg font-medium">{studentData?.location}</h3>
+                  <h3 className="text-lg lg:text-lg font-medium">
+                    {studentData?.location}
+                  </h3>
                   <p className="text-sm, lg:text-sm font-normal text-[#3E3E3E]">
                     Location
                   </p>
