@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 import {
   Chart as ChartJS,
@@ -40,7 +40,7 @@ export const data = {
   labels,
   datasets: [
     {
-      data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
+      data: ,
       borderColor: "rgb(255, 99, 132)",
       backgroundColor: "rgba(255, 99, 132, 0.5)",
     }
@@ -48,5 +48,7 @@ export const data = {
 };
 
 export const LineChart = () => {
+
+  const [chart, setChart] = useState([])
   return <Line options={options} data={data} />;
 };
