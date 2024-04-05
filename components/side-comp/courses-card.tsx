@@ -51,7 +51,7 @@ const CoursesCard = ({
           // const count = response.data.length;
           setModuleCount(response.data.count);
           setLoading(false);
-          console.log(response)
+          
         } else {
           console.error(`Error fetching modules for course ${id}`);
           setModuleCount(0); // or handle the error as needed

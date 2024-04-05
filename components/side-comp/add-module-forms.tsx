@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, MouseEvent } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
@@ -11,7 +11,9 @@ import { useRouter } from "next/navigation";
 
 const AddModuleForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
-  const { addModuleData, moduleData } = useCourseFormStore();
+  const { setFilteredModuleData, filteredModuleDataStore } =
+    useCourseFormStore();
+  const router = useRouter();
 
   const addSection = () => {
     const newId = sections.length + 1;
@@ -27,7 +29,7 @@ const AddModuleForms = () => {
     });
   };
 
-  const deleteSection = (id: any) => {
+  const deleteSection = (id: number) => {
     setSections(sections.filter((section) => section.id !== id));
     toast.error("Section Deleted", {
       position: "top-right",
@@ -40,35 +42,73 @@ const AddModuleForms = () => {
     });
   };
 
-  const onSave = (index: number) => {
-    const moduleTitleInput = document.getElementById(
-      `moduleTitle-${index}`
-    ) as HTMLInputElement;
-    const modulesubTitleInput = document.getElementById(
-      `modulesubTitle-${index}`
-    ) as HTMLInputElement;
-    const moduleLinkInput = document.getElementById(
-      `moduleLink-${index}`
-    ) as HTMLInputElement;
-    const moduleDetailsInput = document.getElementById(
-      `moduleDetails-${index}`
-    ) as HTMLInputElement;
+  interface ModuleFormData {
+    module_title: string;
+    module_url: string;
+    overview: string;
+    module_sub_title: string;
+  }
 
-    if (
-      moduleTitleInput &&
-      modulesubTitleInput &&
-      moduleLinkInput &&
-      moduleDetailsInput
-    ) {
-      const formDataObject = {
-        module_title: moduleTitleInput.value,
-        module_sub_title: modulesubTitleInput.value,
-        module_url: moduleLinkInput.value,
-        overview: moduleDetailsInput.value,
-      };
-      addModuleData(formDataObject);
+  const onContinue = () => {
+    const filteredModuleData = sections
+      .map((section) => {
+        const moduleTitleInput = document.getElementById(
+          `moduleTitle-${section.id}`
+        ) as HTMLInputElement;
+        const modulesubTitleInput = document.getElementById(
+          `modulesubTitle-${section.id}`
+        ) as HTMLInputElement;
+        const moduleLinkInput = document.getElementById(
+          `moduleLink-${section.id}`
+        ) as HTMLInputElement;
+        const moduleDetailsInput = document.getElementById(
+          `moduleDetails-${section.id}`
+        ) as HTMLInputElement;
 
-      toast.success("Section Saved", {
+        if (
+          moduleTitleInput &&
+          modulesubTitleInput &&
+          moduleLinkInput &&
+          moduleDetailsInput
+        ) {
+          return {
+            module_title: moduleTitleInput.value,
+            module_sub_title: modulesubTitleInput.value,
+            module_url: moduleLinkInput.value,
+            overview: moduleDetailsInput.value,
+          };
+        } else {
+          return null;
+        }
+      })
+      .filter((data): data is ModuleFormData => data !== null);
+    const areFieldsValid = sections.every((section) => {
+      const moduleTitleInput = document.getElementById(
+        `moduleTitle-${section.id}`
+      ) as HTMLInputElement;
+      const modulesubTitleInput = document.getElementById(
+        `modulesubTitle-${section.id}`
+      ) as HTMLInputElement;
+      const moduleLinkInput = document.getElementById(
+        `moduleLink-${section.id}`
+      ) as HTMLInputElement;
+      const moduleDetailsInput = document.getElementById(
+        `moduleDetails-${section.id}`
+      ) as HTMLInputElement;
+
+      return (
+        moduleTitleInput.value.trim() !== "" &&
+        modulesubTitleInput.value.trim() !== "" &&
+        moduleLinkInput.value.trim() !== "" &&
+        moduleDetailsInput.value.trim() !== ""
+      );
+    });
+
+    if (areFieldsValid) {
+      setFilteredModuleData(filteredModuleData);
+      router.push("add-modules/add-project");
+    } else {
+      toast.error("Check form fields!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: true,
@@ -77,16 +117,7 @@ const AddModuleForms = () => {
         draggable: false,
         theme: "dark",
       });
-    } else {
-      console.error("Error: Input element not found.");
     }
-  };
-
-  const router = useRouter();
-  const onContinue = () => {
-    console.log("All Module Data:", moduleData);
-
-    router.push("add-modules/add-project");
   };
 
   return (
@@ -115,7 +146,6 @@ const AddModuleForms = () => {
                 <span className="text-sm font-normal">Add Section</span>
               </Button>
             )}
-            {/* <div className="flex items-center justify-betwee mt-4"></div> */}
           </div>
 
           <form className="my-4">
@@ -175,20 +205,12 @@ const AddModuleForms = () => {
               </div>
             </div>
           </form>
-          <div className="flex justify-center">
-            <Button
-              onClick={() => onSave(section.id)}
-              className="py-2 text-black mb-5 hover:text-white px-28 bg-sub mx-auto font-semibold"
-            >
-              Save
-            </Button>
-          </div>
         </div>
       ))}
-      <div>
+      <div className="flex justify-center">
         <Button
           onClick={onContinue}
-          className="py-6 text-black w-full hover:text-white px-28 bg-sub mx-auto font-semibold"
+          className="py-2 text-black mb-5 hover:text-white px-28 bg-sub mx-auto font-semibold"
         >
           Continue
         </Button>

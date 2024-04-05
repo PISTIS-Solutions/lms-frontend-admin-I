@@ -17,21 +17,20 @@ interface CourseFormState {
   setSeconds: (seconds: number) => void;
 }
 
-interface ModuleFormState {
-  moduleData: ModuleFormData[];
-  addModuleData: (data: ModuleFormData) => void;
-}
-
 interface ModuleFormData {
   module_title: string;
   module_url: string;
   overview: string;
   module_sub_title: string;
 }
+interface ModuleFormState {
+  filteredModuleDataStore: ModuleFormData[];
+  setFilteredModuleData: (data: ModuleFormData[]) => void;
+}
 
 interface ProjectFormState {
-  projectData: projectFormData[];
-  addProjectData: (data: projectFormData) => void;
+  filteredProjectDataStore: projectFormData[];
+  setFilteredProjectData: (data: projectFormData[]) => void;
 }
 interface projectFormData {
   project_title: string;
@@ -49,12 +48,10 @@ const useCourseFormStore = create<
   hours: 0,
   minutes: 0,
   seconds: 0,
-  moduleData: [],
-  addModuleData: (data) =>
-    set((state) => ({ moduleData: [...state.moduleData, data] })),
-  projectData: [],
-  addProjectData: (data) =>
-    set((state) => ({ projectData: [...state.projectData, data] })),
+  filteredModuleDataStore: [],
+  setFilteredModuleData: (data) => set({ filteredModuleDataStore: data }),
+  filteredProjectDataStore: [],
+  setFilteredProjectData: (data) => set({ filteredProjectDataStore: data }),
   setCourseTitle: (title: string) => set({ courseTitle: title }),
   setDescription: (description: string) => set({ description: description }),
   setCourseLink: (link: string) => set({ courseLink: link }),

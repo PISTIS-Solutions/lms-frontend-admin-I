@@ -307,7 +307,7 @@ const AddCourseForms = () => {
 const router = useRouter()
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if (courseTitle && hours && minutes && seconds && courseLink) {
+    if (courseTitle && hours && minutes && courseLink) {
       toast.success("Course Created", {
         position: "top-right",
         autoClose: 5000,

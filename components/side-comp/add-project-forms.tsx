@@ -1,226 +1,5 @@
-// "use client";
-// import React, { useState } from "react";
-
-// import { Button } from "@/components/ui/button";
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-// } from "@/components/ui/form";
-// import { Input } from "@/components/ui/input";
-// import { z } from "zod";
-// import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { useRouter } from "next/navigation";
-// import { Textarea } from "../ui/textarea";
-// import Cookies from "js-cookie";
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import axios from "axios";
-// import { urls } from "@/utils/config";
-// import { Loader2, Plus } from "lucide-react";
-// import refreshAdminToken from "@/utils/refreshToken";
-
-// const formSchema = z.object({
-//   projectTitle: z.string(),
-//   projectLink: z.string(),
-//   additionalNote: z.string(),
-// });
-
-// const AddProjectForms = () => {
-//   const form = useForm<z.infer<typeof formSchema>>({
-//     resolver: zodResolver(formSchema),
-//     defaultValues: {
-//       projectTitle: "",
-//       projectLink: "",
-//       additionalNote: "",
-//     },
-//   });
-
-//   const [loading, setLoading] = useState(false);
-//   const [saveModule, setSaveModule] = useState<boolean>(false);
-
-//   const router = useRouter();
-//   const uploadProject = async (
-//     values: z.infer<typeof formSchema>,
-//     e: any
-//   ): Promise<void> => {
-//     e.preventDefault();
-//     try {
-//       const adminAccessToken = Cookies.get("adminAccessToken");
-
-//       setLoading(true);
-//       const response = await axios.post(
-//         urls.uploadProjects,
-//         {
-//           project_title: values.projectTitle,
-//           project_description: values.additionalNote,
-//           project_url: values.projectLink,
-//         },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${adminAccessToken}`,
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-//       if (response.status === 200) {
-//         toast.success(response.data.project_title + " added", {
-//           position: "top-right",
-//           autoClose: 5000,
-//           hideProgressBar: true,
-//           closeOnClick: true,
-//           pauseOnHover: false,
-//           draggable: false,
-//           theme: "dark",
-//         });
-//         // Cookies.set("courseId", response.data.id);
-//         // router.push("add-modules/add-project");
-//         setSaveModule(true);
-//       }
-//     } catch (error: any) {
-//       if (error.response && error.response.status === 401) {
-//         await refreshAdminToken();
-//         await uploadProject(values, e);
-//       } else if (error?.message === "Network Error") {
-//         toast.error("Check your network!", {
-//           position: "top-right",
-//           autoClose: 5000,
-//           hideProgressBar: true,
-//           closeOnClick: true,
-//           pauseOnHover: false,
-//           draggable: false,
-//           theme: "dark",
-//         });
-//       } else {
-//         toast.error(error?.response?.data?.detail, {
-//           position: "top-right",
-//           autoClose: 5000,
-//           hideProgressBar: true,
-//           closeOnClick: true,
-//           pauseOnHover: false,
-//           draggable: false,
-//           theme: "dark",
-//         });
-//       }
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div>
-
-//       <ToastContainer />
-//       <div>
-//         <h1 className="md:text-3xl text-xl font-semibold">Project Details</h1>
-//       </div>
-//       <div className="mt-4">
-//         <Form {...form}>
-//           {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8"> */}
-//           <div className="my-4">
-//             <FormField
-//               control={form.control}
-//               name="projectTitle"
-//               render={({ field }) => (
-//                 <FormItem>
-//                   <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                     <p>Project Title</p>
-//                   </FormLabel>
-//                   <FormControl className="">
-//                     <Input
-//                       className="bg-[#FAFAFA] placeholder:italic"
-//                       placeholder="Input Project Title"
-//                       {...field}
-//                     />
-//                   </FormControl>
-//                 </FormItem>
-//               )}
-//             />
-//             <FormField
-//               control={form.control}
-//               name="projectLink"
-//               render={({ field }) => (
-//                 <FormItem>
-//                   <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                     <p className="mt-2">Project Link</p>
-//                   </FormLabel>
-//                   <FormControl>
-//                     <Input
-//                       type="url"
-//                       className="bg-[#FAFAFA] placeholder:italic"
-//                       placeholder="Input Project Sub-Title"
-//                       {...field}
-//                     />
-//                   </FormControl>
-//                 </FormItem>
-//               )}
-//             />
-
-//             <FormField
-//               control={form.control}
-//               name="additionalNote"
-//               render={({ field }) => (
-//                 <FormItem>
-//                   <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                     <p className="mt-2">Additional Note</p>
-//                   </FormLabel>
-//                   <FormControl>
-//                     <Textarea
-//                       className="bg-[#FAFAFA] placeholder:italic"
-//                       placeholder="Input project content details"
-//                       {...field}
-//                     />
-//                   </FormControl>
-//                 </FormItem>
-//               )}
-//             />
-//           </div>
-//           <div className="flex flex-wrap gap-5 justify-center">
-//             <Button
-//               type="submit"
-//               disabled={loading}
-//               onClick={form.handleSubmit(uploadProject)}
-//               className=" py-6 w-full text-black hover:text-white px-28 bg-sub mx-auto font-semibold"
-//             >
-//               {loading ? (
-//                 <Loader2 className="animate-spin" />
-//               ) : (
-//                 <span>
-//                   {saveModule ? (
-//                     <span className="flex items-center gap-x-2">
-//                       Add Project <Plus />{" "}
-//                     </span>
-//                   ) : (
-//                     "Save Project"
-//                   )}
-//                 </span>
-//               )}
-//             </Button>
-//             {saveModule && (
-//               <Button
-//                 onClick={() => {
-//                   router.push("add-modules/add-project");
-//                 }}
-//                 className=" py-6 w-full text-black hover:text-white px-28 bg-sub mx-auto font-semibold"
-//               >
-//                 Publish
-//               </Button>
-//             )}
-//           </div>
-//           {/* </form> */}
-//         </Form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddProjectForms;
-
 "use client";
-import React, { useState, MouseEvent } from "react";
+import React, { useState, MouseEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
@@ -237,8 +16,8 @@ import refreshAdminToken from "@/utils/refreshToken";
 const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
   const {
-    addProjectData,
-    projectData,
+    setFilteredProjectData,
+    filteredProjectDataStore,
     courseTitle,
     description,
     courseLink,
@@ -246,14 +25,7 @@ const AddProjectForms = () => {
     hours,
     minutes,
     seconds,
-    setCourseTitle,
-    setDescription,
-    setCourseLink,
-    setSelectedFile,
-    setHours,
-    setMinutes,
-    setSeconds,
-    moduleData,
+    filteredModuleDataStore,
   } = useCourseFormStore();
 
   const addSection = () => {
@@ -283,45 +55,15 @@ const AddProjectForms = () => {
     });
   };
 
-  const onSave = (index: number) => {
-    const projectTitleInput = document.getElementById(
-      `projectTitle-${index}`
-    ) as HTMLInputElement;
-    const projectLinkInput = document.getElementById(
-      `projectLink-${index}`
-    ) as HTMLInputElement;
-    const projectDetailsInput = document.getElementById(
-      `projectDetails-${index}`
-    ) as HTMLInputElement;
-
-    if (projectTitleInput && projectLinkInput && projectDetailsInput) {
-      const formDataObject = {
-        project_title: projectTitleInput.value,
-        project_url: projectLinkInput.value,
-        project_description: projectDetailsInput.value,
-      };
-      addProjectData(formDataObject);
-
-      toast.success("Section Saved", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
-    } else {
-      console.error("Error: Input element not found.");
-    }
-  };
+  interface projectFormData {
+    project_title: string;
+    project_url: string;
+    project_description: string;
+  }
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const uploadProject = async (
-    // values: z.infer<typeof formSchema>,
-    e: any
-  ): Promise<void> => {
+  const uploadProject = async (e: any): Promise<void> => {
     e.preventDefault();
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
@@ -334,6 +76,27 @@ const AddProjectForms = () => {
         return `PT${totalSeconds}S`;
       };
       setLoading(true);
+      if (
+        !courseTitle ||
+        !description ||
+        !courseLink ||
+        !filteredModuleDataStore.length ||
+        !filteredProjectDataStore.length
+      ) {
+        toast.error("Error! Add Course again!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        router.push("/courses/add-course");
+        console.log("clicked");
+        setLoading(false);
+      }
+
       const response = await axios.post(
         urls.uploadCourses,
         {
@@ -341,8 +104,8 @@ const AddProjectForms = () => {
           course_duration: convertToISO8601(hours, minutes, seconds),
           overview: description,
           course_url: courseLink,
-          modules: moduleData,
-          projects: projectData,
+          modules: filteredModuleDataStore,
+          projects: filteredProjectDataStore,
         },
         {
           headers: {
@@ -362,8 +125,6 @@ const AddProjectForms = () => {
           theme: "dark",
         });
         router.push("/courses");
-        // Cookies.set("courseId", response.data.id);
-        // setSaveModule(true);
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -392,6 +153,65 @@ const AddProjectForms = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onContinue = (e: any) => {
+    const filteredProjectData = sections
+      .map((section) => {
+        const projectTitleInput = document.getElementById(
+          `projectTitle-${section.id}`
+        ) as HTMLInputElement;
+        const projectLinkInput = document.getElementById(
+          `projectLink-${section.id}`
+        ) as HTMLInputElement;
+        const projectDetailsInput = document.getElementById(
+          `projectDetails-${section.id}`
+        ) as HTMLInputElement;
+
+        if (projectTitleInput && projectLinkInput && projectDetailsInput) {
+          return {
+            project_title: projectTitleInput.value,
+            project_url: projectLinkInput.value,
+            project_description: projectDetailsInput.value,
+          };
+        } else {
+          return null;
+        }
+      })
+      .filter((data): data is projectFormData => data !== null);
+
+    const areFieldsValid = sections.every((section) => {
+      const projectTitleInput = document.getElementById(
+        `projectTitle-${section.id}`
+      ) as HTMLInputElement;
+      const projectLinkInput = document.getElementById(
+        `projectLink-${section.id}`
+      ) as HTMLInputElement;
+      const projectDetailsInput = document.getElementById(
+        `projectDetails-${section.id}`
+      ) as HTMLInputElement;
+
+      return (
+        projectTitleInput.value.trim() !== "" &&
+        projectLinkInput.value.trim() !== "" &&
+        projectDetailsInput.value.trim() !== ""
+      );
+    });
+
+    if (areFieldsValid) {
+      setFilteredProjectData(filteredProjectData);
+      uploadProject(e);
+    } else {
+      toast.error("Check form fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
     }
   };
 
@@ -467,20 +287,14 @@ const AddProjectForms = () => {
               </div>
             </div>
           </form>
-          <div className="flex justify-center">
-            <Button
-              onClick={() => onSave(section.id)}
-              className="py-2 text-black mb-5 hover:text-white px-28 bg-sub mx-auto font-semibold"
-            >
-              Save
-            </Button>
-          </div>
         </div>
       ))}
       <div>
         <Button
           disabled={loading}
-          onClick={(e) => uploadProject(e)}
+          onClick={(e) => {
+            onContinue(e);
+          }}
           className="py-6 text-black w-full hover:text-white px-28 bg-sub mx-auto font-semibold"
         >
           {loading ? <Loader2Icon className="animate-spin" /> : <> Publish</>}
