@@ -63,6 +63,67 @@ const AddProjectForms = () => {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const onContinue = async (e: any) => {
+    e.preventDefault();
+
+    const filteredProjectData = sections
+      .map((section) => {
+        const projectTitleInput = document.getElementById(
+          `projectTitle-${section.id}`
+        ) as HTMLInputElement;
+        const projectLinkInput = document.getElementById(
+          `projectLink-${section.id}`
+        ) as HTMLInputElement;
+        const projectDetailsInput = document.getElementById(
+          `projectDetails-${section.id}`
+        ) as HTMLInputElement;
+
+        if (projectTitleInput && projectLinkInput && projectDetailsInput) {
+          return {
+            project_title: projectTitleInput.value,
+            project_url: projectLinkInput.value,
+            project_description: projectDetailsInput.value,
+          };
+        } else {
+          return null;
+        }
+      })
+      .filter((data): data is projectFormData => data !== null);
+
+    const areFieldsValid = sections.every((section) => {
+      const projectTitleInput = document.getElementById(
+        `projectTitle-${section.id}`
+      ) as HTMLInputElement;
+      const projectLinkInput = document.getElementById(
+        `projectLink-${section.id}`
+      ) as HTMLInputElement;
+      const projectDetailsInput = document.getElementById(
+        `projectDetails-${section.id}`
+      ) as HTMLInputElement;
+
+      return (
+        projectTitleInput.value.trim() !== "" &&
+        projectLinkInput.value.trim() !== "" &&
+        projectDetailsInput.value.trim() !== ""
+      );
+    });
+
+    if (areFieldsValid) {
+      setFilteredProjectData(filteredProjectData);
+      await uploadProject(e);
+    } else {
+      toast.error("Check form fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+    }
+  };
+
   const uploadProject = async (e: any): Promise<void> => {
     e.preventDefault();
     try {
@@ -76,6 +137,8 @@ const AddProjectForms = () => {
         return `PT${totalSeconds}S`;
       };
       setLoading(true);
+
+      // Check if any required field is missing
       if (
         !courseTitle ||
         !description ||
@@ -92,9 +155,9 @@ const AddProjectForms = () => {
           draggable: false,
           theme: "dark",
         });
-        router.push("/courses/add-course");
-        console.log("clicked");
         setLoading(false);
+        router.replace("/courses/add-course")
+        return; 
       }
 
       const response = await axios.post(
@@ -153,65 +216,6 @@ const AddProjectForms = () => {
       }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const onContinue = (e: any) => {
-    const filteredProjectData = sections
-      .map((section) => {
-        const projectTitleInput = document.getElementById(
-          `projectTitle-${section.id}`
-        ) as HTMLInputElement;
-        const projectLinkInput = document.getElementById(
-          `projectLink-${section.id}`
-        ) as HTMLInputElement;
-        const projectDetailsInput = document.getElementById(
-          `projectDetails-${section.id}`
-        ) as HTMLInputElement;
-
-        if (projectTitleInput && projectLinkInput && projectDetailsInput) {
-          return {
-            project_title: projectTitleInput.value,
-            project_url: projectLinkInput.value,
-            project_description: projectDetailsInput.value,
-          };
-        } else {
-          return null;
-        }
-      })
-      .filter((data): data is projectFormData => data !== null);
-
-    const areFieldsValid = sections.every((section) => {
-      const projectTitleInput = document.getElementById(
-        `projectTitle-${section.id}`
-      ) as HTMLInputElement;
-      const projectLinkInput = document.getElementById(
-        `projectLink-${section.id}`
-      ) as HTMLInputElement;
-      const projectDetailsInput = document.getElementById(
-        `projectDetails-${section.id}`
-      ) as HTMLInputElement;
-
-      return (
-        projectTitleInput.value.trim() !== "" &&
-        projectLinkInput.value.trim() !== "" &&
-        projectDetailsInput.value.trim() !== ""
-      );
-    });
-
-    if (areFieldsValid) {
-      setFilteredProjectData(filteredProjectData);
-      uploadProject(e);
-    } else {
-      toast.error("Check form fields!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
     }
   };
 
