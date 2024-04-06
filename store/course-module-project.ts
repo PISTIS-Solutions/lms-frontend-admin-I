@@ -20,7 +20,7 @@ interface CourseFormState {
 interface ModuleFormData {
   module_title: string;
   module_url: string;
-  overview: string;
+  description: string;
   module_sub_title: string;
 }
 interface ModuleFormState {

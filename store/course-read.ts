@@ -8,26 +8,29 @@ import refreshAdminToken from "@/utils/refreshToken";
 interface readStudent {
   courseRead: any;
   loading: boolean;
+  response: any;
   fetchCourseRead: (id: any) => Promise<void>;
 }
 
 const useCourseRead = create<readStudent>((set, get) => ({
   courseRead: null,
   loading: false,
+  response: null,
 
   fetchCourseRead: async (id: any) => {
     try {
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
+      // const courseID = localStorage.getItem("courseID");
       const response = await axios.get(`${urls.uploadCourses}${id}`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
       set({ courseRead: response.data });
-      console.log(response);
+      set({ response: response.status });
       if (response.status === 200) {
-        // router.push(`/students/student`)
+        // router.push(`/courses/modules`);
         set({ loading: false });
       }
     } catch (error: any) {

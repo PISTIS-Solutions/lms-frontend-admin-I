@@ -10,9 +10,15 @@ import TopNav from "@/components/side-comp/topNav";
 import { Loader2 } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 import useStudentInfoStore from "@/store/read-student";
+import useStudentsStore from "@/store/fetch-students";
 
 const Student = () => {
-  const { studentData, loading } = useStudentInfoStore();
+  const { studentData, loading, fetchStudentInfo } = useStudentInfoStore();
+  const params = useParams<{ student: string }>();
+
+  useEffect(() => {
+    fetchStudentInfo(params.student);
+  }, []);
 
   return (
     <main className="relative">
