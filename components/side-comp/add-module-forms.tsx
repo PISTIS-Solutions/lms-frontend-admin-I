@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MinusCircle, PlusCircle } from "lucide-react";
+import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
 import { useRouter } from "next/navigation";
 
@@ -45,11 +45,12 @@ const AddModuleForms = () => {
   interface ModuleFormData {
     module_title: string;
     module_url: string;
-    overview: string;
+    description: string;
     module_sub_title: string;
   }
-
+  const [loading, setLoading] = useState<boolean>(false);
   const onContinue = () => {
+    setLoading(true);
     const filteredModuleData = sections
       .map((section) => {
         const moduleTitleInput = document.getElementById(
@@ -75,7 +76,7 @@ const AddModuleForms = () => {
             module_title: moduleTitleInput.value,
             module_sub_title: modulesubTitleInput.value,
             module_url: moduleLinkInput.value,
-            overview: moduleDetailsInput.value,
+            description: moduleDetailsInput.value,
           };
         } else {
           return null;
@@ -106,6 +107,7 @@ const AddModuleForms = () => {
 
     if (areFieldsValid) {
       setFilteredModuleData(filteredModuleData);
+      setLoading(false);
       router.push("add-modules/add-project");
     } else {
       toast.error("Check form fields!", {
@@ -117,6 +119,7 @@ const AddModuleForms = () => {
         draggable: false,
         theme: "dark",
       });
+      setLoading(false);
     }
   };
 
@@ -209,10 +212,11 @@ const AddModuleForms = () => {
       ))}
       <div className="flex justify-center">
         <Button
+          disabled={loading}
           onClick={onContinue}
           className="py-2 text-black mb-5 hover:text-white px-28 bg-sub mx-auto font-semibold"
         >
-          Continue
+          {loading ? <Loader2 className="animate-spin" /> : <>Continue</>}
         </Button>
       </div>
     </div>

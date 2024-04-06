@@ -8,12 +8,14 @@ import refreshAdminToken from "@/utils/refreshToken";
 interface readStudent {
   studentData: any;
   loading: boolean;
+  response: any;
   fetchStudentInfo: (id: any) => Promise<void>;
 }
 
 const useStudentInfoStore = create<readStudent>((set, get) => ({
   studentData: null,
   loading: false,
+  response: null,
 
   fetchStudentInfo: async (id: any) => {
     try {
@@ -25,7 +27,7 @@ const useStudentInfoStore = create<readStudent>((set, get) => ({
         },
       });
       set({ studentData: response.data });
-      console.log(response);
+      set({ response: response.status });
       if (response.status === 200) {
         // router.push(`/students/student`)
         set({ loading: false });
