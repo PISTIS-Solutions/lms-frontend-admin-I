@@ -68,6 +68,13 @@ const Module = () => {
                 </p>
               </div>
               <div className="bg-white rounded-[8px] my-2 md:my-0 p-2 col-span-3 shadow-sm">
+                <div className="flex justify-between mb-4 items-center">
+                  <p className="text-main text-lg font-semibold">Modules</p>
+                  <span className="flex items-center gap-x-2 cursor-pointer">
+                    <p className="text-main underline">Add</p>
+                    <Plus />
+                  </span>
+                </div>
                 {courseRead?.modules?.map((module: any, index: any) => (
                   <>
                     <div
