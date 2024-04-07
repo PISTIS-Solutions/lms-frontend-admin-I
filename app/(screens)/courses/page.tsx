@@ -50,8 +50,8 @@ const Courses = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      setCourses(response.data.results);
-      console.log(response.data.results[0].title)
+      setCourses(response.data);
+      console.log(response);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();

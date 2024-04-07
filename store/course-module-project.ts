@@ -1,67 +1,95 @@
-import { create } from "zustand";
+import {create} from "zustand";
+
+interface ModuleData {
+  module_title: string;
+  module_sub_title: string;
+  description: string;
+  module_url: string;
+}
+
+interface ProjectData {
+  project_title: string;
+  project_description: string;
+  project_url: string;
+}
+
+interface CourseData {
+  title: string;
+  course_duration: string;
+  overview: string;
+  course_url: string;
+  modules: ModuleData[];
+  projects: ProjectData[];
+}
 
 interface CourseFormState {
-  courseTitle: string;
-  description: string;
-  courseLink: string;
-  selectedFile: File | null;
-  hours: number;
-  minutes: number;
-  seconds: number;
-  setCourseTitle: (title: string) => void;
-  setDescription: (description: string) => void;
-  setCourseLink: (link: string) => void;
-  setSelectedFile: (file: File | null) => void;
-  setHours: (hours: number) => void;
-  setMinutes: (minutes: number) => void;
-  setSeconds: (seconds: number) => void;
+  courseData: CourseData;
+  updateCourseData: (data: Partial<CourseData>) => void;
+  addModule: (module: ModuleData) => void;
+  updateModule: (index: number, module: ModuleData) => void;
+  deleteModule: (index: number) => void;
+  addProject: (project: ProjectData) => void;
+  updateProject: (index: number, project: ProjectData) => void;
+  deleteProject: (index: number) => void;
 }
 
-interface ModuleFormState {
-  moduleData: ModuleFormData[];
-  addModuleData: (data: ModuleFormData) => void;
-}
-
-interface ModuleFormData {
-  module_title: string;
-  module_url: string;
-  overview: string;
-  module_sub_title: string;
-}
-
-interface ProjectFormState {
-  projectData: projectFormData[];
-  addProjectData: (data: projectFormData) => void;
-}
-interface projectFormData {
-  project_title: string;
-  project_url: string;
-  project_description: string;
-}
-
-const useCourseFormStore = create<
-  CourseFormState & ModuleFormState & ProjectFormState
->((set) => ({
-  courseTitle: "",
-  description: "",
-  courseLink: "",
-  selectedFile: null,
-  hours: 0,
-  minutes: 0,
-  seconds: 0,
-  moduleData: [],
-  addModuleData: (data) =>
-    set((state) => ({ moduleData: [...state.moduleData, data] })),
-  projectData: [],
-  addProjectData: (data) =>
-    set((state) => ({ projectData: [...state.projectData, data] })),
-  setCourseTitle: (title: string) => set({ courseTitle: title }),
-  setDescription: (description: string) => set({ description: description }),
-  setCourseLink: (link: string) => set({ courseLink: link }),
-  setSelectedFile: (file: File | null) => set({ selectedFile: file }),
-  setHours: (hours: number) => set({ hours: hours }),
-  setMinutes: (minutes: number) => set({ minutes: minutes }),
-  setSeconds: (seconds: number) => set({ seconds: seconds }),
+const useCourseFormStore = create<CourseFormState>((set) => ({
+  courseData: {
+    title: "Default Title",
+    course_duration: "",
+    overview: "",
+    course_url: "http://example.com",
+    modules: [],
+    projects: [],
+  },
+  updateCourseData: (data) =>
+    set((state) => ({ courseData: { ...state.courseData, ...data } })),
+  addModule: (module) =>
+    set((state) => ({
+      courseData: {
+        ...state.courseData,
+        modules: [...state.courseData.modules, module],
+      },
+    })),
+  updateModule: (index, module) =>
+    set((state) => ({
+      courseData: {
+        ...state.courseData,
+        modules: state.courseData.modules.map((m, i) =>
+          i === index ? module : m
+        ),
+      },
+    })),
+  deleteModule: (index) =>
+    set((state) => ({
+      courseData: {
+        ...state.courseData,
+        modules: state.courseData.modules.filter((_, i) => i !== index),
+      },
+    })),
+  addProject: (project) =>
+    set((state) => ({
+      courseData: {
+        ...state.courseData,
+        projects: [...state.courseData.projects, project],
+      },
+    })),
+  updateProject: (index, project) =>
+    set((state) => ({
+      courseData: {
+        ...state.courseData,
+        projects: state.courseData.projects.map((p, i) =>
+          i === index ? project : p
+        ),
+      },
+    })),
+  deleteProject: (index) =>
+    set((state) => ({
+      courseData: {
+        ...state.courseData,
+        projects: state.courseData.projects.filter((_, i) => i !== index),
+      },
+    })),
 }));
 
 export default useCourseFormStore;
