@@ -12,9 +12,11 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
+import PublishBtn from "./publishBtn";
 
 const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
+
   const {
     setFilteredProjectData,
     filteredProjectDataStore,
@@ -63,69 +65,9 @@ const AddProjectForms = () => {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const onContinue = async (e: any) => {
-    e.preventDefault();
+  const uploadProject = async (): Promise<void> => {
+    // e.preventDefault();
 
-    const filteredProjectData = sections
-      .map((section) => {
-        const projectTitleInput = document.getElementById(
-          `projectTitle-${section.id}`
-        ) as HTMLInputElement;
-        const projectLinkInput = document.getElementById(
-          `projectLink-${section.id}`
-        ) as HTMLInputElement;
-        const projectDetailsInput = document.getElementById(
-          `projectDetails-${section.id}`
-        ) as HTMLInputElement;
-
-        if (projectTitleInput && projectLinkInput && projectDetailsInput) {
-          return {
-            project_title: projectTitleInput.value,
-            project_url: projectLinkInput.value,
-            project_description: projectDetailsInput.value,
-          };
-        } else {
-          return null;
-        }
-      })
-      .filter((data): data is projectFormData => data !== null);
-
-    const areFieldsValid = sections.every((section) => {
-      const projectTitleInput = document.getElementById(
-        `projectTitle-${section.id}`
-      ) as HTMLInputElement;
-      const projectLinkInput = document.getElementById(
-        `projectLink-${section.id}`
-      ) as HTMLInputElement;
-      const projectDetailsInput = document.getElementById(
-        `projectDetails-${section.id}`
-      ) as HTMLInputElement;
-
-      return (
-        projectTitleInput.value.trim() !== "" &&
-        projectLinkInput.value.trim() !== "" &&
-        projectDetailsInput.value.trim() !== ""
-      );
-    });
-
-    if (areFieldsValid) {
-      setFilteredProjectData(filteredProjectData);
-      await uploadProject(e);
-    } else {
-      toast.error("Check form fields!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
-    }
-  };
-
-  const uploadProject = async (e: any): Promise<void> => {
-    e.preventDefault();
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
       const convertToISO8601 = (
@@ -138,7 +80,6 @@ const AddProjectForms = () => {
       };
       setLoading(true);
 
-      // Check if any required field is missing
       if (
         !courseTitle ||
         !description ||
@@ -156,10 +97,9 @@ const AddProjectForms = () => {
           theme: "dark",
         });
         setLoading(false);
-        router.replace("/courses/add-course")
-        return; 
+        router.replace("/courses/add-course");
+        return;
       }
-
       const response = await axios.post(
         urls.uploadCourses,
         {
@@ -192,7 +132,7 @@ const AddProjectForms = () => {
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await uploadProject(e);
+        await uploadProject();
       } else if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
@@ -218,6 +158,95 @@ const AddProjectForms = () => {
       setLoading(false);
     }
   };
+  const onContinue = async (e: any) => {
+    e.preventDefault();
+    const areFieldsValid = sections.every((section) => {
+      const projectTitleInput = document.getElementById(
+        `projectTitle-${section.id}`
+      ) as HTMLInputElement;
+      const projectLinkInput = document.getElementById(
+        `projectLink-${section.id}`
+      ) as HTMLInputElement;
+      const projectDetailsInput = document.getElementById(
+        `projectDetails-${section.id}`
+      ) as HTMLInputElement;
+
+      return (
+        projectTitleInput.value.trim() !== "" &&
+        projectLinkInput.value.trim() !== "" &&
+        projectDetailsInput.value.trim() !== ""
+      );
+    });
+
+    if (!areFieldsValid) {
+      toast.error("Check form fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+      return;
+    }
+
+    const filteredProjectData = sections.map((section) => {
+      const projectTitleInput = document.getElementById(
+        `projectTitle-${section.id}`
+      ) as HTMLInputElement;
+      const projectLinkInput = document.getElementById(
+        `projectLink-${section.id}`
+      ) as HTMLInputElement;
+      const projectDetailsInput = document.getElementById(
+        `projectDetails-${section.id}`
+      ) as HTMLInputElement;
+
+      return {
+        project_title: projectTitleInput.value,
+        project_url: projectLinkInput.value,
+        project_description: projectDetailsInput.value,
+      };
+    });
+
+    setFilteredProjectData(
+      filteredProjectData.filter(
+        (data) =>
+          data.project_title.trim() !== "" &&
+          data.project_url.trim() !== "" &&
+          data.project_description.trim() !== ""
+      )
+    );
+
+    console.log(filteredProjectData, "fp");
+    // Call uploadProject
+    // await uploadProject(e);
+  };
+
+  const test = () => {
+    console.log("test");
+  };
+  useEffect(() => {
+    if (
+      !courseTitle ||
+      !description ||
+      !courseLink ||
+      !filteredModuleDataStore.length
+    ) {
+      toast.error("Error! Add Course again!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+      setLoading(false);
+      router.replace("/courses/add-course");
+      return;
+    }
+  }, []);
 
   return (
     <div className="pt-5">
@@ -293,17 +322,12 @@ const AddProjectForms = () => {
           </form>
         </div>
       ))}
-      <div>
-        <Button
-          disabled={loading}
-          onClick={(e) => {
-            onContinue(e);
-          }}
-          className="py-6 text-black w-full hover:text-white px-28 bg-sub mx-auto font-semibold"
-        >
-          {loading ? <Loader2Icon className="animate-spin" /> : <> Publish</>}
-        </Button>
-      </div>
+      <PublishBtn
+        loading={loading}
+        onContinue={onContinue}
+        upload={uploadProject}
+        test={test}
+      />
     </div>
   );
 };

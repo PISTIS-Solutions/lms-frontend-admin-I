@@ -19,18 +19,6 @@ import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import useCourseRead from "@/store/course-read";
 
-// interface CoursesData {
-//   id: string;
-//   title: string;
-//   slug: string;
-//   overview: any;
-//   course_url: string;
-//   course_duration: string;
-// }
-// interface CoursesArray {
-//   courses: CoursesData[];
-// }
-
 const Courses = () => {
   const router = useRouter();
   const [courses, setCourses] = useState<any | null>(null);
@@ -79,10 +67,6 @@ const Courses = () => {
     }
   };
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
-
   const [deleting, setDeleting] = useState(false);
 
   const deleteCourse = async (courseId: string) => {
@@ -107,17 +91,27 @@ const Courses = () => {
           draggable: false,
           theme: "dark",
         });
-        window.location.reload();
+        // window.location.reload();
       } else {
         console.error("Failed to delete course.");
       }
     } catch (error: any) {
-      console.error("Error deleting course:", error.message);
+      console.error("Error deleting course:", error.response.data.detail);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await deleteCourse(courseId);
       } else if (error?.message === "Network Error") {
         toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else if (error.response.data.detail === "Not found.") {
+        toast.error("Course already deleted!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -167,6 +161,9 @@ const Courses = () => {
     }
   };
 
+  useEffect(() => {
+    fetchCourses();
+  }, []);
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
