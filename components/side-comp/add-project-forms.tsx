@@ -1,32 +1,17 @@
 "use client";
 import React, { useState, MouseEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { Textarea } from "../ui/textarea";
-import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Loader2Icon, MinusCircle, PlusCircle } from "lucide-react";
+import useCourseFormStore from "@/store/course-module-project";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { urls } from "@/utils/config";
-import { Loader2, Plus } from "lucide-react";
 import refreshAdminToken from "@/utils/refreshToken";
-
-const formSchema = z.object({
-  projectTitle: z.string(),
-  projectLink: z.string(),
-  additionalNote: z.string(),
-});
 
 const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
@@ -143,7 +128,14 @@ const AddProjectForms = () => {
     e.preventDefault();
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
-
+      const convertToISO8601 = (
+        hours: number,
+        minutes: number,
+        seconds: number
+      ): string => {
+        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        return `PT${totalSeconds}S`;
+      };
       setLoading(true);
 
       // Check if any required field is missing
@@ -169,7 +161,7 @@ const AddProjectForms = () => {
       }
 
       const response = await axios.post(
-        urls.uploadProjects,
+        urls.uploadCourses,
         {
           title: courseTitle,
           course_duration: convertToISO8601(hours, minutes, seconds),
@@ -185,8 +177,8 @@ const AddProjectForms = () => {
           },
         }
       );
-      if (response.status === 200) {
-        toast.success(response.data.project_title + " added", {
+      if (response.status === 201) {
+        toast.success(response.data.title + " added", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -200,7 +192,7 @@ const AddProjectForms = () => {
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await uploadProject(values, e);
+        await uploadProject(e);
       } else if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
@@ -228,8 +220,7 @@ const AddProjectForms = () => {
   };
 
   return (
-    <div>
-    
+    <div className="pt-5">
       <ToastContainer />
       {sections.map((section, index) => (
         <div key={section.id} className="mt-4">

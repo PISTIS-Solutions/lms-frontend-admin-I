@@ -1,11 +1,18 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
+import { formatChartData } from "./helper";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { BookOpenText, GraduationCap, ListChecks, Loader2 } from "lucide-react";
+import {
+  BookOpenText,
+  GraduationCap,
+  ListChecks,
+  Loader2,
+  Loader2Icon,
+} from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
 import PaginatedTableMentor from "@/components/side-comp/pagination-table mentor";
 import { LineChart } from "@/components/side-comp/line-chart";
@@ -37,8 +44,17 @@ interface AdminData {
   total_mentors: number;
 }
 
+interface ChartDetails {
+  data: number[];
+  labels: string[];
+}
+
 const Dashboard = () => {
   const [table, setTable] = useState("students");
+  const [chartDetails, setChartDetails] = useState<ChartDetails>({
+    data: [],
+    labels: [],
+  });
   const changeTableMentors = () => {
     setTable("mentors");
   };
@@ -59,7 +75,6 @@ const Dashboard = () => {
         },
       });
       setAdminData(response.data);
-      console.log(response);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -89,9 +104,58 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  const [projectOverview, setProjectOverview] = useState<any>();
+  const [overviewLoad, setOverviewLoad] = useState<boolean>(false);
+  const fetchProjectOverview = async () => {
+    try {
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      setOverviewLoad(true);
+      const response = await axios.get(urls.projectOverview, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+      setAdminData(response.data);
+      const formattedChartData = formatChartData(
+        response.data.students_per_month
+      );
+      setChartDetails(formattedChartData);
+      console.log(response, "response");
+      setProjectOverview(response.data);
+      setOverviewLoad(false);
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await fetchProjectOverview();
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setOverviewLoad(false);
+    }
+  };
 
   useEffect(() => {
     fetchAdminData();
+    fetchProjectOverview();
   }, []);
 
   const months = [
@@ -157,7 +221,6 @@ const Dashboard = () => {
                     )}
                     <p className="md:text-base text-xs text-[#00173A]">
                       Total Students
-                      {/* {AdminData.total_courses} */}
                     </p>
                   </div>
                   <span className="bg-[#F8F9FF] rounded-full p-3">
@@ -201,7 +264,7 @@ const Dashboard = () => {
                     ))}
                   </select>
                 </div>
-                <LineChart />
+                <LineChart chartDetails={chartDetails} />
               </div>
             </div>
             <div className="bg-white h-[370px] md:h-[500px] rounded-[8px] p-2 shadow-sm col-span-3">
@@ -211,20 +274,45 @@ const Dashboard = () => {
               <div>
                 <ScrollArea className="w-full h-[300px] md:h-[400px] rounded-md">
                   <div>
-                    {tags.map((tag, index) => (
+                    {/* {tags.map((tag, index) => (
                       <>
                         <div
                           key={index}
                           className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]"
                         >
                           <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px] hover:text-black">
-                            {/* <AvatarImage src={avatar} /> */}
+                           
                             <AvatarFallback>JN</AvatarFallback>
                           </Avatar>
                           <p className="md:text-lg text-sm">{tag}</p>
                         </div>
                       </>
-                    ))}
+                    ))} */}
+                    {overviewLoad ? (
+                      <span className="flex text-center justify-center items-center">
+                        <Loader2Icon className="animate-spin" />
+                        Loading...
+                      </span>
+                    ) : projectOverview && projectOverview.length > 0 ? (
+                      projectOverview.map((project: any, index: any) => {
+                        return (
+                          <div
+                            key={index}
+                            className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]"
+                          >
+                            <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px] hover:text-black">
+                              <AvatarFallback>JN</AvatarFallback>
+                            </Avatar>
+                            <p className="md:text-lg text-sm">
+                              {project.title}
+                            </p>{" "}
+                            {/* Assuming `project.title` is the property you want to display */}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-center">No project Overview.</p>
+                    )}
                   </div>
                 </ScrollArea>
               </div>
