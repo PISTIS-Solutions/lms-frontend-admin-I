@@ -3,11 +3,19 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 import img from "@/public/assets/course/ansible.png";
-import { BookText, Hourglass, LucideLoader2, Trash2 } from "lucide-react";
+import {
+  BookText,
+  Hourglass,
+  Loader2,
+  LucideLoader2,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
+import useCourseRead from "@/store/course-read";
+import { Button } from "../ui/button";
 // import img from "@/public/assets/course/ansible.png"
 
 interface cardProps {
@@ -19,6 +27,7 @@ interface cardProps {
   duration: number;
   handleCardClick: any;
   handleOpen: any;
+  cardLoad: any;
 }
 
 const CoursesCard = ({
@@ -30,10 +39,11 @@ const CoursesCard = ({
   duration,
   handleCardClick,
   handleOpen,
+  cardLoad,
 }: cardProps) => {
   const [moduleCount, setModuleCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  
+  const { fetchCourseRead } = useCourseRead();
 
   useEffect(() => {
     const getModuleCount = async () => {
@@ -70,7 +80,9 @@ const CoursesCard = ({
     <div className="relative">
       <div
         key={id}
+        aria-disabled={cardLoad}
         onClick={() => {
+          fetchCourseRead(id);
           handleCardClick(id);
         }}
         className=" w-full cursor-pointer h-auto shadow-md rounded-[8px] bg-[#FFF]"
@@ -108,12 +120,13 @@ const CoursesCard = ({
           </div>
         </div>
       </div>
-      <div
+      <Button
+        disabled={cardLoad}
         onClick={handleOpen}
         className="p-2 bg-white cursor-pointer rounded-full w-[35px] h-[35px] flex justify-center items-center absolute top-2 right-2 hover:bg-red-500 duration-150 ease-in-out text-red-500 hover:text-white"
       >
         <Trash2 className="" />
-      </div>
+      </Button>
     </div>
   );
 };

@@ -6,36 +6,37 @@ import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 
 interface readStudent {
-  studentData: any;
+  courseRead: any;
   loading: boolean;
   response: any;
-  fetchStudentInfo: (id: any) => Promise<void>;
+  fetchCourseRead: (id: any) => Promise<void>;
 }
 
-const useStudentInfoStore = create<readStudent>((set, get) => ({
-  studentData: null,
+const useCourseRead = create<readStudent>((set, get) => ({
+  courseRead: null,
   loading: false,
   response: null,
 
-  fetchStudentInfo: async (id: any) => {
+  fetchCourseRead: async (id: any) => {
     try {
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(`${urls.getStudents}${id}`, {
+      // const courseID = localStorage.getItem("courseID");
+      const response = await axios.get(`${urls.uploadCourses}${id}`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      set({ studentData: response.data });
+      set({ courseRead: response.data });
       set({ response: response.status });
       if (response.status === 200) {
-        // router.push(`/students/student`)
+        // router.push(`/courses/modules`);
         set({ loading: false });
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudentInfo(id);
+        await get().fetchCourseRead(id);
       } else if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
@@ -63,4 +64,4 @@ const useStudentInfoStore = create<readStudent>((set, get) => ({
   },
 }));
 
-export default useStudentInfoStore;
+export default useCourseRead;

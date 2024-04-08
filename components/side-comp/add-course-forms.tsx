@@ -59,21 +59,41 @@ const AddCourseForms = () => {
     }
   };
 
-  const [hours, setHours] = useState<number>(0);
-  const [minutes, setMinutes] = useState<number>(0);
-  const [seconds, setSeconds] = useState<number>(0);
-
-  const convertToISO8601 = (
-    hours: number,
-    minutes: number,
-    seconds: number
-  ): string => {
-    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-    return `PT${totalSeconds}S`;
+  // const convertToISO8601 = (
+  //   hours: number,
+  //   minutes: number,
+  //   seconds: number
+  // ): string => {
+  //   const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+  //   return `PT${totalSeconds}S`;
+  // };
+const router = useRouter()
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if (courseTitle && hours && minutes && courseLink) {
+      toast.success("Course Created", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+      router.push("/courses/add-course/add-modules")
+      // console.log(convertToISO8601(hours, minutes, seconds));
+    } else {
+      toast.error("Form Details incomplete", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+    }
   };
-
-  // const router = useRouter();
-  // const [loading, setLoading] = useState(false);
 
   return (
     <div>

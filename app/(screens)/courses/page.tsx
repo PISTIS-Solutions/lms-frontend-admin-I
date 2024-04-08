@@ -17,6 +17,7 @@ import { dummydata } from "@/app/data/dummyModules";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
+import useCourseRead from "@/store/course-read";
 
 // interface CoursesData {
 //   id: string;
@@ -32,14 +33,11 @@ import refreshAdminToken from "@/utils/refreshToken";
 
 const Courses = () => {
   const router = useRouter();
-  const handleCardClick = (id: any) => {
-    router.push(`/courses/${id}`);
-  };
-
   const [courses, setCourses] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const { response } = useCourseRead();
 
   const fetchCourses = async () => {
     try {
@@ -50,8 +48,7 @@ const Courses = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      setCourses(response.data);
-      console.log(response);
+      setCourses(response.data.results);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -150,6 +147,25 @@ const Courses = () => {
     setSelectedCourse(courseId);
     setModal(true);
   };
+  const [cardLoad, setCardLoad] = useState<boolean>(false);
+  const handleCardClick = (id: any) => {
+    setCardLoad(true);
+    if (response === 200) {
+      router.push(`/courses/${id}`);
+      setCardLoad(false);
+    } else {
+      toast.error("Check your network!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+      setCardLoad(false);
+    }
+  };
 
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
@@ -183,6 +199,7 @@ const Courses = () => {
                     duration={course.course_duration}
                     handleCardClick={handleCardClick}
                     handleOpen={() => handleOpen(course.id)}
+                    cardLoad={cardLoad}
                   />
                 </div>
               ))
