@@ -24,19 +24,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 
-const tags = [
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-  "Project submission by Femi Oyewale",
-];
-
 interface AdminData {
   total_courses: number;
   total_students: number;
@@ -105,8 +92,6 @@ const Dashboard = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      // setAdminData(response.data);
-      console.log(response, "response");
       setProjectOverview(response.data);
       setOverviewLoad(false);
     } catch (error: any) {

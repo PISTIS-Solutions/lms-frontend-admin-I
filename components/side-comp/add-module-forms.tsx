@@ -11,8 +11,12 @@ import { useRouter } from "next/navigation";
 
 const AddModuleForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
-  const { setFilteredModuleData, filteredModuleDataStore } =
-    useCourseFormStore();
+  const {
+    setFilteredModuleData,
+    courseTitle,
+    description,
+    courseLink,
+  } = useCourseFormStore();
   const router = useRouter();
 
   const addSection = () => {
@@ -122,6 +126,29 @@ const AddModuleForms = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (
+      !courseTitle ||
+      !description ||
+      !courseLink
+      // !filteredModuleDataStore.length
+      // !filteredProjectDataStore.length
+    ) {
+      toast.error("Error! Add Course again!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+      setLoading(false);
+      router.replace("/courses/add-course");
+      return;
+    }
+  }, []);
 
   return (
     <div className="pt-5">
