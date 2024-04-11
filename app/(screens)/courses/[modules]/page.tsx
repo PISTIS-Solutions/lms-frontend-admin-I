@@ -6,29 +6,25 @@ import SideNav from "@/components/side-comp/side-nav";
 import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus } from "lucide-react";
 import TopNav from "@/components/side-comp/topNav";
 import useCourseRead from "@/store/course-read";
-import axios from "axios";
-import { urls } from "@/utils/config";
-import refreshAdminToken from "@/utils/refreshToken";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
+import SideModules from "@/components/side-comp/side-modules";
 
 const Module = () => {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [courses, setCourses] = useState<any | null>(null);
   const params = useParams<{ modules: string }>();
 
-  const { courseRead, fetchCourseRead } = useCourseRead();
+  const { courseRead, fetchCourseRead, loading } = useCourseRead();
 
-  const handleItemClick = (index: number, id: string) => {
+  const courseID = params.modules;
+
+  const handleItemClick = (index: number, moduleId: string) => {
     setSelectedIndex(index === selectedIndex ? -1 : index);
-    // router.push(`/courses/modules/${id}`);
+    router.replace(`/courses/${courseID}/${moduleId}`);
   };
 
   useEffect(() => {
-    fetchCourseRead(params.modules);
+    fetchCourseRead(courseID);
   }, []);
 
   return (
@@ -45,8 +41,9 @@ const Module = () => {
           <TopNav />
         </div>
         {loading ? (
-          <div className="w-[90%] h-screen">
-            <Loader2 className="aminate-spin" />
+          <div className="w-[100%] flex items-center justify-center h-screen">
+            <Loader2 className=" w-8 h-8 animate-spin" />
+            <p>Loading Course Information</p>
           </div>
         ) : (
           <div className="p-4">
@@ -67,7 +64,7 @@ const Module = () => {
                   extensive programming knowledge.
                 </p>
               </div>
-              <div className="bg-white rounded-[8px] my-2 md:my-0 p-2 col-span-3 shadow-sm">
+              {/* <div className="bg-white rounded-[8px] my-2 md:my-0 p-2 col-span-3 shadow-sm">
                 <div className="flex justify-between mb-4 items-center">
                   <p className="text-main text-lg font-semibold">Modules</p>
                   <span className="flex items-center gap-x-2 cursor-pointer">
@@ -99,7 +96,12 @@ const Module = () => {
                     <hr />
                   </>
                 ))}
-              </div>
+              </div> */}
+              <SideModules
+                courseRead={courseRead}
+                selectedIndex={selectedIndex}
+                handleItemClick={handleItemClick}
+              />
             </div>
           </div>
         )}

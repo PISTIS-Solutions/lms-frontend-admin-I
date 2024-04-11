@@ -27,7 +27,6 @@ interface cardProps {
   duration: number;
   handleCardClick: any;
   handleOpen: any;
-  cardLoad: any;
 }
 
 const CoursesCard = ({
@@ -39,7 +38,6 @@ const CoursesCard = ({
   duration,
   handleCardClick,
   handleOpen,
-  cardLoad,
 }: cardProps) => {
   const [moduleCount, setModuleCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -80,7 +78,6 @@ const CoursesCard = ({
     <div className="relative">
       <div
         key={id}
-        aria-disabled={cardLoad}
         onClick={() => {
           fetchCourseRead(id);
           handleCardClick(id);
@@ -121,7 +118,6 @@ const CoursesCard = ({
         </div>
       </div>
       <Button
-        disabled={cardLoad}
         onClick={handleOpen}
         className="p-2 bg-white cursor-pointer rounded-full w-[35px] h-[35px] flex justify-center items-center absolute top-2 right-2 hover:bg-red-500 duration-150 ease-in-out text-red-500 hover:text-white"
       >
