@@ -1,13 +1,18 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import img from "@/public/assets/course/ansible.png";
-import { BookText, Hourglass, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { BookText, Hourglass, LucideLoader2, Trash2 } from "lucide-react";
+import useCourseRead from "@/store/course-read";
+import axios from "axios";
+import { urls } from "@/utils/config";
+
+import Cookies from "js-cookie";
+import useProjectRead from "@/store/project-read";
 
 interface cardProps {
   id: number;
-  img: any;
+  // img: any;
   title: string;
   paragraph: string;
   module: { moduleHeader: string; moduleBody: string }[];
@@ -19,7 +24,7 @@ interface cardProps {
 
 const ProjectCard = ({
   id,
-  img,
+  // img,
   title,
   paragraph,
   module,
@@ -28,12 +33,45 @@ const ProjectCard = ({
   project,
   handleOpen,
 }: cardProps) => {
+  const [moduleCount, setModuleCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const { fetchProjectRead } = useProjectRead();
+
+  useEffect(() => {
+    const getModuleCount = async () => {
+      setLoading(true);
+      try {
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        const response = await axios.get(`${urls.getCourses}${id}/projects/`, {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        });
+        if (response.status === 200) {
+          setModuleCount(response.data.count);
+          setLoading(false);
+        } else {
+          console.error(`Error fetching modules for course ${id}`);
+          setModuleCount(0);
+        }
+      } catch (error: any) {
+        console.error(`Error: ${error.message}`);
+        setModuleCount(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getModuleCount();
+  }, []);
+
   return (
     <div className="relative">
       <div
         key={id}
         onClick={() => {
           handleCardClick(id);
+          // fetchProjectRead()
         }}
         className=" w-full cursor-pointer h-auto shadow-md rounded-[8px] bg-[#FFF]"
       >
@@ -48,9 +86,16 @@ const ProjectCard = ({
             <p className="md:text-lg text-xs text-[#3E3E3E]">{paragraph}</p>
           </div>
           <div className="mt-4">
-          <div className="flex md:text-base text-xs items-center gap-x-1">
+            <div className="flex md:text-base text-xs items-center gap-x-1">
               <BookText className="text-main" />
-              {project.length} projects
+              {loading ? (
+                <>
+                  <LucideLoader2 className="animate-spin" />
+                </>
+              ) : (
+                moduleCount
+              )}{" "}
+              projects
             </div>
           </div>
         </div>

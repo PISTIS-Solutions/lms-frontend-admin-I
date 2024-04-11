@@ -16,8 +16,9 @@ const Student = () => {
   const { studentData, loading, fetchStudentInfo } = useStudentInfoStore();
   const params = useParams<{ student: string }>();
 
+  const id = params.student;
   useEffect(() => {
-    fetchStudentInfo(params.student);
+    fetchStudentInfo(id);
   }, []);
 
   return (
@@ -28,9 +29,10 @@ const Student = () => {
           <TopNav />
         </div>
         {loading ? (
-          <span className="flex h-screen justify-center items-center">
-            <Loader2 className="animate-spin w-10 h-10 text-primary" />
-          </span>
+          <div className="w-[100%] flex items-center justify-center h-screen">
+            <Loader2 className=" w-8 h-8 animate-spin" />
+            <p>Loading Student Information</p>
+          </div>
         ) : (
           <div>
             <div>

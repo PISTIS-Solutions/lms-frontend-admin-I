@@ -6,35 +6,38 @@ import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 
 interface readStudent {
-  studentData: any;
-  loading: boolean;
+  moduleData: any;
+  moduleLoading: boolean;
   response: any;
-  fetchStudentInfo: (id: any) => Promise<void>;
+  fetchModuleRead: (id: string, moduleID: string) => Promise<void>;
 }
 
-const useStudentInfoStore = create<readStudent>((set, get) => ({
-  studentData: null,
-  loading: false,
+const useModuleRead = create<readStudent>((set, get) => ({
+  moduleData: null,
+  moduleLoading: false,
   response: null,
 
-  fetchStudentInfo: async (id: any) => {
+  fetchModuleRead: async (id: string, moduleID: string) => {
     try {
-      set({ loading: true });
+      set({ moduleLoading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(`${urls.getStudents}${id}`, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-        },
-      });
-      set({ studentData: response.data });
-      set({ response: response.status });
+      // const courseID = localStorage.getItem("courseID");
+      const response = await axios.get(
+        `${urls.uploadCourses}${id}/modules/${moduleID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+      set({ moduleData: response.data });
       if (response.status === 200) {
-        set({ loading: false });
+        set({ moduleLoading: false });
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudentInfo(id);
+        await get().fetchModuleRead(id, moduleID);
       } else if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
@@ -57,9 +60,9 @@ const useStudentInfoStore = create<readStudent>((set, get) => ({
         });
       }
     } finally {
-      set({ loading: false });
+      set({ moduleLoading: false });
     }
   },
 }));
 
-export default useStudentInfoStore;
+export default useModuleRead;
