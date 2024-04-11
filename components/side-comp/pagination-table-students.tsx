@@ -228,15 +228,16 @@
 // };
 
 // export default PaginatedTable;
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, Loader2Icon } from "lucide-react";
 import useStudentsStore from "@/store/fetch-students";
 import useStudentInfoStore from "@/store/read-student";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
+const PaginatedTable = () => {
   const { students, loading, fetchStudents } = useStudentsStore();
   const { fetchStudentInfo } = useStudentInfoStore();
   const [currentPage, setCurrentPage] = useState(1);
@@ -248,7 +249,7 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
   }, [currentPage]);
 
   const totalPages = Math.ceil(students?.results?.length / studentsPerPage);
-  
+
   const nextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -266,36 +267,39 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
   };
 
   const readStudent = (id: any) => {
-    fetchStudentInfo(id);
-    router.push(`/students/student`);
+    // fetchStudentInfo(id);
+    router.push(`/students/${id}`);
   };
 
   const renderStudents = () => {
     const startIndex = (currentPage - 1) * studentsPerPage;
     const endIndex = Math.min(startIndex + studentsPerPage, students.count);
-    return students.results.slice(startIndex, endIndex).map((person: any) => (
-      <tr
-        onClick={() => readStudent(person.id)}
-        key={person.id}
-        className="cursor-pointer"
-      >
-        <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-          {person.full_name}
-        </td>
-        <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-          {person.email}
-        </td>
-        <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-          {person.course}
-        </td>
-        <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-          {person.location}
-        </td>
-        <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-          {person.monitor}
-        </td>
-      </tr>
-    ));
+    return students.results
+      .filter((person: any) => person.is_student)
+      .slice(startIndex, endIndex)
+      .map((person: any) => (
+        <tr
+          onClick={() => readStudent(person.id)}
+          key={person.id}
+          className="cursor-pointer"
+        >
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+            {person.full_name}
+          </td>
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+            {person.email}
+          </td>
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+            {person.course}
+          </td>
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+            {person.location}
+          </td>
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+            {person.monitor}
+          </td>
+        </tr>
+      ));
   };
 
   const renderPageNumbers = () => {
@@ -321,21 +325,10 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
   return (
     <div className="bg-white overflow-x-scroll p-2 h-auto rounded-[8px] shadow-md">
       <div className="flex w-full justify-between items-center">
-        <h1 className="font-medium text-lg md:text-xl">Database</h1>
-        <div>
-          <Button
-            onClick={handleStudent}
-            className="mr-2 bg-main border border-main text-white hover:text-white hover:bg-main hover:border-0"
-          >
-            Student
-          </Button>
-          <Button
-            onClick={handleMentors}
-            className="bg-white border border-main text-main hover:text-white hover:bg-main hover:border-0"
-          >
-            Mentor
-          </Button>
-        </div>
+        <h1 className="font-medium text-lg md:text-xl">Students Database</h1>
+        <Link href="/students">
+          <p className="underline text-main">View all</p>
+        </Link>
       </div>
 
       <table className="w-full mt-2 text-center">
@@ -365,7 +358,9 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
                 <Loader2Icon className="animate-spin" /> Loading...
               </td>
             </tr>
-          ) : students.results && students.count > 0 ? (
+          ) : students.results &&
+            // students.results.is_student === true &&
+            students.count > 0 ? (
             renderStudents()
           ) : (
             <tr>
@@ -405,4 +400,3 @@ const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
 };
 
 export default PaginatedTable;
-

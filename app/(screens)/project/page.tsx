@@ -6,7 +6,7 @@ import ProjectCard from "@/components/side-comp/project-card";
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon, Plus, Search, X } from "lucide-react";
+import { Loader2, Loader2Icon, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -16,60 +16,64 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopNav from "@/components/side-comp/topNav";
 import AddProjectModal from "@/components/side-comp/modal/add-project-modal";
+import refreshAdminToken from "@/utils/refreshToken";
 
 const Project = () => {
   const router = useRouter();
-  const handleCardClick = (id: any) => {
-    router.push(`/project/${id}`);
-  };
+
+ 
 
   const [projectModal, setProjectModal] = useState(false);
 
   const handleProjectModal = () => {
     setProjectModal((prev) => !prev);
   };
-  const [projects, setProjects] = useState<any | null>(null);
+  const [projects, setCourses] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
-  const fetchProject = async () => {
-    try {
-      setLoading(true);
-      const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(urls.getCourses, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-        },
-      });
-      setProjects(response.data);
-    } catch (error: any) {
-      console.error("Error fetching courses:", error.message);
-      if (error.response && error.response.status === 401) {
-        try {
-          const adminTokens = {
-            refresh: Cookies.get("adminRefreshToken"),
-            access: Cookies.get("adminAccessToken"),
-          };
-          const refreshResponse = await axios.post(
-            urls.adminRefreshToken,
-            adminTokens
-          );
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
-
-          await fetchProject();
-        } catch (refreshError: any) {
-          console.error("Error refreshing token:", refreshError.message);
-          Cookies.remove("adminAccessToken");
-        }
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchProject();
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        const response = await axios.get(urls.getCourses, {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        });
+        setCourses(response.data.results);
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await fetchCourses();
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
   }, []);
 
   const [deleting, setDeleting] = useState(false);
@@ -129,7 +133,10 @@ const Project = () => {
     setSelectedProject(courseId);
     setModal(true);
   };
-
+ const handleCardClick = (id: any) => {
+    router.push(`/project/${id}`);
+  };
+  
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -151,10 +158,10 @@ const Project = () => {
           </div>
           <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {loading ? (
-              <span className="flex text-center justify-center items-center">
-                <Loader2Icon className=" animate-spin" />
-                Loading...
-              </span>
+              <div className="w-[100%] flex items-center justify-center h-screen">
+              <Loader2 className=" w-8 h-8 animate-spin" />
+              <p>Loading Projects</p>
+            </div>
             ) : projects && projects.length > 0 ? (
               projects.map((project: any) => (
                 <div key={project.id}>
@@ -162,7 +169,7 @@ const Project = () => {
                     id={project.id}
                     handleCardClick={handleCardClick}
                     handleOpen={() => handleOpen(project.id)}
-                    img={project.img}
+                    // img={project.img}
                     title={project.title}
                     paragraph={project.paragraph}
                     module={project.module}
@@ -207,7 +214,11 @@ const Project = () => {
           </section>
         )}
       </div>
-      <div>{projectModal && <AddProjectModal handleProjectModal={handleProjectModal} />}</div>
+      <div>
+        {projectModal && (
+          <AddProjectModal handleProjectModal={handleProjectModal} />
+        )}
+      </div>
     </main>
   );
 };

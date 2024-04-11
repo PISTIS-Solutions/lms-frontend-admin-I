@@ -218,7 +218,7 @@ const AddProjectForms = () => {
       )
     );
 
-    console.log(filteredProjectData, "fp");
+    // console.log(filteredProjectData, "fp");
     // Call uploadProject
     // await uploadProject(e);
   };
