@@ -18,9 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* <NextNProgress> */}
-        <body className={montserrat.className}>{children}</body>
-      {/* </NextNProgress> */}
+      <body className={montserrat.className}>{children}</body>
     </html>
   );
 }
