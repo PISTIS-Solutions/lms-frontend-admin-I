@@ -17,7 +17,7 @@ export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: "top" as const,
+      display: false,
     },
     title: {
       display: true,
@@ -66,6 +66,7 @@ export const LineChart: React.FC<LineProps> = ({ chartDetails }) => {
       },
     ],
   };
+
 
   return <Line options={options} data={data} />;
 };
