@@ -14,6 +14,10 @@ import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 import PublishBtn from "./publishBtn";
 
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { toolbarOptions } from "./toolbar";
+
 const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
 
@@ -169,12 +173,12 @@ const AddProjectForms = () => {
       ) as HTMLInputElement;
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
-      ) as HTMLInputElement;
+      ) as HTMLElement;
 
       return (
         projectTitleInput.value.trim() !== "" &&
         projectLinkInput.value.trim() !== "" &&
-        projectDetailsInput.value.trim() !== ""
+        (projectDetailsInput?.textContent?.trim() ?? "") !== ""
       );
     });
 
@@ -200,12 +204,12 @@ const AddProjectForms = () => {
       ) as HTMLInputElement;
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
-      ) as HTMLInputElement;
+      ) as HTMLElement;
 
       return {
         project_title: projectTitleInput.value,
         project_url: projectLinkInput.value,
-        project_description: projectDetailsInput.value,
+        project_description: projectDetailsInput?.textContent ?? "",
       };
     });
 
@@ -302,7 +306,7 @@ const AddProjectForms = () => {
                   name={`projectLink-${section.id}`}
                   id={`projectLink-${section.id}`}
                   className="bg-[#FAFAFA]"
-                  placeholder="Input Module Sub-Title"
+                  placeholder="Input Project Sub-Title"
                 />
               </div>
             </div>
@@ -311,11 +315,15 @@ const AddProjectForms = () => {
                 <p className="mt-2">Additional Note</p>
               </label>
               <div>
-                <Textarea
-                  name={`projectDetails-${section.id}`}
+                <ReactQuill
+                  modules={{ toolbar: toolbarOptions }}
+                  theme="snow"
+                  // name={`moduleDetails-${section.id}`}
                   id={`projectDetails-${section.id}`}
                   className="bg-[#FAFAFA]"
-                  placeholder="Input Module Description"
+                  placeholder="Input project content details"
+                  // value={description}
+                  // onChange={setDescription}
                 />
               </div>
             </div>

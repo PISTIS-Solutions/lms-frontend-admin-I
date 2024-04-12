@@ -8,7 +8,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { toolbarOptions } from "./toolbar";
+
 const AddCourseForms = () => {
+
   const {
     courseTitle,
     description,
@@ -42,10 +47,10 @@ const AddCourseForms = () => {
     }
   };
 
-const router = useRouter()
+  const router = useRouter();
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if (courseTitle && hours && minutes && courseLink) {
+    if (courseTitle && hours && minutes && courseLink && description) {
       toast.success("Course Created", {
         position: "top-right",
         autoClose: 5000,
@@ -55,7 +60,7 @@ const router = useRouter()
         draggable: false,
         theme: "dark",
       });
-      router.push("/courses/add-course/add-modules")
+      router.push("/courses/add-course/add-modules");
       // console.log(convertToISO8601(hours, minutes, seconds));
     } else {
       toast.error("Form Details incomplete", {
@@ -117,11 +122,13 @@ const router = useRouter()
             </FormItem>
             <FormItem className="py-2">
               <label className="py-2">Description</label>
-              <Input
-                type="text"
+              <ReactQuill
+                modules={{ toolbar: toolbarOptions }}
+                theme="snow"
                 placeholder="Input Course Description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={setDescription}
+                className="w-full"
               />
             </FormItem>
             <FormItem className="py-2">

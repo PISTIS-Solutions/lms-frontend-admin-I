@@ -94,9 +94,6 @@ const CoursesCard = ({
             <h1 className="md:text-xl text-sm capitalize font-medium">
               {title}
             </h1>
-            {/* <p className="md:text-lg text-xs text-[#3E3E3E]">dummy text  */}
-            {/* {paragraph} */}
-            {/* </p> */}
           </div>
           <div className="flex items-center gap-x-4 mt-4">
             <div className="flex md:text-base text-xs items-center gap-x-1">
