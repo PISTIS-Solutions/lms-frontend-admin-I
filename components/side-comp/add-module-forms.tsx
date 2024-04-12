@@ -1,8 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "../ui/textarea";
+import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
@@ -151,7 +163,10 @@ const AddModuleForms = () => {
   }, []);
 
   return (
-    <div className="pt-5">
+    <div>
+      <div>
+        <h1 className="md:text-3xl text-xl font-semibold">Module Details</h1>
+      </div>
       <ToastContainer />
       {sections.map((section, index) => (
         <div key={section.id} className="mt-4">
