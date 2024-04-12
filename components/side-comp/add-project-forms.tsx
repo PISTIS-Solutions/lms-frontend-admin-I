@@ -61,12 +61,6 @@ const AddProjectForms = () => {
     });
   };
 
-  interface projectFormData {
-    project_title: string;
-    project_url: string;
-    project_description: string;
-  }
-
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const uploadProject = async (): Promise<void> => {
@@ -163,6 +157,10 @@ const AddProjectForms = () => {
     }
   };
   const onContinue = async (e: any) => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+  
     e.preventDefault();
     const areFieldsValid = sections.every((section) => {
       const projectTitleInput = document.getElementById(
@@ -174,14 +172,14 @@ const AddProjectForms = () => {
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
       ) as HTMLElement;
-
+  
       return (
         projectTitleInput.value.trim() !== "" &&
         projectLinkInput.value.trim() !== "" &&
         (projectDetailsInput?.textContent?.trim() ?? "") !== ""
       );
     });
-
+  
     if (!areFieldsValid) {
       toast.error("Check form fields!", {
         position: "top-right",
@@ -194,7 +192,7 @@ const AddProjectForms = () => {
       });
       return;
     }
-
+  
     const filteredProjectData = sections.map((section) => {
       const projectTitleInput = document.getElementById(
         `projectTitle-${section.id}`
@@ -205,14 +203,14 @@ const AddProjectForms = () => {
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
       ) as HTMLElement;
-
+  
       return {
         project_title: projectTitleInput.value,
         project_url: projectLinkInput.value,
         project_description: projectDetailsInput?.textContent ?? "",
       };
     });
-
+  
     setFilteredProjectData(
       filteredProjectData.filter(
         (data) =>
@@ -221,11 +219,12 @@ const AddProjectForms = () => {
           data.project_description.trim() !== ""
       )
     );
-
+  
     // console.log(filteredProjectData, "fp");
     // Call uploadProject
     // await uploadProject(e);
   };
+  
 
   const test = () => {
     console.log("test");

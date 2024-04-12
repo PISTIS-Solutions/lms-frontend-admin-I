@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from "react";
+"use client"
+import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
@@ -55,93 +55,94 @@ const AddModuleForms = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const onContinue = () => {
     setLoading(true);
-    const filteredModuleData = sections
-      .map((section) => {
+
+    // Check if running in the browser environment
+    if (typeof window !== "undefined") {
+      const filteredModuleData = sections
+        .map((section) => {
+          const moduleTitleInput = document.getElementById(
+            `moduleTitle-${section.id}`
+          ) as HTMLInputElement | null;
+          const modulesubTitleInput = document.getElementById(
+            `modulesubTitle-${section.id}`
+          ) as HTMLInputElement | null;
+          const moduleLinkInput = document.getElementById(
+            `moduleLink-${section.id}`
+          ) as HTMLInputElement | null;
+          const moduleDetailsInput = document.getElementById(
+            `moduleDetails-${section.id}`
+          ) as HTMLElement | null;
+
+          if (
+            moduleTitleInput &&
+            modulesubTitleInput &&
+            moduleLinkInput &&
+            moduleDetailsInput
+          ) {
+            return {
+              module_title: moduleTitleInput.value,
+              module_sub_title: modulesubTitleInput.value,
+              module_url: moduleLinkInput.value,
+              description: moduleDetailsInput?.textContent ?? "",
+            };
+          } else {
+            return null;
+          }
+        })
+        .filter((data): data is ModuleFormData => data !== null);
+
+      const areFieldsValid = sections.every((section) => {
         const moduleTitleInput = document.getElementById(
           `moduleTitle-${section.id}`
-        ) as HTMLInputElement;
+        ) as HTMLInputElement | null;
         const modulesubTitleInput = document.getElementById(
           `modulesubTitle-${section.id}`
-        ) as HTMLInputElement;
+        ) as HTMLInputElement | null;
         const moduleLinkInput = document.getElementById(
           `moduleLink-${section.id}`
-        ) as HTMLInputElement;
+        ) as HTMLInputElement | null;
         const moduleDetailsInput = document.getElementById(
           `moduleDetails-${section.id}`
-        ) as HTMLElement;
+        ) as HTMLElement | null;
 
-        if (
-          moduleTitleInput &&
-          modulesubTitleInput &&
-          moduleLinkInput &&
-          moduleDetailsInput
-        ) {
-          return {
-            module_title: moduleTitleInput.value,
-            module_sub_title: modulesubTitleInput.value,
-            module_url: moduleLinkInput.value,
-            description: moduleDetailsInput?.textContent ?? "",
-          };
-        } else {
-          return null;
-        }
-      })
-      .filter((data): data is ModuleFormData => data !== null);
-    const areFieldsValid = sections.every((section) => {
-      const moduleTitleInput = document.getElementById(
-        `moduleTitle-${section.id}`
-      ) as HTMLInputElement;
-      const modulesubTitleInput = document.getElementById(
-        `modulesubTitle-${section.id}`
-      ) as HTMLInputElement;
-      const moduleLinkInput = document.getElementById(
-        `moduleLink-${section.id}`
-      ) as HTMLInputElement;
-      const moduleDetailsInput = document.getElementById(
-        `moduleDetails-${section.id}`
-      ) as HTMLElement;
-
-      return (
-        moduleTitleInput.value.trim() !== "" &&
-        modulesubTitleInput.value.trim() !== "" &&
-        moduleLinkInput.value.trim() !== "" &&
-        (moduleDetailsInput?.textContent?.trim() ?? "") !== ""
-      );
-    });
-
-    if (areFieldsValid) {
-      setFilteredModuleData(filteredModuleData);
-      setLoading(false);
-      toast.success("Modules added!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
+        return (
+          moduleTitleInput?.value.trim() !== "" &&
+          modulesubTitleInput?.value.trim() !== "" &&
+          moduleLinkInput?.value.trim() !== "" &&
+          (moduleDetailsInput?.textContent?.trim() ?? "") !== ""
+        );
       });
-      router.push("add-modules/add-project");
-    } else {
-      toast.error("Check form fields!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
-      setLoading(false);
+
+      if (areFieldsValid) {
+        setFilteredModuleData(filteredModuleData);
+        setLoading(false);
+        toast.success("Modules added!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        router.push("add-modules/add-project");
+      } else {
+        toast.error("Check form fields!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
-    if (
-      !courseTitle ||
-      !description ||
-      !courseLink
-    ) {
+    if (!courseTitle || !description || !courseLink) {
       toast.error("Error! Add Course again!", {
         position: "top-right",
         autoClose: 5000,
