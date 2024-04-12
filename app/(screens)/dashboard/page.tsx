@@ -48,6 +48,7 @@ const Dashboard = () => {
   const changeTableStudents = () => {
     setTable("students");
   };
+
   //get admin dashboard info
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
