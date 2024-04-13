@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,14 +21,16 @@ import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
 import { useRouter } from "next/navigation";
 
+import dynamic from 'next/dynamic';
+import "react-quill/dist/quill.snow.css";
+import { toolbarOptions } from "./toolbar";
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
 const AddModuleForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
-  const {
-    setFilteredModuleData,
-    courseTitle,
-    description,
-    courseLink,
-  } = useCourseFormStore();
+  const { setFilteredModuleData, courseTitle, description, courseLink } =
+    useCourseFormStore();
   const router = useRouter();
 
   const addSection = () => {
@@ -71,16 +73,16 @@ const AddModuleForms = () => {
       .map((section) => {
         const moduleTitleInput = document.getElementById(
           `moduleTitle-${section.id}`
-        ) as HTMLInputElement;
+        ) as HTMLInputElement | null;
         const modulesubTitleInput = document.getElementById(
           `modulesubTitle-${section.id}`
-        ) as HTMLInputElement;
+        ) as HTMLInputElement | null;
         const moduleLinkInput = document.getElementById(
           `moduleLink-${section.id}`
-        ) as HTMLInputElement;
+        ) as HTMLInputElement | null;
         const moduleDetailsInput = document.getElementById(
           `moduleDetails-${section.id}`
-        ) as HTMLInputElement;
+        ) as HTMLElement | null;
 
         if (
           moduleTitleInput &&
@@ -92,38 +94,48 @@ const AddModuleForms = () => {
             module_title: moduleTitleInput.value,
             module_sub_title: modulesubTitleInput.value,
             module_url: moduleLinkInput.value,
-            description: moduleDetailsInput.value,
+            description: moduleDetailsInput?.textContent ?? "",
           };
         } else {
           return null;
         }
       })
       .filter((data): data is ModuleFormData => data !== null);
+
     const areFieldsValid = sections.every((section) => {
       const moduleTitleInput = document.getElementById(
         `moduleTitle-${section.id}`
-      ) as HTMLInputElement;
+      ) as HTMLInputElement | null;
       const modulesubTitleInput = document.getElementById(
         `modulesubTitle-${section.id}`
-      ) as HTMLInputElement;
+      ) as HTMLInputElement | null;
       const moduleLinkInput = document.getElementById(
         `moduleLink-${section.id}`
-      ) as HTMLInputElement;
+      ) as HTMLInputElement | null;
       const moduleDetailsInput = document.getElementById(
         `moduleDetails-${section.id}`
-      ) as HTMLInputElement;
+      ) as HTMLElement | null;
 
       return (
-        moduleTitleInput.value.trim() !== "" &&
-        modulesubTitleInput.value.trim() !== "" &&
-        moduleLinkInput.value.trim() !== "" &&
-        moduleDetailsInput.value.trim() !== ""
+        moduleTitleInput?.value.trim() !== "" &&
+        modulesubTitleInput?.value.trim() !== "" &&
+        moduleLinkInput?.value.trim() !== "" &&
+        (moduleDetailsInput?.textContent?.trim() ?? "") !== ""
       );
     });
 
     if (areFieldsValid) {
       setFilteredModuleData(filteredModuleData);
       setLoading(false);
+      toast.success("Modules added!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
       router.push("add-modules/add-project");
     } else {
       toast.error("Check form fields!", {
@@ -140,13 +152,7 @@ const AddModuleForms = () => {
   };
 
   useEffect(() => {
-    if (
-      !courseTitle ||
-      !description ||
-      !courseLink
-      // !filteredModuleDataStore.length
-      // !filteredProjectDataStore.length
-    ) {
+    if (!courseTitle || !description || !courseLink) {
       toast.error("Error! Add Course again!", {
         position: "top-right",
         autoClose: 5000,
@@ -241,11 +247,15 @@ const AddModuleForms = () => {
                 <p className="mt-2">Content Details</p>
               </label>
               <div>
-                <Textarea
-                  name={`moduleDetails-${section.id}`}
+                <ReactQuill
+                  modules={{ toolbar: toolbarOptions }}
+                  theme="snow"
+                  // name={`moduleDetails-${section.id}`}
                   id={`moduleDetails-${section.id}`}
                   className="bg-[#FAFAFA]"
                   placeholder="Input module content details"
+                  // value={description}
+                  // onChange={setDescription}
                 />
               </div>
             </div>

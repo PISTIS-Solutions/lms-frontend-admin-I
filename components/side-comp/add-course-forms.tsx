@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+"use client"
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Form, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,13 @@ import useCourseFormStore from "@/store/course-module-project";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+
+// import ReactQuill from "react-quill";
+import dynamic from 'next/dynamic';
+import "react-quill/dist/quill.snow.css";
+import { toolbarOptions } from "./toolbar";
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const AddCourseForms = () => {
   const {
@@ -26,6 +33,8 @@ const AddCourseForms = () => {
     setSeconds,
   } = useCourseFormStore();
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
@@ -36,16 +45,15 @@ const AddCourseForms = () => {
   };
 
   const handleSelectImageClick = () => {
-    const fileInput = document.getElementById("fileInput");
-    if (fileInput) {
-      fileInput.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
-const router = useRouter()
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const router = useRouter();
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (courseTitle && hours && minutes && courseLink) {
+    if (courseTitle && hours && minutes && courseLink && description) {
       toast.success("Course Created", {
         position: "top-right",
         autoClose: 5000,
@@ -55,8 +63,7 @@ const router = useRouter()
         draggable: false,
         theme: "dark",
       });
-      router.push("/courses/add-course/add-modules")
-      // console.log(convertToISO8601(hours, minutes, seconds));
+      router.push("/courses/add-course/add-modules");
     } else {
       toast.error("Form Details incomplete", {
         position: "top-right",
@@ -77,7 +84,7 @@ const router = useRouter()
         <h1 className="md:text-3xl text-xl font-semibold">Course Details</h1>
       </div>
       <div className="mt-4">
-        <form className="space-y-8">
+        <form className="space-y-8" onSubmit={onSubmit}>
           <div className="my-4">
             <div className="py-2">
               <label className="py-2">Course Title (required)</label>
@@ -110,6 +117,7 @@ const router = useRouter()
                     id="fileInput"
                     accept="image/*"
                     className="hidden"
+                    ref={fileInputRef}
                     onChange={handleFileChange}
                   />
                 </div>
@@ -117,11 +125,13 @@ const router = useRouter()
             </FormItem>
             <FormItem className="py-2">
               <label className="py-2">Description</label>
-              <Input
-                type="text"
+              <ReactQuill
+                modules={{ toolbar: toolbarOptions }}
+                theme="snow"
                 placeholder="Input Course Description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={setDescription}
+                className="w-full"
               />
             </FormItem>
             <FormItem className="py-2">
@@ -177,7 +187,7 @@ const router = useRouter()
             </FormItem>
           </div>
           <div className="flex items-center  justify-center">
-            <Button className="w-full bg-sub" onClick={onSubmit} type="submit">
+            <Button className="w-full bg-sub" type="submit">
               Continue
             </Button>
           </div>

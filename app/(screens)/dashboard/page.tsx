@@ -14,7 +14,6 @@ import {
   Loader2Icon,
 } from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
-import PaginatedTableMentor from "@/components/side-comp/pagination-table mentor";
 import { LineChart } from "@/components/side-comp/line-chart";
 import axios from "axios";
 import { urls } from "@/utils/config";
