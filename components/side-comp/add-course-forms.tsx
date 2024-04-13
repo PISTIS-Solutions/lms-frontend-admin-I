@@ -8,9 +8,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
+import dynamic from 'next/dynamic';
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const AddCourseForms = () => {
   const {

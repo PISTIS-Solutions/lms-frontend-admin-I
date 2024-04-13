@@ -14,9 +14,11 @@ import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 import PublishBtn from "./publishBtn";
 
-import ReactQuill from "react-quill";
+import dynamic from 'next/dynamic';
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
@@ -157,10 +159,6 @@ const AddProjectForms = () => {
     }
   };
   const onContinue = async (e: any) => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-  
     e.preventDefault();
     const areFieldsValid = sections.every((section) => {
       const projectTitleInput = document.getElementById(

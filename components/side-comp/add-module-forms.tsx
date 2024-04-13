@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,9 +9,11 @@ import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
 import { useRouter } from "next/navigation";
 
-import ReactQuill from "react-quill";
+import dynamic from 'next/dynamic';
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const AddModuleForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
@@ -55,43 +57,8 @@ const AddModuleForms = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const onContinue = () => {
     setLoading(true);
-
-    // Check if running in the browser environment
-    if (typeof window !== "undefined") {
-      const filteredModuleData = sections
-        .map((section) => {
-          const moduleTitleInput = document.getElementById(
-            `moduleTitle-${section.id}`
-          ) as HTMLInputElement | null;
-          const modulesubTitleInput = document.getElementById(
-            `modulesubTitle-${section.id}`
-          ) as HTMLInputElement | null;
-          const moduleLinkInput = document.getElementById(
-            `moduleLink-${section.id}`
-          ) as HTMLInputElement | null;
-          const moduleDetailsInput = document.getElementById(
-            `moduleDetails-${section.id}`
-          ) as HTMLElement | null;
-
-          if (
-            moduleTitleInput &&
-            modulesubTitleInput &&
-            moduleLinkInput &&
-            moduleDetailsInput
-          ) {
-            return {
-              module_title: moduleTitleInput.value,
-              module_sub_title: modulesubTitleInput.value,
-              module_url: moduleLinkInput.value,
-              description: moduleDetailsInput?.textContent ?? "",
-            };
-          } else {
-            return null;
-          }
-        })
-        .filter((data): data is ModuleFormData => data !== null);
-
-      const areFieldsValid = sections.every((section) => {
+    const filteredModuleData = sections
+      .map((section) => {
         const moduleTitleInput = document.getElementById(
           `moduleTitle-${section.id}`
         ) as HTMLInputElement | null;
@@ -105,39 +72,70 @@ const AddModuleForms = () => {
           `moduleDetails-${section.id}`
         ) as HTMLElement | null;
 
-        return (
-          moduleTitleInput?.value.trim() !== "" &&
-          modulesubTitleInput?.value.trim() !== "" &&
-          moduleLinkInput?.value.trim() !== "" &&
-          (moduleDetailsInput?.textContent?.trim() ?? "") !== ""
-        );
-      });
+        if (
+          moduleTitleInput &&
+          modulesubTitleInput &&
+          moduleLinkInput &&
+          moduleDetailsInput
+        ) {
+          return {
+            module_title: moduleTitleInput.value,
+            module_sub_title: modulesubTitleInput.value,
+            module_url: moduleLinkInput.value,
+            description: moduleDetailsInput?.textContent ?? "",
+          };
+        } else {
+          return null;
+        }
+      })
+      .filter((data): data is ModuleFormData => data !== null);
 
-      if (areFieldsValid) {
-        setFilteredModuleData(filteredModuleData);
-        setLoading(false);
-        toast.success("Modules added!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-        router.push("add-modules/add-project");
-      } else {
-        toast.error("Check form fields!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-        setLoading(false);
-      }
+    const areFieldsValid = sections.every((section) => {
+      const moduleTitleInput = document.getElementById(
+        `moduleTitle-${section.id}`
+      ) as HTMLInputElement | null;
+      const modulesubTitleInput = document.getElementById(
+        `modulesubTitle-${section.id}`
+      ) as HTMLInputElement | null;
+      const moduleLinkInput = document.getElementById(
+        `moduleLink-${section.id}`
+      ) as HTMLInputElement | null;
+      const moduleDetailsInput = document.getElementById(
+        `moduleDetails-${section.id}`
+      ) as HTMLElement | null;
+
+      return (
+        moduleTitleInput?.value.trim() !== "" &&
+        modulesubTitleInput?.value.trim() !== "" &&
+        moduleLinkInput?.value.trim() !== "" &&
+        (moduleDetailsInput?.textContent?.trim() ?? "") !== ""
+      );
+    });
+
+    if (areFieldsValid) {
+      setFilteredModuleData(filteredModuleData);
+      setLoading(false);
+      toast.success("Modules added!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+      router.push("add-modules/add-project");
+    } else {
+      toast.error("Check form fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+      setLoading(false);
     }
   };
 
