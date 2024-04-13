@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 
 import SideNav from "@/components/side-comp/side-nav";

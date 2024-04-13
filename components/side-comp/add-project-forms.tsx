@@ -14,6 +14,12 @@ import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 import PublishBtn from "./publishBtn";
 
+import dynamic from 'next/dynamic';
+import "react-quill/dist/quill.snow.css";
+import { toolbarOptions } from "./toolbar";
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
 const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
 
@@ -56,12 +62,6 @@ const AddProjectForms = () => {
       theme: "dark",
     });
   };
-
-  interface projectFormData {
-    project_title: string;
-    project_url: string;
-    project_description: string;
-  }
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -169,15 +169,15 @@ const AddProjectForms = () => {
       ) as HTMLInputElement;
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
-      ) as HTMLInputElement;
-
+      ) as HTMLElement;
+  
       return (
         projectTitleInput.value.trim() !== "" &&
         projectLinkInput.value.trim() !== "" &&
-        projectDetailsInput.value.trim() !== ""
+        (projectDetailsInput?.textContent?.trim() ?? "") !== ""
       );
     });
-
+  
     if (!areFieldsValid) {
       toast.error("Check form fields!", {
         position: "top-right",
@@ -190,7 +190,7 @@ const AddProjectForms = () => {
       });
       return;
     }
-
+  
     const filteredProjectData = sections.map((section) => {
       const projectTitleInput = document.getElementById(
         `projectTitle-${section.id}`
@@ -200,15 +200,15 @@ const AddProjectForms = () => {
       ) as HTMLInputElement;
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
-      ) as HTMLInputElement;
-
+      ) as HTMLElement;
+  
       return {
         project_title: projectTitleInput.value,
         project_url: projectLinkInput.value,
-        project_description: projectDetailsInput.value,
+        project_description: projectDetailsInput?.textContent ?? "",
       };
     });
-
+  
     setFilteredProjectData(
       filteredProjectData.filter(
         (data) =>
@@ -217,11 +217,12 @@ const AddProjectForms = () => {
           data.project_description.trim() !== ""
       )
     );
-
-    console.log(filteredProjectData, "fp");
+  
+    // console.log(filteredProjectData, "fp");
     // Call uploadProject
     // await uploadProject(e);
   };
+  
 
   const test = () => {
     console.log("test");
@@ -302,7 +303,7 @@ const AddProjectForms = () => {
                   name={`projectLink-${section.id}`}
                   id={`projectLink-${section.id}`}
                   className="bg-[#FAFAFA]"
-                  placeholder="Input Module Sub-Title"
+                  placeholder="Input Project Sub-Title"
                 />
               </div>
             </div>
@@ -311,11 +312,15 @@ const AddProjectForms = () => {
                 <p className="mt-2">Additional Note</p>
               </label>
               <div>
-                <Textarea
-                  name={`projectDetails-${section.id}`}
+                <ReactQuill
+                  modules={{ toolbar: toolbarOptions }}
+                  theme="snow"
+                  // name={`moduleDetails-${section.id}`}
                   id={`projectDetails-${section.id}`}
                   className="bg-[#FAFAFA]"
-                  placeholder="Input Module Description"
+                  placeholder="Input project content details"
+                  // value={description}
+                  // onChange={setDescription}
                 />
               </div>
             </div>

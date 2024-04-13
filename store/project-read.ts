@@ -6,35 +6,38 @@ import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 
 interface readStudent {
-  studentData: any;
-  loading: boolean;
+  projectData: any;
+  projectLoading: boolean;
   response: any;
-  fetchStudentInfo: (id: any) => Promise<void>;
+  fetchProjectRead: (id: string, moduleID: string) => Promise<void>;
 }
 
-const useStudentInfoStore = create<readStudent>((set, get) => ({
-  studentData: null,
-  loading: false,
+const useProjectRead = create<readStudent>((set, get) => ({
+  projectData: null,
+  projectLoading: false,
   response: null,
 
-  fetchStudentInfo: async (id: any) => {
+  fetchProjectRead: async (id: string, projectID: string) => {
     try {
-      set({ loading: true });
+      set({ projectLoading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(`${urls.getStudents}${id}`, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-        },
-      });
-      set({ studentData: response.data });
-      set({ response: response.status });
+      // const courseID = localStorage.getItem("courseID");
+      const response = await axios.get(
+        `${urls.uploadCourses}${id}/projects/${projectID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+      set({ projectData: response.data });
       if (response.status === 200) {
-        set({ loading: false });
+        set({ projectLoading: false });
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudentInfo(id);
+        await get().fetchProjectRead(id, projectID);
       } else if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
@@ -57,9 +60,9 @@ const useStudentInfoStore = create<readStudent>((set, get) => ({
         });
       }
     } finally {
-      set({ loading: false });
+      set({ projectLoading: false });
     }
   },
 }));
 
-export default useStudentInfoStore;
+export default useProjectRead;

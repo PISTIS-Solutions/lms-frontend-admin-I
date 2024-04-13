@@ -1,6 +1,7 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
+import { formatChartData } from "./helper";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,7 +14,6 @@ import {
   Loader2Icon,
 } from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
-import PaginatedTableMentor from "@/components/side-comp/pagination-table mentor";
 import { LineChart } from "@/components/side-comp/line-chart";
 import axios from "axios";
 import { urls } from "@/utils/config";
@@ -30,14 +30,24 @@ interface AdminData {
   total_mentors: number;
 }
 
+interface ChartDetails {
+  data: number[];
+  labels: string[];
+}
+
 const Dashboard = () => {
   const [table, setTable] = useState("students");
+  const [chartDetails, setChartDetails] = useState<ChartDetails>({
+    data: [],
+    labels: [],
+  });
   const changeTableMentors = () => {
     setTable("mentors");
   };
   const changeTableStudents = () => {
     setTable("students");
   };
+
   //get admin dashboard info
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,6 +62,7 @@ const Dashboard = () => {
         },
       });
       setAdminData(response.data);
+      // console.log(response.data, "aD")
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -92,6 +103,12 @@ const Dashboard = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
+      setAdminData(response.data);
+      const formattedChartData = formatChartData(
+        response.data.students_per_month
+      );
+      setChartDetails(formattedChartData);
+      console.log(response, "response");
       setProjectOverview(response.data);
       setOverviewLoad(false);
     } catch (error: any) {
@@ -127,6 +144,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchAdminData();
     fetchProjectOverview();
+   
   }, []);
 
   const months = [
@@ -160,7 +178,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
             <div className=" col-span-1 lg:col-span-7">
               <div className="flex gap-x-4 overflow-x-scroll justify-between pr-4">
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
+                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -198,7 +216,7 @@ const Dashboard = () => {
                     <GraduationCap className="text-main" />
                   </span>
                 </div>
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
+                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -235,7 +253,7 @@ const Dashboard = () => {
                     ))}
                   </select>
                 </div>
-                <LineChart />
+                <LineChart chartDetails={chartDetails} />
               </div>
             </div>
             <div className="bg-white h-[370px] md:h-[500px] rounded-[8px] p-2 shadow-sm col-span-3">
@@ -290,7 +308,8 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="p-4">
-            {table === "students" ? (
+            <PaginatedTable />
+            {/* {table === "students" ? (
               <PaginatedTable
                 handleStudent={changeTableStudents}
                 handleMentors={changeTableMentors}
@@ -300,7 +319,7 @@ const Dashboard = () => {
                 handleStudent={changeTableStudents}
                 handleMentors={changeTableMentors}
               />
-            )}
+            )} */}
           </div>
         </div>
       </div>

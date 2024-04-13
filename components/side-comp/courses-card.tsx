@@ -27,7 +27,6 @@ interface cardProps {
   duration: number;
   handleCardClick: any;
   handleOpen: any;
-  cardLoad: any;
 }
 
 const CoursesCard = ({
@@ -39,7 +38,6 @@ const CoursesCard = ({
   duration,
   handleCardClick,
   handleOpen,
-  cardLoad,
 }: cardProps) => {
   const [moduleCount, setModuleCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -58,8 +56,8 @@ const CoursesCard = ({
 
         if (response.status === 200) {
           // Assuming the modules are an array in the response
-          // const count = response.data.length;
-          setModuleCount(response.data.count);
+          const count = response.data.length;
+          setModuleCount(count);
           setLoading(false);
         } else {
           console.error(`Error fetching modules for course ${id}`);
@@ -80,7 +78,6 @@ const CoursesCard = ({
     <div className="relative">
       <div
         key={id}
-        aria-disabled={cardLoad}
         onClick={() => {
           fetchCourseRead(id);
           handleCardClick(id);
@@ -97,9 +94,6 @@ const CoursesCard = ({
             <h1 className="md:text-xl text-sm capitalize font-medium">
               {title}
             </h1>
-            {/* <p className="md:text-lg text-xs text-[#3E3E3E]">dummy text  */}
-            {/* {paragraph} */}
-            {/* </p> */}
           </div>
           <div className="flex items-center gap-x-4 mt-4">
             <div className="flex md:text-base text-xs items-center gap-x-1">
@@ -121,7 +115,6 @@ const CoursesCard = ({
         </div>
       </div>
       <Button
-        disabled={cardLoad}
         onClick={handleOpen}
         className="p-2 bg-white cursor-pointer rounded-full w-[35px] h-[35px] flex justify-center items-center absolute top-2 right-2 hover:bg-red-500 duration-150 ease-in-out text-red-500 hover:text-white"
       >

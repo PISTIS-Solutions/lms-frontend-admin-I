@@ -3,7 +3,7 @@ import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import React, { useEffect, useState } from "react";
 
-import { Loader2Icon, Plus, Search } from "lucide-react";
+import { Loader2, Loader2Icon, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CoursesCard from "@/components/side-comp/courses-card";
 import TopNav from "@/components/side-comp/topNav";
@@ -13,11 +13,9 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
-import { dummydata } from "@/app/data/dummyModules";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
-import useCourseRead from "@/store/course-read";
 
 const Courses = () => {
   const router = useRouter();
@@ -25,47 +23,49 @@ const Courses = () => {
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
-  const { response } = useCourseRead();
 
-  const fetchCourses = async () => {
-    try {
-      setLoading(true);
-      const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(urls.getCourses, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-        },
-      });
-      setCourses(response.data.results);
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchCourses();
-      } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        const response = await axios.get(urls.getCourses, {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
         });
-      } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        setCourses(response.data.results);
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await fetchCourses();
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchCourses();
+  }, []);
 
   const [deleting, setDeleting] = useState(false);
 
@@ -92,6 +92,7 @@ const Courses = () => {
           theme: "dark",
         });
         // window.location.reload();
+        window.parent.location = window.parent.location.href;
       } else {
         console.error("Failed to delete course.");
       }
@@ -141,29 +142,10 @@ const Courses = () => {
     setSelectedCourse(courseId);
     setModal(true);
   };
-  const [cardLoad, setCardLoad] = useState<boolean>(false);
   const handleCardClick = (id: any) => {
-    setCardLoad(true);
-    if (response === 200) {
-      router.push(`/courses/${id}`);
-      setCardLoad(false);
-    } else {
-      toast.error("Check your network!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
-      setCardLoad(false);
-    }
+    router.push(`/courses/${id}`);
   };
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -183,10 +165,10 @@ const Courses = () => {
           </div>
           <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {loading ? (
-              <span className="flex text-center justify-center items-center">
-                <Loader2Icon className=" animate-spin" />
-                Loading...
-              </span>
+              <div className="w-[100%] flex items-center justify-center h-screen">
+              <Loader2 className=" w-8 h-8 animate-spin" />
+              <p>Loading Courses</p>
+            </div>
             ) : courses && courses.length > 0 ? (
               courses.map((course: any) => (
                 <div key={course.id}>
@@ -196,7 +178,6 @@ const Courses = () => {
                     duration={course.course_duration}
                     handleCardClick={handleCardClick}
                     handleOpen={() => handleOpen(course.id)}
-                    cardLoad={cardLoad}
                   />
                 </div>
               ))

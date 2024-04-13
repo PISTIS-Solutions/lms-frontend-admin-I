@@ -261,7 +261,7 @@ import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NextNProgress from "nextjs-progressbar";
+// import NextNProgress from "nextjs-progressbar";
 
 const SignIn = () => {
   const formStore = useLoginFormStore();
@@ -333,7 +333,7 @@ const SignIn = () => {
 
   return (
     <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
-      <NextNProgress />
+      {/* <NextNProgress /> */}
       <div className="bg-white w-[100%] sm:w-[50%] h-screen rounded-none md:rounded-tl-[40px] md:rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-10">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
