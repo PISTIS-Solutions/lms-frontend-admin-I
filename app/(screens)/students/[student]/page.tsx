@@ -28,17 +28,6 @@ const Student = () => {
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
           <TopNav />
         </div>
-<<<<<<< HEAD
-        <div>
-          <div className="bg-slate-100">
-            <div className="sm:flex block px-3 md:px-0 items-center justify-around py-4">
-              <div className="flex items-center gap-x-4">
-                <Image
-                  src={student}
-                  alt={studentData.name}
-                  className="w-28 h-auto"
-                />
-=======
         {loading ? (
           <div className="w-[100%] flex items-center justify-center h-screen">
             <Loader2 className=" w-8 h-8 animate-spin" />
@@ -64,7 +53,6 @@ const Student = () => {
                   </div>
                 </div>
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
->>>>>>> 46c932214acd50a689be1eb8879e169479a6e04b
                 <div>
                   <h3 className="lg:text-lg text-lg font-medium">
                     {studentData?.email}
