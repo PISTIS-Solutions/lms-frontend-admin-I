@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import {create} from "zustand";
 
 interface CourseFormState {
   courseTitle: string;
@@ -34,7 +34,6 @@ interface ProjectFormState {
 }
 interface projectFormData {
   project_title: string;
-  project_url: string;
   project_description: string;
 }
 

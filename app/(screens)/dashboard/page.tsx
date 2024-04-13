@@ -1,6 +1,7 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
+import { formatChartData } from "./helper";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -29,7 +30,24 @@ interface AdminData {
   total_mentors: number;
 }
 
+interface ChartDetails {
+  data: number[];
+  labels: string[];
+}
+
 const Dashboard = () => {
+  const [table, setTable] = useState("students");
+  const [chartDetails, setChartDetails] = useState<ChartDetails>({
+    data: [],
+    labels: [],
+  });
+  const changeTableMentors = () => {
+    setTable("mentors");
+  };
+  const changeTableStudents = () => {
+    setTable("students");
+  };
+
   //get admin dashboard info
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,6 +103,12 @@ const Dashboard = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
+      setAdminData(response.data);
+      const formattedChartData = formatChartData(
+        response.data.students_per_month
+      );
+      setChartDetails(formattedChartData);
+      console.log(response, "response");
       setProjectOverview(response.data);
       setOverviewLoad(false);
     } catch (error: any) {
@@ -229,7 +253,7 @@ const Dashboard = () => {
                     ))}
                   </select>
                 </div>
-                <LineChart />
+                <LineChart chartDetails={chartDetails} />
               </div>
             </div>
             <div className="bg-white h-[370px] md:h-[500px] rounded-[8px] p-2 shadow-sm col-span-3">
