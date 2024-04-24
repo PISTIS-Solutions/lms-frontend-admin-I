@@ -27,6 +27,7 @@ interface cardProps {
   duration: number;
   handleCardClick: any;
   handleOpen: any;
+  image: any;
 }
 
 const CoursesCard = ({
@@ -38,6 +39,7 @@ const CoursesCard = ({
   duration,
   handleCardClick,
   handleOpen,
+  image,
 }: cardProps) => {
   const [moduleCount, setModuleCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -74,6 +76,9 @@ const CoursesCard = ({
     getModuleCount();
   }, []);
 
+  const cloudinaryUrl = image;
+  const imageUrl = cloudinaryUrl.replace("image/upload/", "");
+
   return (
     <div className="relative">
       <div
@@ -85,9 +90,11 @@ const CoursesCard = ({
         className=" w-full cursor-pointer h-auto shadow-md rounded-[8px] bg-[#FFF]"
       >
         <Image
-          src={img}
-          alt="img"
-          className="rounded-tr-[4px] w-full rounded-tl-[4px]"
+          src={imageUrl}
+          width={100}
+          height={100}
+          alt={title}
+          className="rounded-tr-[4px] max-w-[357px] max-h-[191px] object-contain w-full rounded-tl-[4px]"
         />
         <div className="p-2">
           <div className="md:mb-14 mb-5">

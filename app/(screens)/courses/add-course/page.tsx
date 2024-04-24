@@ -10,7 +10,7 @@ const AddCourse = () => {
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
-      <div className="ml-0 md:ml-64 overflow-y-scroll h-screen">
+      <div className="ml-0 lg:ml-64 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
           <TopNav />
         </div>

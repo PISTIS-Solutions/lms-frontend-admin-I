@@ -20,59 +20,55 @@ import refreshAdminToken from "@/utils/refreshToken";
 
 const Project = () => {
   const router = useRouter();
-
- 
-
   const [projectModal, setProjectModal] = useState(false);
-
   const handleProjectModal = () => {
     setProjectModal((prev) => !prev);
   };
-  const [projects, setCourses] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const adminAccessToken = Cookies.get("adminAccessToken");
-        const response = await axios.get(urls.getCourses, {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-          },
+  const [projects, setCourses] = useState<any | null>(null);
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.get(urls.getCourses, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+      setCourses(response.data);
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await fetchCourses();
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
         });
-        setCourses(response.data.results);
-      } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await fetchCourses();
-        } else if (error?.message === "Network Error") {
-          toast.error("Check your network!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-        } else {
-          toast.error(error?.response?.data?.detail, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-        }
-      } finally {
-        setLoading(false);
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchCourses();
   }, []);
 
@@ -100,7 +96,8 @@ const Project = () => {
           draggable: false,
           theme: "dark",
         });
-        window.location.reload();
+        // window.location.reload();
+        fetchCourses();
       } else {
         console.error("Failed to delete course.");
       }
@@ -133,14 +130,14 @@ const Project = () => {
     setSelectedProject(courseId);
     setModal(true);
   };
- const handleCardClick = (id: any) => {
+  const handleCardClick = (id: any) => {
     router.push(`/project/${id}`);
   };
-  
+
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
-      <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
+      <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
           <TopNav />
         </div>
@@ -156,12 +153,12 @@ const Project = () => {
             </Button>
             {/* </Link> */}
           </div>
-          <div className="my-5 grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
+          <div className="my-5 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5">
             {loading ? (
               <div className="w-[100%] flex items-center justify-center h-screen">
-              <Loader2 className=" w-8 h-8 animate-spin" />
-              <p>Loading Projects</p>
-            </div>
+                <Loader2 className=" w-8 h-8 animate-spin" />
+                <p>Loading Projects</p>
+              </div>
             ) : projects && projects.length > 0 ? (
               projects.map((project: any) => (
                 <div key={project.id}>
@@ -169,7 +166,7 @@ const Project = () => {
                     id={project.id}
                     handleCardClick={handleCardClick}
                     handleOpen={() => handleOpen(project.id)}
-                    // img={project.img}
+                    img={project.course_image}
                     title={project.title}
                     paragraph={project.paragraph}
                     module={project.module}
@@ -216,7 +213,11 @@ const Project = () => {
       </div>
       <div>
         {projectModal && (
-          <AddProjectModal handleProjectModal={handleProjectModal} />
+          <AddProjectModal
+            courses={projects}
+            fetchCourses={fetchCourses}
+            handleProjectModal={handleProjectModal}
+          />
         )}
       </div>
     </main>

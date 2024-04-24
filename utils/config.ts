@@ -19,5 +19,7 @@ export const urls = {
   // studentRead: `${baseURL}/users/student/{id}/`,
   updateStudentProfile: `${baseURL}/users/student/me/`,
   setStudentPassword: `${baseURL}/users/student/set_password/`,
-  projectOverview: `${baseURL}/users/student/project_overview/`,
+  projectOverview: `${baseURL}/pending-grading/`,
+  deleteStudent: `${baseURL}/users/student/deactivate_me/`,
+  projectReview: `${baseURL}/users/admin/project-review/`,
 };

@@ -14,11 +14,11 @@ import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 import PublishBtn from "./publishBtn";
 
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
@@ -66,8 +66,6 @@ const AddProjectForms = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const uploadProject = async (): Promise<void> => {
-    // e.preventDefault();
-
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
       const convertToISO8601 = (
@@ -84,6 +82,7 @@ const AddProjectForms = () => {
         !courseTitle ||
         !description ||
         !courseLink ||
+        !selectedFile ||
         !filteredModuleDataStore.length ||
         !filteredProjectDataStore.length
       ) {
@@ -100,23 +99,46 @@ const AddProjectForms = () => {
         router.replace("/courses/add-course");
         return;
       }
-      const response = await axios.post(
-        urls.uploadCourses,
-        {
-          title: courseTitle,
-          course_duration: convertToISO8601(hours, minutes, seconds),
-          overview: description,
-          course_url: courseLink,
-          modules: filteredModuleDataStore,
-          projects: filteredProjectDataStore,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
+
+      const payload = new FormData();
+
+      payload.append("title", courseTitle);
+      payload.append(
+        "course_duration",
+        convertToISO8601(hours, minutes, seconds)
       );
+      payload.append("overview", description);
+      payload.append("course_url", courseLink);
+      payload.append("course_image", selectedFile);
+
+      filteredModuleDataStore.forEach((module: any, index: any) => {
+        payload.append(`modules[${index}]module_title`, module.module_title);
+        payload.append(
+          `modules[${index}]module_sub_title`,
+          module.module_sub_title
+        );
+        payload.append(`modules[${index}]description`, module.description);
+        payload.append(`modules[${index}]module_url`, module.module_url);
+      });
+
+      filteredProjectDataStore.forEach((project: any, index: any) => {
+        payload.append(
+          `projects[${index}]project_title`,
+          project.project_title
+        );
+        payload.append(
+          `projects[${index}]project_description`,
+          project.project_description
+        );
+        payload.append(`projects[${index}]project_url`, project.project_url);
+      });
+      const response = await axios.post(urls.uploadCourses, payload, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (response.status === 201) {
         toast.success(response.data.title + " added", {
           position: "top-right",
@@ -158,6 +180,7 @@ const AddProjectForms = () => {
       setLoading(false);
     }
   };
+
   const onContinue = async (e: any) => {
     e.preventDefault();
     const areFieldsValid = sections.every((section) => {
@@ -170,14 +193,14 @@ const AddProjectForms = () => {
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
       ) as HTMLElement;
-  
+
       return (
         projectTitleInput.value.trim() !== "" &&
         projectLinkInput.value.trim() !== "" &&
         (projectDetailsInput?.textContent?.trim() ?? "") !== ""
       );
     });
-  
+
     if (!areFieldsValid) {
       toast.error("Check form fields!", {
         position: "top-right",
@@ -190,7 +213,7 @@ const AddProjectForms = () => {
       });
       return;
     }
-  
+
     const filteredProjectData = sections.map((section) => {
       const projectTitleInput = document.getElementById(
         `projectTitle-${section.id}`
@@ -201,14 +224,14 @@ const AddProjectForms = () => {
       const projectDetailsInput = document.getElementById(
         `projectDetails-${section.id}`
       ) as HTMLElement;
-  
+
       return {
         project_title: projectTitleInput.value,
         project_url: projectLinkInput.value,
         project_description: projectDetailsInput?.textContent ?? "",
       };
     });
-  
+
     setFilteredProjectData(
       filteredProjectData.filter(
         (data) =>
@@ -217,16 +240,16 @@ const AddProjectForms = () => {
           data.project_description.trim() !== ""
       )
     );
-  
+
     // console.log(filteredProjectData, "fp");
     // Call uploadProject
     // await uploadProject(e);
   };
-  
 
   const test = () => {
     console.log("test");
   };
+
   useEffect(() => {
     if (
       !courseTitle ||

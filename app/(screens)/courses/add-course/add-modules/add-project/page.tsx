@@ -9,7 +9,7 @@ const AddProject = () => {
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
-      <div className="ml-0 md:ml-64 overflow-y-scroll h-screen">
+      <div className="ml-0 lg:ml-64 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
           <TopNav />
         </div>
@@ -25,7 +25,7 @@ const AddProject = () => {
             <div className="bg-sub w-full h-[4px]"></div>
             <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
           </div>
-          <div className="rounded-[8px]  border-t-4 border-t-primary bg-white h-full p-2 md:p-6 w-[90%] ">
+          <div className="rounded-[8px]  border-t-4 border-t-primary bg-white h-full p-2 md:p-6 w-[95%] ">
             <div>
               <div>
                 <AddProjectForms />
