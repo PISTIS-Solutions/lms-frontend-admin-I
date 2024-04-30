@@ -2,39 +2,36 @@ import { create } from "zustand";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
-import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
+import { toast } from "react-toastify";
 
-interface StudentsStore {
-  students: any;
-  loading: boolean;
-  fetchStudents: () => Promise<void>;
+interface pendingGrading {
+  projectReview: any;
+  reviewLoad: boolean;
+  fetchProjectReview: (id:any) => Promise<void>;
 }
-
-const useStudentsStore = create<StudentsStore>((set, get) => ({
-  students: {},
-  loading: false,
-
-  fetchStudents: async () => {
+const usePendingGradeStore = create<pendingGrading>((set, get) => ({
+  projectReview: [],
+  reviewLoad: false,
+  fetchProjectReview: async (id) => {
     try {
-      set({ loading: true });
+      set({ reviewLoad: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(urls.getStudents, {
-        // params: {
-        //   page: pageNumber,
-        // },
+      const response = await axios.get(`${urls.projectReview}${id}/`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      set({ students: response.data });
-      // console.log(response.data)
+      if (response.status === 200) {
+        set({ projectReview: response.data });
+        set({ reviewLoad: false });
+        // console.log(response.data, "rD")
+      }
     } catch (error: any) {
-      console.error("Error fetching courses:", error.message);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudents(); 
-      } else if (error?.message === "Network Error") {
+        await get().fetchProjectReview;
+      } else if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -45,7 +42,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
           theme: "dark",
         });
       } else {
-        toast.error(error?.response?.data?.detail, {
+        toast.error(error.response?.data?.detail, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -56,9 +53,9 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
         });
       }
     } finally {
-      set({ loading: false });
+      set({ reviewLoad: false });
     }
   },
 }));
 
-export default useStudentsStore;
+export default usePendingGradeStore;

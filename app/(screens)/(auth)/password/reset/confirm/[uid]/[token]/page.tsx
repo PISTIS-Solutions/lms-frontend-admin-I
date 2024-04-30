@@ -51,13 +51,33 @@ const NewPassword = () => {
             draggable: false,
             theme: "dark",
           });
+          router.push("/");
           // router.push("/create-account/activate/[uid]");
-        } else {
-          // setModal(false);
         }
       }
     } catch (error: any) {
       setSpecialCharacterErr(error.message);
+      if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -69,20 +89,26 @@ const NewPassword = () => {
 
   return (
     <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-10">
+      <div className="bg-white w-[100%] lg:w-[50%] h-screen rounded-none lg:rounded-tl-[40px] lg:rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-5  md:px-6 lg:px-10">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
         </div>
         <div className="">
-          <h1 className="text-4xl font-semibold">Reset Password</h1>
-          <h3 className="text-2xl">Create a safe and secured password</h3>
+          <h1 className="md:text-4xl sm:text-2xl text-xl font-semibold">
+            Reset Password
+          </h1>
+          <h3 className="md:text-2xl sm:text-lg text-base">
+            Create a safe and secured password
+          </h3>
         </div>
         <ToastContainer />
         <div>
           <form onSubmit={onSubmitChangePassword} className="space-y-3">
-            <p className="text-xl font-semibold">Create Password</p>
+            <p className="text-[#3E3E3E] md:text-xl sm:text-base text-sm">
+              Create Password
+            </p>
             <div className="relative">
-              <KeyRound className="mr-2 absolute top-4 text-[#4F5B67] left-3 h-5 w-5" />
+              <KeyRound className="mr-2 absolute md:top-5 top-4 text-[#4F5B67] left-3 h-5 w-5" />
               {passwordStore.showPassword ? (
                 <Eye
                   onClick={passwordStore.togglePassword}
@@ -97,7 +123,7 @@ const NewPassword = () => {
 
               <input
                 type={passwordStore.showPassword ? "text" : "password"}
-                className="py-4 bg-[#FAFAFA] placeholder:text-[#4F5B67] rounded-[6px] indent-10 w-full"
+                className="py-4 bg-[#FAFAFA] text-xs md:text-base  placeholder:text-[#4F5B67] rounded-[6px] indent-9 w-full"
                 placeholder="Password"
                 value={passwordStore.password}
                 onChange={(e) =>
@@ -105,12 +131,10 @@ const NewPassword = () => {
                 }
               />
             </div>
-            <p className="text-[#3E3E3E] text-base text-right">
-              Password must contain special characters
-            </p>
+
             <p className="text-xl font-semibold">Confirm password</p>
             <div className="relative">
-              <KeyRound className="mr-2 absolute top-4 text-[#4F5B67] left-3 h-5 w-5" />
+              <KeyRound className="mr-2 absolute md:top-5 top-4 text-[#4F5B67] left-3 h-5 w-5" />
               {passwordStore.showConfirmPassword ? (
                 <Eye
                   onClick={passwordStore.toggleConfirmPassword}
@@ -124,7 +148,7 @@ const NewPassword = () => {
               )}
               <input
                 type={passwordStore.showConfirmPassword ? "text" : "password"}
-                className="py-4 w-full bg-[#FAFAFA] placeholder:text-[#4F5B67] rounded-[6px] indent-10"
+                className="py-4 bg-[#FAFAFA] text-xs md:text-base  placeholder:text-[#4F5B67] rounded-[6px] indent-9 w-full"
                 placeholder="Confirm Password"
                 value={passwordStore.confirm}
                 onChange={(e) =>
@@ -132,10 +156,13 @@ const NewPassword = () => {
                 }
               />
             </div>
+            <p className="text-red-500 text-xs md:text-sm lg:text-base text-center">
+              Password must contain special characters
+            </p>
             <div>
               <p className="text-red-500 text-center">{specialCharacterErr}</p>
               {passwordStore.password != passwordStore.confirm ? (
-                <p className="text-red-500 text-center">
+                <p className="text-red-500 text-xs md:text-sm lg:text-base text-center">
                   Password and Confirm password contains different characters
                 </p>
               ) : (

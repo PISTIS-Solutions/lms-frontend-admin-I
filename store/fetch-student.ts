@@ -1,40 +1,37 @@
 import { create } from "zustand";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
+import Cookies from "js-cookie";
+
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 
-interface StudentsStore {
-  students: any;
+interface readStudent {
+  studentData: any;
   loading: boolean;
-  fetchStudents: () => Promise<void>;
+  // response: any;
+  fetchStudentData: () => Promise<void>;
 }
 
-const useStudentsStore = create<StudentsStore>((set, get) => ({
-  students: {},
+const useStudentStore = create<readStudent>((set, get) => ({
+  studentData: null,
   loading: false,
-
-  fetchStudents: async () => {
+  fetchStudentData: async () => {
     try {
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(urls.getStudents, {
-        // params: {
-        //   page: pageNumber,
-        // },
+      const response = await axios.get(urls.updateStudentProfile, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      set({ students: response.data });
-      // console.log(response.data)
+      set({ studentData: response.data });
     } catch (error: any) {
-      console.error("Error fetching courses:", error.message);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudents(); 
-      } else if (error?.message === "Network Error") {
+        await get().fetchStudentData();
+      } else if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -45,7 +42,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
           theme: "dark",
         });
       } else {
-        toast.error(error?.response?.data?.detail, {
+        toast.error(error.response?.data?.detail, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -61,4 +58,4 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
   },
 }));
 
-export default useStudentsStore;
+export default useStudentStore;

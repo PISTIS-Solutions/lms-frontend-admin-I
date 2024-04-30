@@ -14,13 +14,15 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, KeyRound, Mail } from "lucide-react";
+import { Eye, EyeOff, KeyRound, Loader, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { urls } from "@/utils/config";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const formSchema = z.object({
   Email: z.string().min(2, {
@@ -41,29 +43,56 @@ const ForgotPassword = () => {
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const email = values.Email;
     try {
-      const url =
-        urls.forgotPassword;
-      await axios.post(url, { email });
-      router.push("/sign-in/forgot-password/verify");
-    } catch (error) {
-      console.error("Error:", error);
       setUnsuccess(true);
+      const email = values.Email;
+      const url = urls.forgotPassword;
+      const response = await axios.post(url, {
+        email,
+      });
+      if (response.status === 204) {
+        router.push("/sign-in/forgot-password/verify");
+        setUnsuccess(false);
+      }
+    } catch (error: any) {
+      if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setUnsuccess(false);
     }
-
-    //
   };
 
   return (
     <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 flex flex-col gap-28 px-10">
+      <ToastContainer />
+      <div className="bg-white w-[100%] lg:w-[50%] h-screen rounded-none lg:rounded-tl-[40px] lg:rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-5  md:px-6 lg:px-10">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
         </div>
         <div className="">
-          <h1 className="text-4xl font-semibold">Forgot Password?</h1>
-          <h3 className="text-2xl">
+          <h1 className="md:text-4xl sm:text-2xl text-xl font-semibold">
+            Forgot Password?
+          </h1>
+          <h3 className="md:text-2xl sm:text-lg text-base">
             Please provide your registered email address
           </h3>
         </div>
@@ -75,19 +104,18 @@ const ForgotPassword = () => {
                 name="Email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-medium">
+                    <FormLabel className="text-[#3E3E3E] md:text-xl sm:text-base text-sm">
                       Email Address
                     </FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="mr-2 absolute top-4 text-[#4F5B67] left-3 h-5 w-5" />
+                        <Mail className="mr-2 absolute md:top-3 top-4 text-[#4F5B67] left-3 h-5 w-5" />
                         <Input
                           type="email"
-                          className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] mb-10 rounded-[6px] indent-6"
+                          className="py-4 bg-[#FAFAFA] w-full text-xs md:text-base placeholder:text-[#4F5B67] rounded-[6px] indent-9"
                           placeholder="example@gmail.com"
                           {...field}
                         />
-                        {Unsuccess && <p className="text-red-500 font-bold">Unsuccessful</p>}
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -96,9 +124,10 @@ const ForgotPassword = () => {
               />
               <Button
                 type="submit"
-                className="w-full mt-10 bg-[#33CC99] py-6 font-medium text-2xl text-black hover:text-white"
+                disabled={Unsuccess}
+                className="w-full bg-[#33CC99] py-4 flex justify-center items-center rounded-[8px] font-medium text-lg md:text-2xl text-black hover:text-white"
               >
-                Submit
+                {Unsuccess ? <Loader className="animate-spin" /> : "Submit"}
               </Button>
             </form>
           </Form>

@@ -10,6 +10,10 @@ import useStudentInfoStore from "@/store/read-student";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import Cookies from "js-cookie";
+import refreshAdminToken from "@/utils/refreshToken";
+import { urls } from "@/utils/config";
 
 const StudentPage = () => {
   const { students, loading, fetchStudents } = useStudentsStore();
@@ -19,8 +23,8 @@ const StudentPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetchStudents(currentPage);
-  }, [currentPage]);
+    fetchStudents();
+  }, []);
 
   const nextPage = () => {
     if (students.next) {
@@ -68,14 +72,73 @@ const StudentPage = () => {
     setExpandedStudent(expandedStudent === index ? null : index);
   };
 
-  const filteredStudents = students?.results?.filter((student:any) =>
+  const filteredStudents = students?.results?.filter((student: any) =>
     student.full_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
+  const [loadingManage, setLoadingManage] = useState(false)
 
+  const manageStudentSubscription = async (id: string, plan: string) => {
+    try {
+      setLoadingManage(true)
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.patch(
+        `${urls.manageStudentPlan}${id}/`,
+        {
+          plan: plan,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setLoadingManage(false)
+        toast.success("Plan Updated!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        fetchStudents();
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await manageStudentSubscription(id, plan);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setLoadingManage(false);
+    }
+  };
   return (
     <main>
       <SideNav />
-      <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
+      <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
           <TopNav />
         </div>
@@ -132,52 +195,79 @@ const StudentPage = () => {
                         </td>
                       </tr>
                     ) : filteredStudents && filteredStudents.length > 0 ? (
-                      filteredStudents.map((person: any) => (
-                        <React.Fragment key={person.id}>
-                          <tr
-                            onClick={() => {
-                              // fetchStudentInfo(person.id);
-                              readStudent(person.id);
-                            }}
-                            className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 cursor-pointer"
-                          >
-                            <td>{person.full_name}</td>
-                            <td>{person.email}</td>
-                            <td>{person.courses_completed}</td>
-                            <td>{person.phone_number}</td>
-                            <td>{person.plan}</td>
-                            <td
-                              onClick={() => toggleStudentOptions(person.id)}
-                              className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
-                            >
-                              Manage
-                            </td>
-                          </tr>
+                      filteredStudents
+                        .filter((person: any) => person.has_complete_onboarding)
+                        .map((person: any) => (
+                          <React.Fragment key={person.id}>
+                            <tr className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 ">
+                              <td
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  readStudent(person.id);
+                                }}
+                              >
+                                {person.full_name}
+                              </td>
+                              <td>{person.email}</td>
+                              <td>{person.courses_completed}</td>
+                              <td>{person.phone_number}</td>
+                              <td>{person.plan}</td>
+                              <td
+                                onClick={() => toggleStudentOptions(person.id)}
+                                className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
+                              >
+                                Manage
+                              </td>
+                            </tr>
 
-                          {expandedStudent === person.id && (
-                            <div
-                              className="bg-[#FFFFFF] p-2 w-30 md:w-60 rounded-[8px] shadow-md absolute right-0"
-                              key={`options-${person.id}`}
-                            >
-                              <h1 className="md:text-xl text-sm font-medium text-center pb-2">
-                                Manage Access
-                              </h1>
-                              <hr />
-                              <div>
-                                <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
-                                  Paid
-                                </p>
-                                <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
-                                  Free
-                                </p>
-                                <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
-                                  Revoke
-                                </p>
+                            {expandedStudent === person.id && (
+                              <div
+                                className="bg-[#FFFFFF] p-2 w-30 md:w-60 rounded-[8px] shadow-md absolute right-0"
+                                key={`${person.id}`}
+                              >
+                                <h1 className="md:text-xl text-sm font-medium text-center pb-2">
+                                  Manage Access
+                                </h1>
+                                <hr />
+                               { !loadingManage ? <div>
+                                  <p
+                                    onClick={() => {
+                                      manageStudentSubscription(
+                                        person.id,
+                                        "Paid"
+                                      );
+                                    }}
+                                    className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                                  >
+                                    Paid
+                                  </p>
+                                  <p
+                                    onClick={() => {
+                                      manageStudentSubscription(
+                                        person.id,
+                                        "Free"
+                                      );
+                                    }}
+                                    className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                                  >
+                                    Free
+                                  </p>
+                                  <p
+                                    onClick={() => {
+                                      manageStudentSubscription(
+                                        person.id,
+                                        "Blocked"
+                                      );
+                                    }}
+                                    className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                                  >
+                                    Revoke
+                                  </p>
+                                </div> : <Loader2Icon className="animate-spin text-main"/>}
                               </div>
-                            </div>
-                          )}
-                        </React.Fragment>
-                      ))
+                            )}
+                          </React.Fragment>
+                        ))
                     ) : (
                       <tr>
                         <td colSpan={6} className="py-4">

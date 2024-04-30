@@ -52,7 +52,7 @@ const SideNav = () => {
 
   return (
     <div>
-      <nav className="w-64 hidden md:block bg-main h-screen absolute top-0">
+      <nav className="w-64 hidden lg:block bg-main h-screen absolute top-0">
         <Image className=" m-auto py-5 px-5" src={logo} priority alt="logo" />
         <div className="flex justify-between flex-col h-[88%]">
           <div>
@@ -105,7 +105,7 @@ const SideNav = () => {
           </div>
         </div>
       </nav>
-      <div className="md:hidden block">
+      <div className="lg:hidden block">
         <MobileNav />
       </div>
     </div>

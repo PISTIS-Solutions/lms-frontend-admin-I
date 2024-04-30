@@ -14,8 +14,9 @@ import useModuleRead from "@/store/module-read";
 import SideModules from "@/components/side-comp/side-modules";
 import useCourseRead from "@/store/course-read";
 import { Input } from "@/components/ui/input";
-import ReactQuill from "react-quill";
+import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import { toolbarOptions } from "@/components/side-comp/toolbar";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
@@ -52,79 +53,81 @@ const Content = () => {
   const editModule = async (e: any) => {
     e.preventDefault();
 
-    if (moduleTitle !== "" && modulesubTitle !== "" && modulesLink !== "") {
-      try {
-        const adminAccessToken = Cookies.get("adminAccessToken");
-        seteditLoading(true);
-        const response = await axios.patch(
-          `${urls.getCourses}${courseID}/modules/${moduleID}/`,
-          {
-            module_title: moduleTitle,
-            module_sub_title: modulesubTitle,
-            module_url: modulesLink,
-            description: description,
+    // if (moduleTitle !== "" && modulesubTitle !== "" && modulesLink !== "") {
+    try {
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      seteditLoading(true);
+      const response = await axios.patch(
+        `${urls.getCourses}${courseID}/modules/${moduleID}/`,
+        {
+          module_title: moduleTitle,
+          module_sub_title: modulesubTitle,
+          module_url: modulesLink,
+          description: description,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: `Bearer ${adminAccessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        }
+      );
 
-        if (response.status === 200) {
-          seteditLoading(false);
-          setOpenModal(false);
-          toast.success("Module successfully edited!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-          window.parent.location = window.parent.location.href;
-        }
-      } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await editModule(e);
-        } else if (error?.message === "Network Error") {
-          toast.error("Check your network!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-        } else {
-          toast.error(error?.response?.data?.detail, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-        }
-      } finally {
+      if (response.status === 200) {
         seteditLoading(false);
+        setOpenModal(false);
+        toast.success("Module successfully edited!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        // window.parent.location = window.parent.location.href;
+        fetchModuleRead(courseID, moduleID);
+        fetchCourseRead(courseID);
       }
-    } else {
-      toast.error("Check fields fields!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await editModule(e);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      seteditLoading(false);
     }
+    // } else {
+    //   toast.error("Check fields fields!", {
+    //     position: "top-right",
+    //     autoClose: 5000,
+    //     hideProgressBar: true,
+    //     closeOnClick: true,
+    //     pauseOnHover: false,
+    //     draggable: false,
+    //     theme: "dark",
+    //   });
+    // }
   };
 
   useEffect(() => {
@@ -135,7 +138,7 @@ const Content = () => {
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
-      <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
+      <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <ToastContainer />
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <ArrowLeft
@@ -162,15 +165,29 @@ const Content = () => {
           ) : (
             <div>
               <h1 className=" px-4 text-[#1A1A1A] text-lg md:text-2xl my-4 font-medium">
-                {moduleData?.module_title}
+                {courseRead?.title}
               </h1>
-              <div className="md:grid block p-4 gap-x-4 grid-cols-10">
-                <ReactPlayer
-                  light={true}
-                  controls={true}
-                  url={moduleData?.module_url}
-                  className="w-full h-[428px] md:col-span-7"
-                />
+              <div className="md:grid flex flex-col-reverse gap-x-2 grid-cols-10">
+                <span className="relative col-span-7">
+                  <ReactPlayer
+                    controls={false}
+                    width="100%"
+                    height="100%"
+                    autoplay={true}
+                    url={moduleData?.module_url}
+                    className="md:h-[428px] md:my-0 my-4"
+                    config={{
+                      youtube: {
+                        playerVars: {
+                          controls: 0,
+                          modestbranding: 1,
+                        },
+                      },
+                    }}
+                  />
+                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
+                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" />
+                </span>
                 <ScrollArea className="h-[428px] rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
                   {loading ? (
                     <div className="w-[100%] flex items-center justify-center h-screen">
@@ -182,6 +199,7 @@ const Content = () => {
                       courseRead={courseRead}
                       selectedModuleId={selectedModuleId}
                       handleItemClick={handleItemClick}
+                      noEdit={false}
                     />
                   )}
                 </ScrollArea>
@@ -189,7 +207,7 @@ const Content = () => {
               <div className="bg-white shadow-md p-4">
                 <div className="flex justify-between items-center">
                   <h1 className="md:text-2xl text-lg font-medium">
-                    Module 1: {moduleData?.module_title}
+                    Module: {moduleData?.module_title}
                   </h1>
                   <span
                     onClick={handleModal}

@@ -62,9 +62,9 @@ const AddModuleForms = () => {
 
   interface ModuleFormData {
     module_title: string;
-    module_url: string;
-    description: string;
     module_sub_title: string;
+    description: string;
+    module_url: string;
   }
   const [loading, setLoading] = useState<boolean>(false);
   const onContinue = () => {
@@ -170,9 +170,6 @@ const AddModuleForms = () => {
 
   return (
     <div>
-      <div>
-        <h1 className="md:text-3xl text-xl font-semibold">Module Details</h1>
-      </div>
       <ToastContainer />
       {sections.map((section, index) => (
         <div key={section.id} className="mt-4">

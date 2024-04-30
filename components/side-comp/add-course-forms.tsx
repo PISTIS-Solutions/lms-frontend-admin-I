@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Form, FormItem, FormLabel } from "@/components/ui/form";
@@ -9,11 +9,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 
 // import ReactQuill from "react-quill";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const AddCourseForms = () => {
   const {
@@ -53,7 +53,14 @@ const AddCourseForms = () => {
   const router = useRouter();
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (courseTitle && hours && minutes && courseLink && description) {
+    if (
+      courseTitle &&
+      hours &&
+      minutes &&
+      courseLink &&
+      description &&
+      selectedFile
+    ) {
       toast.success("Course Created", {
         position: "top-right",
         autoClose: 5000,

@@ -11,20 +11,25 @@ import { Loader2 } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 import useStudentInfoStore from "@/store/read-student";
 import useStudentsStore from "@/store/fetch-students";
+import usePendingGradeStore from "@/store/project-review";
 
 const Student = () => {
   const { studentData, loading, fetchStudentInfo } = useStudentInfoStore();
+  const { projectReview, reviewLoad, fetchProjectReview } =
+    usePendingGradeStore();
   const params = useParams<{ student: string }>();
 
   const id = params.student;
+
   useEffect(() => {
     fetchStudentInfo(id);
+    fetchProjectReview(id);
   }, []);
 
   return (
     <main className="relative">
       <SideNav />
-      <div className="md:ml-64 ml-0 overflow-y-scroll h-screen">
+      <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
           <TopNav />
         </div>
@@ -39,12 +44,14 @@ const Student = () => {
               <div className="sm:flex block px-3 md:px-0 items-center justify-around py-4">
                 <div className="flex items-center gap-x-4">
                   <Image
-                    src={student}
+                    width={100}
+                    height={100}
+                    src={studentData?.profile_photo}
                     alt={studentData?.full_name}
                     className="w-28 h-auto"
                   />
                   <div>
-                    <h3 className="lg:text-lg text-lg font-medium text-500">
+                    <h3 className="lg:text-lg text-base font-medium text-500">
                       {studentData?.full_name}
                     </h3>
                     <p className="lg:text-sm text-xs font-normal text-[#3E3E3E]">
@@ -54,7 +61,7 @@ const Student = () => {
                 </div>
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
                 <div>
-                  <h3 className="lg:text-lg text-lg font-medium">
+                  <h3 className="lg:text-lg text-base font-medium">
                     {studentData?.email}
                   </h3>
                   <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">
@@ -63,7 +70,7 @@ const Student = () => {
                 </div>
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
                 <div>
-                  <h3 className="text-lg lg:text-lg font-medium">
+                  <h3 className="text-base lg:text-lg font-medium">
                     {studentData?.phone_number}
                   </h3>
                   <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">
@@ -72,7 +79,7 @@ const Student = () => {
                 </div>
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
                 <div>
-                  <h3 className="text-lg lg:text-lg font-medium">
+                  <h3 className="text-base lg:text-lg font-medium">
                     {studentData?.location}
                   </h3>
                   <p className="text-sm, lg:text-sm font-normal text-[#3E3E3E]">
@@ -80,15 +87,18 @@ const Student = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex justify-end gap-x-2 text-[#939393] text-xs md:text-lg pr-2">
-                <p>Time left: 2 months</p>
-                <p>Last login: 10:01, 08/09/2023</p>
+              <div className=" text-[#939393] text-xs md:text-lg text-right pr-2">
+                <p>Time left: {studentData?.time_left?.time_left}</p>
+                <p>Last login: {studentData?.last_login}</p>
               </div>
             </div>
             <div>
               <div className="bg-white rounded-[8px] mx-2 md:mx-4 my-4 p-2">
                 <h1 className="text-2xl font-medium my-4">Project Review</h1>
-                <ProjectReview />
+                <ProjectReview
+                  reviewLoad={reviewLoad}
+                  projectReview={projectReview}
+                />
               </div>
             </div>
           </div>
