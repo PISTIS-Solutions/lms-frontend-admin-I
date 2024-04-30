@@ -100,7 +100,7 @@ const Dashboard = () => {
       });
       setProjectOverview(response.data);
       setOverviewLoad(false);
-      console.log(response, "grado");
+      // console.log(response, "grado");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();

@@ -9,14 +9,14 @@ import Link from "next/link";
 
 const PaginatedTable = () => {
   const { students, loading, fetchStudents } = useStudentsStore();
-  const { fetchStudentInfo } = useStudentInfoStore();
+  // const { fetchStudentInfo } = useStudentInfoStore();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const studentsPerPage = 4;
 
   useEffect(() => {
-    fetchStudents(currentPage);
-  }, [currentPage]);
+    fetchStudents();
+  }, []);
 
   const totalPages = Math.ceil(students?.results?.length / studentsPerPage);
 
@@ -61,9 +61,7 @@ const PaginatedTable = () => {
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
             {person.email}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.course}
-          </td>
+          
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
             {person.location}
           </td>
@@ -112,9 +110,7 @@ const PaginatedTable = () => {
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Email
             </th>
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-              Current Course
-            </th>
+           
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Location
             </th>

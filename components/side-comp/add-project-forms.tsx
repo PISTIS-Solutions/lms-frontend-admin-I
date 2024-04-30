@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Loader2Icon, MinusCircle, PlusCircle } from "lucide-react";
+import { Loader2Icon, MinusCircle, PlusCircle, X } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import PublishBtn from "./publishBtn";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
+import Image from "next/image";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -150,6 +151,7 @@ const AddProjectForms = () => {
           theme: "dark",
         });
         router.push("/courses");
+        
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -272,6 +274,10 @@ const AddProjectForms = () => {
     }
   }, []);
 
+  // const [openPreview, setOpenPreview] = useState(false);
+  // const handlepreview = () => {
+  //   setOpenPreview((prev) => !prev);
+  // };
   return (
     <div className="pt-5">
       <ToastContainer />
@@ -303,6 +309,15 @@ const AddProjectForms = () => {
 
           <form className="my-4">
             <div>
+              <div className="flex  flex-end">
+                {/* <button
+                  onClick={() => {
+                    handlepreview();
+                  }}
+                >
+                  Preview
+                </button> */}
+              </div>
               <label className="md:text-xl text-sm text-[#3E3E3E]">
                 <p className="">Project Title</p>
               </label>
@@ -356,6 +371,100 @@ const AddProjectForms = () => {
         upload={uploadProject}
         test={test}
       />
+
+      <div className="bg-white overflow-y-scroll w-3/4 h-[60vh] p-2 rounded-[8px]">
+        <div className="">
+          <h1 className="font-semibold text-xl text-main">
+            Course Details Preview
+          </h1>
+        </div>
+        <div>
+          <ul>
+            {/* <Image src={selectedFile} alt={courseTitle}/> */}
+            <li className="py-1">
+              <span className="font-semibold text-main">Course Title:</span>{" "}
+              <br /> {courseTitle}
+            </li>
+            <li className="py-1">
+              <span className="font-semibold text-main">Course Duration:</span>{" "}
+              <br /> {hours} Hours, {minutes} Minutes and {seconds} Seconds
+            </li>
+            <li className="py-1">
+              <span className="font-semibold text-main">
+                Course Description:
+              </span>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: description,
+                }}
+                className=" text-[#3E3E3E]"
+              ></p>
+            </li>
+            <li className="py-1">
+              <span className="font-semibold text-main">CourseLink:</span>{" "}
+              <br /> {courseLink}
+            </li>
+            <hr />
+            <div className="py-2">
+              <h1>Modules</h1>
+              {filteredModuleDataStore.map((module: any) => {
+                return (
+                  <ul>
+                    <ol className="py-1">
+                      <span className="font-semibold text-main">
+                        Module Title:
+                      </span>{" "}
+                      <br /> {module.module_title}
+                    </ol>
+                    <ol className="py-1">
+                      <span className="font-semibold text-main">
+                        Module SubTitle:
+                      </span>{" "}
+                      <br /> {module.module_sub_title}
+                    </ol>
+                    <ol className="py-1">
+                      <span className="font-semibold text-main">
+                        Module Description:
+                      </span>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: module.description,
+                        }}
+                        className=" text-[#3E3E3E]"
+                      ></p>
+                    </ol>
+
+                    <ol className="py-1">
+                      <span className="font-semibold text-main">
+                        Module Link:
+                      </span>{" "}
+                      <br /> <span>{module.module_url}</span>
+                    </ol>
+                    <hr />
+                  </ul>
+                );
+              })}
+            </div>
+            {/* <div>
+              <h1>Projects</h1>
+              {filteredProjectDataStore.map((project: any) => {
+                return (
+                  <ul>
+                    <ol>Project Title: {project.project_title}</ol>
+                    <ol>Project Description: {project.project_description}</ol>
+                    <ol>Project Link: {project.project_url}</ol>
+                  </ul>
+                );
+              })}
+            </div> */}
+          </ul>
+        </div>
+      </div>
+      {/* {openPreview && (
+        <div className="absolute top-0 flex items-center justify-center right-0 w-full h-screen bg-black/25">
+         
+        </div>
+      )} */}
     </div>
   );
 };

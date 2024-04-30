@@ -8,32 +8,32 @@ import refreshAdminToken from "@/utils/refreshToken";
 interface StudentsStore {
   students: any;
   loading: boolean;
-  fetchStudents: (pageNumber: number) => Promise<void>;
+  fetchStudents: () => Promise<void>;
 }
 
 const useStudentsStore = create<StudentsStore>((set, get) => ({
   students: {},
   loading: false,
 
-  fetchStudents: async (pageNumber: number) => {
+  fetchStudents: async () => {
     try {
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(urls.getStudents, {
-        params: {
-          page: pageNumber,
-        },
+        // params: {
+        //   page: pageNumber,
+        // },
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
       set({ students: response.data });
-      console.log(response.data)
+      // console.log(response.data)
     } catch (error: any) {
       console.error("Error fetching courses:", error.message);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudents(pageNumber); 
+        await get().fetchStudents(); 
       } else if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",

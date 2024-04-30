@@ -56,18 +56,17 @@ const CoursesCard = ({
           },
         });
 
+        console.log(response.status);
         if (response.status === 200) {
-          // Assuming the modules are an array in the response
           const count = response.data.length;
           setModuleCount(count);
           setLoading(false);
         } else {
-          console.error(`Error fetching modules for course ${id}`);
-          setModuleCount(0); // or handle the error as needed
+          // console.error(`Error fetching modules for course ${id}`);
+          setModuleCount(0);
         }
       } catch (error: any) {
-        console.error(`Error: ${error.message}`);
-        setModuleCount(0); // or handle the error as needed
+        setModuleCount(0);
       } finally {
         setLoading(false);
       }

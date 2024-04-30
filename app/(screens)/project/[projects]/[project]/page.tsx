@@ -264,7 +264,6 @@ const SideProject = () => {
                     ></p>
                     {/* <p className="text-[#3E3E3E]"></p> */}
                   </div>
-                  <hr />
                 </div>
               </div>
             </div>

@@ -10,6 +10,10 @@ import useStudentInfoStore from "@/store/read-student";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import Cookies from "js-cookie";
+import refreshAdminToken from "@/utils/refreshToken";
+import { urls } from "@/utils/config";
 
 const StudentPage = () => {
   const { students, loading, fetchStudents } = useStudentsStore();
@@ -19,8 +23,8 @@ const StudentPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetchStudents(currentPage);
-  }, [currentPage]);
+    fetchStudents();
+  }, []);
 
   const nextPage = () => {
     if (students.next) {
@@ -71,7 +75,66 @@ const StudentPage = () => {
   const filteredStudents = students?.results?.filter((student: any) =>
     student.full_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
+  const [loadingManage, setLoadingManage] = useState(false)
 
+  const manageStudentSubscription = async (id: string, plan: string) => {
+    try {
+      setLoadingManage(true)
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.patch(
+        `${urls.manageStudentPlan}${id}/`,
+        {
+          plan: plan,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setLoadingManage(false)
+        toast.success("Plan Updated!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        fetchStudents();
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await manageStudentSubscription(id, plan);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setLoadingManage(false);
+    }
+  };
   return (
     <main>
       <SideNav />
@@ -140,7 +203,6 @@ const StudentPage = () => {
                               <td
                                 className="cursor-pointer"
                                 onClick={() => {
-                                  // fetchStudentInfo(person.id);
                                   readStudent(person.id);
                                 }}
                               >
@@ -161,23 +223,47 @@ const StudentPage = () => {
                             {expandedStudent === person.id && (
                               <div
                                 className="bg-[#FFFFFF] p-2 w-30 md:w-60 rounded-[8px] shadow-md absolute right-0"
-                                key={`options-${person.id}`}
+                                key={`${person.id}`}
                               >
                                 <h1 className="md:text-xl text-sm font-medium text-center pb-2">
                                   Manage Access
                                 </h1>
                                 <hr />
-                                <div>
-                                  <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
+                               { !loadingManage ? <div>
+                                  <p
+                                    onClick={() => {
+                                      manageStudentSubscription(
+                                        person.id,
+                                        "Paid"
+                                      );
+                                    }}
+                                    className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                                  >
                                     Paid
                                   </p>
-                                  <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
+                                  <p
+                                    onClick={() => {
+                                      manageStudentSubscription(
+                                        person.id,
+                                        "Free"
+                                      );
+                                    }}
+                                    className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                                  >
                                     Free
                                   </p>
-                                  <p className="md:text-lg text-xs py-1 text-left cursor-pointer">
+                                  <p
+                                    onClick={() => {
+                                      manageStudentSubscription(
+                                        person.id,
+                                        "Blocked"
+                                      );
+                                    }}
+                                    className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                                  >
                                     Revoke
                                   </p>
-                                </div>
+                                </div> : <Loader2Icon className="animate-spin text-main"/>}
                               </div>
                             )}
                           </React.Fragment>

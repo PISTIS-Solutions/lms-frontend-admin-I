@@ -114,19 +114,19 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
               <>
                 <tr key={index}>
                   <td className="md:py-4 px-2 md:px-0 md:text-base text-xs py-1 capitalize cursor-pointer">
-                    {person.course_title}
+                    {person?.course?.title}
                   </td>
                   <td className="md:py-4 md:text-base text-xs py-1">
                     {formatDate(person.deadline)}
                   </td>
 
-                  <td className="md:py-4 text-center md:text-base text-xs py-1">
+                  <td className="md:py-4 text-left md:text-base text-xs py-1">
                     {!person.date_submitted
                       ? "-"
                       : formatDate(person.date_submitted)}
                   </td>
                   <td
-                    className={`md:py-4 md:text-base text-center text-xs py-1 capitalize ${
+                    className={`md:py-4 md:text-base text-left text-xs py-1 capitalize ${
                       !person.status
                         ? "text-gray-600"
                         : person.status === "Pending"
@@ -149,7 +149,10 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                         Review
                       </p>
                     ) : person.status === "Reviewed" ? (
-                      <p className="bg-white border border-[#EEEEFB] rounded-[24px] text-center p-1 w-[107px] cursor-pointer">
+                      <p
+                        onClick={() => handleModalApproved(person)}
+                        className="bg-white border border-[#EEEEFB] rounded-[24px] text-center p-1 w-[107px] cursor-pointer"
+                      >
                         View
                       </p>
                     ) : (
@@ -211,6 +214,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
         {openModal && selectedPerson && (
           <div className="bg-slate-200/50 top-0 left-0 absolute flex justify-center items-center w-full h-screen">
             <PendingModal
+              projectReview={projectReview}
               person={selectedPerson}
               handleCloseModal={handleCloseModal}
             />
@@ -221,6 +225,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
         {openModalApproved && selectedPersonApproved && (
           <div className="bg-slate-200/50 top-0 left-0 absolute flex justify-center items-center w-full h-screen">
             <ReviewedModal
+              projectReview={projectReview}
               person={selectedPersonApproved}
               handleCloseModalApproved={handleCloseModalApproved}
             />

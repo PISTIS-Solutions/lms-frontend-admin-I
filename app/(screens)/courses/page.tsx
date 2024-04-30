@@ -23,6 +23,7 @@ const Courses = () => {
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+
   const fetchCourses = async () => {
     try {
       setLoading(true);
@@ -32,7 +33,11 @@ const Courses = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      setCourses(response.data);
+      if (response.status === 200) {
+        setCourses(response.data);
+        console.log(response.data, "cs");
+        // window.location.reload();
+      }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();

@@ -165,7 +165,7 @@ const Content = () => {
           ) : (
             <div>
               <h1 className=" px-4 text-[#1A1A1A] text-lg md:text-2xl my-4 font-medium">
-                {moduleData?.module_title}
+                {courseRead?.title}
               </h1>
               <div className="md:grid flex flex-col-reverse gap-x-2 grid-cols-10">
                 <span className="relative col-span-7">

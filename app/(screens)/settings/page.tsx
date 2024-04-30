@@ -1,507 +1,5 @@
-// "use client";
-// import React, { useState } from "react";
-
-// import SideNav from "@/components/side-comp/side-nav";
-// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-// import Image from "next/image";
-
-// import user from "@/public/assets/avatar.png";
-// import { EditIcon, Eye, EyeOff, KeyRound, Loader2, Mail } from "lucide-react";
-// import { z } from "zod";
-// import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import TopNav from "@/components/side-comp/topNav";
-// import axios from "axios";
-// import { urls } from "@/utils/config";
-// import refreshToken from "@/utils/refreshToken";
-// import Cookies from "js-cookie";
-
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-
-// const formSchema = z.object({
-//   Email: z.string().min(2, {
-//     message: "Input correct email address",
-//   }),
-//   fullName: z.string(),
-// });
-// const passwordSchema = z.object({
-//   currentPassword: z.string(),
-//   newPassword: z
-//     .string()
-//     .min(8, "Password should have at least 8  characters")
-//     .refine(
-//       (value) =>
-//         /^(?=.*[!@#$%^&*()_+{}|:<>?~_-])[a-zA-Z\d!@#$%^&*()_+{}|:<>?~_-]+$/.test(
-//           value
-//         ),
-//       "Password should contain at least one special character"
-//     ),
-//   confirmPassword: z
-//     .string()
-//     .min(8, "Password should have at least 6 characters")
-//     .refine(
-//       (value) =>
-//         /^(?=.*[!@#$%^&*()_+{}|:<>?~_-])[a-zA-Z\d!@#$%^&*()_+{}|:<>?~_-]+$/.test(
-//           value
-//         ),
-//       "Password should contain at least one special character"
-//     ),
-// });
-
-// const SettingsPage = () => {
-//   const form = useForm<z.infer<typeof formSchema>>({
-//     resolver: zodResolver(formSchema),
-//     defaultValues: {
-//       Email: "",
-//       fullName: "",
-//     },
-//   });
-//   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
-//     resolver: zodResolver(passwordSchema),
-//     defaultValues: {
-//       currentPassword: "",
-//       newPassword: "",
-//       confirmPassword: "",
-//     },
-//   });
-
-//   const [notSame, setNotSame] = useState("");
-
-//   //add loading state for both
-//   //add no network state for both
-//   //add success toast
-//   //add error toast
-//   const [passwordLoading, setPasswordLoading] = useState(false);
-//   const onSubmit = async (values: z.infer<typeof passwordSchema>, e: any) => {
-//     e.preventDefault();
-//     if (values.confirmPassword === values.newPassword) {
-//       setNotSame("");
-//       try {
-//         setPasswordLoading(true);
-//         const token = Cookies.get("adminAccessToken");
-//         const response = await axios.post(
-//           urls.setStudentPassword,
-//           {
-//             new_password: values.newPassword,
-//             re_new_password: values.confirmPassword,
-//             current_password: values.currentPassword,
-//           },
-//           {
-//             headers: {
-//               Authorization: "Bearer " + token,
-//             },
-//           }
-//         );
-//         console.log(response, "pass");
-
-//         if (response.status === 204) {
-//           setPasswordLoading(false);
-//           toast.success("Password changed successfully!", {
-//             position: "top-right",
-//             autoClose: 5000,
-//             hideProgressBar: true,
-//             closeOnClick: true,
-//             pauseOnHover: false,
-//             draggable: false,
-//             theme: "dark",
-//           });
-
-//         }
-//       } catch (error: any) {
-//         console.log(error);
-//         if (error.response && error.response.status === 401) {
-//           try {
-//             await refreshToken();
-//             await onSubmit(values, e);
-//           } catch (refreshError: any) {
-//             console.error("Error refreshing token:", refreshError.message);
-//           }
-//         } else if (error?.message === "Network Error") {
-//           toast.error("Check your network!", {
-//             position: "top-right",
-//             autoClose: 5000,
-//             hideProgressBar: true,
-//             closeOnClick: true,
-//             pauseOnHover: false,
-//             draggable: false,
-//             theme: "dark",
-//           });
-//         } else if (
-//           error.response.data.new_password[0] ===
-//             "The password is too similar to the First Name." ||
-//           error.response.data.new_password[0] ===
-//             "The password is too similar to the Last Name."
-//         ) {
-//           toast.error("Password is too similar to name", {
-//             position: "top-right",
-//             autoClose: 5000,
-//             hideProgressBar: true,
-//             closeOnClick: true,
-//             pauseOnHover: false,
-//             draggable: false,
-//             theme: "dark",
-//           });
-//         } else if (
-//           error.response.data.current_password[0] === "Invalid password."
-//         ) {
-//           toast.error("Invalid current password!", {
-//             position: "top-right",
-//             autoClose: 5000,
-//             hideProgressBar: true,
-//             closeOnClick: true,
-//             pauseOnHover: false,
-//             draggable: false,
-//             theme: "dark",
-//           });
-//         } else {
-//           console.log("Password change failed:", error);
-//         }
-//       } finally {
-//         setPasswordLoading(false);
-//       }
-//     } else {
-//       setNotSame("New password and confirm new Password must be the same");
-//     }
-//   };
-//   const [generalLoading, setGeneralLoading] = useState(false);
-//   const onSubmitGeneral = async (
-//     values: z.infer<typeof formSchema>,
-//     e: any
-//   ) => {
-//     e.preventDefault();
-
-//     try {
-//       setGeneralLoading(true);
-//       const token = Cookies.get("adminAccessToken");
-//       const response = await axios.patch(
-//         urls.updateStudentProfile,
-//         {
-//           full_name: values.fullName,
-//           email: values.Email,
-//         },
-//         {
-//           headers: {
-//             Authorization: "Bearer " + token,
-//           },
-//         }
-//       );
-//       console.log(response);
-//       if (response.status === 200) {
-//         setGeneralLoading(false);
-//         toast.success("General details changed successfully!", {
-//           position: "top-right",
-//           autoClose: 5000,
-//           hideProgressBar: true,
-//           closeOnClick: true,
-//           pauseOnHover: false,
-//           draggable: false,
-//           theme: "dark",
-//         });
-//       }
-//     } catch (error: any) {
-//       if (error.response && error.response.status === 401) {
-//         try {
-//           await refreshToken();
-//           await onSubmitGeneral(values, e);
-//         } catch (refreshError: any) {
-//           console.error("Error refreshing token:", refreshError.message);
-//           Cookies.remove("adminAccessToken");
-//         }
-//       } else if (error?.message === "Network Error") {
-//         toast.error("Check your network!", {
-//           position: "top-right",
-//           autoClose: 5000,
-//           hideProgressBar: true,
-//           closeOnClick: true,
-//           pauseOnHover: false,
-//           draggable: false,
-//           theme: "dark",
-//         });
-//       } else {
-//         console.log("Password change failed:", error);
-//       }
-//     } finally {
-//       setGeneralLoading(false);
-//     }
-//   };
-
-//   const [showPassword, setShowPassword] = useState(true);
-//   const togglePassword = () => {
-//     setShowPassword((prev) => !prev);
-//   };
-//   const [showNewPassword, setShowNewPassword] = useState(true);
-//   const toggleNewPassword = () => {
-//     setShowNewPassword((prev) => !prev);
-//   };
-//   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
-//   const toggleConfirmPassword = () => {
-//     setShowConfirmPassword((prev) => !prev);
-//   };
-
-//   return (
-//     <main className="relative h-screen bg-[#FBFBFB]">
-//       <SideNav />
-//       <ToastContainer />
-//       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
-//         <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
-//           <TopNav />
-//         </div>
-//         <div className="md:p-5 p-2">
-//           <div>
-//             <div className=" flex justify-center items-center">
-//               <div className="relative">
-//                 <Image
-//                   className="w-[159px] h-[159px] rounded-full"
-//                   src={user}
-//                   alt="user"
-//                   priority
-//                 />
-//                 <span className="bg-white rounded-full cursor-pointer absolute bottom-0 right-0 p-2">
-//                   <EditIcon />
-//                 </span>
-//               </div>
-//             </div>
-//             <div>
-//               <div className="md:px-5 px-2">
-//                 <Form {...form}>
-//                   <form
-//                     onSubmit={form.handleSubmit(onSubmitGeneral)}
-//                     className="space-y-3"
-//                   >
-//                     <div className="block md:grid grid-cols-6 py-5">
-//                       <h1 className="text-lg md:text-[22px] col-span-2 font-medium ">
-//                         General
-//                       </h1>
-//                       <div className="col-span-4">
-//                         <FormField
-//                           control={form.control}
-//                           name="fullName"
-//                           render={({ field }) => (
-//                             <FormItem>
-//                               <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                                 Full name
-//                               </FormLabel>
-//                               <FormControl>
-//                                 <div className="">
-//                                   <Input
-//                                     className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] w-full rounded-[6px]"
-//                                     placeholder="John Mark"
-//                                     {...field}
-//                                   />
-//                                 </div>
-//                               </FormControl>
-//                             </FormItem>
-//                           )}
-//                         />
-//                         <FormField
-//                           control={form.control}
-//                           name="Email"
-//                           render={({ field }) => (
-//                             <FormItem>
-//                               <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                                 Email Address
-//                               </FormLabel>
-//                               <FormControl>
-//                                 <div className="relative">
-//                                   <Mail className="mr-2 absolute top-4 text-[#4F5B67] left-3 h-5 w-5" />
-//                                   <Input
-//                                     type="email"
-//                                     className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] rounded-[6px] indent-6"
-//                                     placeholder="example@gmail.com"
-//                                     {...field}
-//                                   />
-//                                 </div>
-//                               </FormControl>
-//                               <FormMessage />
-//                             </FormItem>
-//                           )}
-//                         />
-//                       </div>
-//                     </div>
-//                     <div className="lg:flex block justify-end">
-//                       <Button
-//                         disabled={generalLoading}
-//                         type="submit"
-//                         className="w-full lg:w-1/3 bg-[#33CC99] disabled:bg-[#33CC99]/25 disabled:cursor-none py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
-//                       >
-//                         {generalLoading ? (
-//                           <Loader2 className="animate-spin" />
-//                         ) : (
-//                           "Save Changes"
-//                         )}
-//                       </Button>
-//                     </div>
-//                   </form>
-//                 </Form>
-//                 <Form {...passwordForm}>
-//                   <form
-//                     onSubmit={passwordForm.handleSubmit(onSubmit)}
-//                     className="space-y-3"
-//                   >
-//                     <div className="block md:grid grid-cols-6 py-5">
-//                       <h1 className="text-[22px] col-span-2 font-medium ">
-//                         Password
-//                       </h1>
-//                       <div className="col-span-4">
-//                         <FormField
-//                           control={passwordForm.control}
-//                           name="currentPassword"
-//                           render={({ field }) => (
-//                             <FormItem>
-//                               <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                                 Current password
-//                               </FormLabel>
-//                               <FormControl>
-//                                 <div className="relative">
-//                                   <KeyRound className="mr-2 absolute top-4 text-[#4F5B67] left-3 h-5 w-5" />
-//                                   {showPassword ? (
-//                                     <Eye
-//                                       onClick={togglePassword}
-//                                       className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-//                                     />
-//                                   ) : (
-//                                     <EyeOff
-//                                       onClick={togglePassword}
-//                                       className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-//                                     />
-//                                   )}
-//                                   <Input
-//                                     type={showPassword ? "password" : "text"}
-//                                     className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] rounded-[6px] indent-6"
-//                                     placeholder="Password"
-//                                     {...field}
-//                                   />
-//                                 </div>
-//                               </FormControl>
-//                             </FormItem>
-//                           )}
-//                         />
-//                         <FormField
-//                           control={passwordForm.control}
-//                           name="newPassword"
-//                           render={({ field }) => (
-//                             <FormItem>
-//                               <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                                 New password
-//                               </FormLabel>
-//                               <FormControl>
-//                                 <div className="relative">
-//                                   <KeyRound className="mr-2 absolute top-4 text-[#4F5B67] left-3 h-5 w-5" />
-//                                   {showNewPassword ? (
-//                                     <Eye
-//                                       onClick={toggleNewPassword}
-//                                       className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-//                                     />
-//                                   ) : (
-//                                     <EyeOff
-//                                       onClick={toggleNewPassword}
-//                                       className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-//                                     />
-//                                   )}
-//                                   <Input
-//                                     type={showNewPassword ? "password" : "text"}
-//                                     className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] rounded-[6px] indent-6"
-//                                     placeholder="Password"
-//                                     {...field}
-//                                   />
-//                                 </div>
-//                               </FormControl>
-//                               <FormMessage />
-//                             </FormItem>
-//                           )}
-//                         />
-//                         <FormField
-//                           control={passwordForm.control}
-//                           name="confirmPassword"
-//                           render={({ field }) => (
-//                             <FormItem>
-//                               <FormLabel className="md:text-xl text-sm my-3 text-[#3E3E3E]">
-//                                 Confirm password
-//                               </FormLabel>
-//                               <FormControl>
-//                                 <div className="relative">
-//                                   <KeyRound className="mr-2 absolute top-4 text-[#4F5B67] left-3 h-5 w-5" />
-//                                   {showConfirmPassword ? (
-//                                     <Eye
-//                                       onClick={toggleConfirmPassword}
-//                                       className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-//                                     />
-//                                   ) : (
-//                                     <EyeOff
-//                                       onClick={toggleConfirmPassword}
-//                                       className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-//                                     />
-//                                   )}
-//                                   <Input
-//                                     type={
-//                                       showConfirmPassword ? "password" : "text"
-//                                     }
-//                                     className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] rounded-[6px] indent-6"
-//                                     placeholder="Password"
-//                                     {...field}
-//                                   />
-//                                   <p className="text-sm text-red-500 text-center">
-//                                     {notSame}
-//                                   </p>
-//                                 </div>
-//                               </FormControl>
-//                               <FormMessage />
-//                             </FormItem>
-//                           )}
-//                         />
-//                       </div>
-//                     </div>
-//                     <div className="lg:flex block justify-end">
-//                       <Button
-//                         disabled={passwordLoading}
-//                         type="submit"
-//                         className="w-full lg:w-1/3 bg-[#33CC99] disabled:bg-[#33CC99]/25 disabled:cursor-none py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
-//                       >
-//                         {passwordLoading ? (
-//                           <Loader2 className="animate-spin" />
-//                         ) : (
-//                           "Save Changes"
-//                         )}
-//                       </Button>
-//                     </div>
-//                   </form>
-//                 </Form>
-//               </div>
-//               <div className="lg:flex block justify-between items-center p-2 md:p-5">
-//                 <h2 className="md:text-[22px] text-lg font-medium ">
-//                   Delete Account
-//                 </h2>
-//                 <p className="md:text-xl text-sm font-normal w-full lg:w-96">
-//                   All data associated with this account will be deleted if you
-//                   deactivate this account
-//                 </p>
-//                 <h2 className="text-red-500 cursor-pointer text-base text-center lg:text-left my-4 lg:my-0 md:text-xl font-medium ">
-//                   Deactivate
-//                 </h2>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </main>
-//   );
-// };
-
-// export default SettingsPage;
-
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -531,6 +29,7 @@ import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
+import useStudentStore from "@/store/fetch-student";
 
 const passwordSchema = z.object({
   currentPassword: z.string(),
@@ -557,6 +56,11 @@ const passwordSchema = z.object({
 });
 
 const SettingsPage = () => {
+  const { studentData, fetchStudentData } = useStudentStore();
+  useEffect(() => {
+    fetchStudentData();
+  }, []);
+  console.log(studentData?.email, "sd")
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   // const [phoneNumber, setPhoneNumber] = useState("");
@@ -612,6 +116,8 @@ const SettingsPage = () => {
             draggable: false,
             theme: "dark",
           });
+
+          Cookies.remove("adminAccessTokenx");
         }
       } catch (error: any) {
         console.log(error);
@@ -692,15 +198,15 @@ const SettingsPage = () => {
   const [generalLoading, setGeneralLoading] = useState(false);
   const onSubmitGeneral = async (e: any) => {
     e.preventDefault();
-
-    if (email && fullName && selectedFile) {
+    if (fullName && selectedFile) {
       try {
+        // console.log(email, "em");
         setGeneralLoading(true);
         const adminAccessToken = Cookies.get("adminAccessToken");
 
         const formData = new FormData();
         formData.append("full_name", fullName);
-        formData.append("email", email);
+        formData.append("email", studentData?.email);
         if (selectedFile) {
           formData.append("profile_photo", selectedFile);
         }
@@ -734,8 +240,7 @@ const SettingsPage = () => {
           try {
             await refreshToken();
             await onSubmitGeneral(e);
-          } catch (refreshError: any) {
-          }
+          } catch (refreshError: any) {}
         } else if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
@@ -833,7 +338,8 @@ const SettingsPage = () => {
     }
   };
 
-  const profile_image = Cookies.get("pfp");
+
+
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -896,7 +402,7 @@ const SettingsPage = () => {
                             <div className="">
                               <Input
                                 className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] w-full rounded-[6px]"
-                                placeholder="John Mark"
+                                placeholder={studentData?.full_name}
                                 value={fullName}
                                 onChange={(e) => {
                                   setFullName(e.target.value);
@@ -917,11 +423,11 @@ const SettingsPage = () => {
                               <Input
                                 type="email"
                                 className="py-6 bg-[#FAFAFA] placeholder:text-[#4F5B67] rounded-[6px] indent-6"
-                                placeholder="example@gmail.com"
-                                value={email}
-                                onChange={(e) => {
-                                  setEmail(e.target.value);
-                                }}
+                                // placeholder={}
+                                value={studentData?.email}
+                                // onChange={(e) => {
+                                //   setEmail(e.target.value);
+                                // }}
                               />
                             </div>
                           </div>
