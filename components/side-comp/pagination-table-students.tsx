@@ -1,233 +1,3 @@
-// "use client";
-// import React, { useEffect, useState } from "react";
-// import { Button } from "../ui/button";
-// import { ArrowLeft, ArrowRight, Loader2Icon } from "lucide-react";
-// import useStudentsStore from "@/store/fetch-students";
-
-// const PaginatedTable = ({ handleMentors, handleStudent }: any) => {
-//   const data = [
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//     {
-//       name: "Olivia Wilson",
-//       email: "oliviawilson@gmail.com",
-//       course: "Basics of DevOps",
-//       location: "Abuja",
-//       monitor: "Segun Bankole",
-//     },
-//   ];
-
-//   const { students, loading, fetchStudents } = useStudentsStore();
-//   useEffect(() => {
-//     fetchStudents();
-//   }, []);
-
-//   console.log(students.results, "student")
-
-//   const itemsPerPage = 4;
-//   const [currentPage, setCurrentPage] = useState(1);
-
-//   const indexOfLastItem = currentPage * itemsPerPage;
-//   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-//   const currentData = students.results?.slice(indexOfFirstItem, indexOfLastItem);
-
-//   const totalPages = Math.ceil(students.results?.count / itemsPerPage);
-
-//   const nextPage = () => {
-//     if (currentPage < totalPages) {
-//       setCurrentPage(currentPage + 1);
-//     }
-//   };
-
-//   const prevPage = () => {
-//     if (currentPage > 1) {
-//       setCurrentPage(currentPage - 1);
-//     }
-//   };
-
-//   const goToPage = (page: number) => {
-//     if (page >= 1 && page <= totalPages) {
-//       setCurrentPage(page);
-//     }
-//   };
-
-//   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-
-//   return (
-//     <div className="bg-white overflow-x-scroll p-2 h-auto rounded-[8px] shadow-md">
-//       <div className="flex w-full justify-between items-center">
-//         <h1 className="font-medium text-lg md:text-xl">Database</h1>
-//         <div>
-//           <Button
-//             onClick={handleStudent}
-//             className="mr-2 bg-main border border-main text-white hover:text-white hover:bg-main hover:border-0"
-//           >
-//             Student
-//           </Button>
-//           <Button
-//             onClick={handleMentors}
-//             className="bg-white border border-main text-main hover:text-white hover:bg-main hover:border-0"
-//           >
-//             Mentor
-//           </Button>
-//         </div>
-//       </div>
-
-//       <table className="w-full mt-2 text-center">
-//         <thead className="text-main">
-//           <tr className="bg-[#F8F9FF] py-2 w-full">
-//             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-//               Name
-//             </th>
-//             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-//               Email
-//             </th>
-//             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-//               Current Course
-//             </th>
-//             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-//               Location
-//             </th>
-//             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-//               Assigned Monitor
-//             </th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {loading ? (
-//             <span className="flex text-center justify-center items-center">
-//               <Loader2Icon className="animate-spin" />
-//               Loading...
-//             </span>
-//           ) : students.results && students.count > 0 ? (
-//             currentData.map((person: any, index: number) => (
-//               <tr key={index}>
-//                 <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-//                   {person.full_name}
-//                 </td>
-//                 <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-//                   {person.email}
-//                 </td>
-//                 <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-//                   {person.course}
-//                 </td>
-//                 <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-//                   {person.location}
-//                 </td>
-//                 <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-//                   {person.monitor}
-//                 </td>
-//               </tr>
-//             ))
-//           ) : (
-//             <p>No data available.</p>
-//           )}
-//         </tbody>
-//       </table>
-
-//       <div className="flex items-center justify-end gap-2 md:gap-5 mt-2">
-//         <div>
-//           <Button
-//             className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-//             onClick={prevPage}
-//             disabled={currentPage === 1}
-//           >
-//             <ArrowLeft />
-//             Previous
-//           </Button>
-//         </div>
-//         <div className="flex space-x-2 md:space-x-4">
-//           {pageNumbers.map((page) => (
-//             <p
-//               key={page}
-//               onClick={() => goToPage(page)}
-//               className={
-//                 page === currentPage
-//                   ? "cursor-pointer font-semibold text-main"
-//                   : "text-slate-400 cursor-pointer"
-//               }
-//             >
-//               {page}
-//             </p>
-//           ))}
-//         </div>
-//         <div>
-//           <Button
-//             onClick={nextPage}
-//             className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-//             disabled={currentPage === totalPages}
-//           >
-//             <ArrowRight />
-//             Next
-//           </Button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PaginatedTable;
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -239,14 +9,14 @@ import Link from "next/link";
 
 const PaginatedTable = () => {
   const { students, loading, fetchStudents } = useStudentsStore();
-  const { fetchStudentInfo } = useStudentInfoStore();
+  // const { fetchStudentInfo } = useStudentInfoStore();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const studentsPerPage = 4;
 
   useEffect(() => {
-    fetchStudents(currentPage);
-  }, [currentPage]);
+    fetchStudents();
+  }, []);
 
   const totalPages = Math.ceil(students?.results?.length / studentsPerPage);
 
@@ -275,7 +45,9 @@ const PaginatedTable = () => {
     const startIndex = (currentPage - 1) * studentsPerPage;
     const endIndex = Math.min(startIndex + studentsPerPage, students.count);
     return students.results
-      .filter((person: any) => person.is_student)
+      .filter(
+        (person: any) => person.is_student && person.has_complete_onboarding
+      )
       .slice(startIndex, endIndex)
       .map((person: any) => (
         <tr
@@ -289,14 +61,12 @@ const PaginatedTable = () => {
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
             {person.email}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.course}
-          </td>
+          
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
             {person.location}
           </td>
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.monitor}
+            {person.plan}
           </td>
         </tr>
       ));
@@ -325,9 +95,9 @@ const PaginatedTable = () => {
   return (
     <div className="bg-white overflow-x-scroll p-2 h-auto rounded-[8px] shadow-md">
       <div className="flex w-full justify-between items-center">
-        <h1 className="font-medium text-lg md:text-xl">Students Database</h1>
+        <h1 className="font-medium text-base md:text-xl">Students Database</h1>
         <Link href="/students">
-          <p className="underline text-main">View all</p>
+          <p className="underline md:text-base text-sm text-main">View all</p>
         </Link>
       </div>
 
@@ -340,14 +110,12 @@ const PaginatedTable = () => {
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Email
             </th>
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-              Current Course
-            </th>
+           
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Location
             </th>
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
-              Assigned Monitor
+              Plan
             </th>
           </tr>
         </thead>

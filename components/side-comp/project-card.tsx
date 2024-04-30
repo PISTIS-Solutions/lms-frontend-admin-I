@@ -12,7 +12,7 @@ import useProjectRead from "@/store/project-read";
 
 interface cardProps {
   id: number;
-  // img: any;
+  img: any;
   title: string;
   paragraph: string;
   module: { moduleHeader: string; moduleBody: string }[];
@@ -24,11 +24,9 @@ interface cardProps {
 
 const ProjectCard = ({
   id,
-  // img,
+  img,
   title,
   paragraph,
-  module,
-  duration,
   handleCardClick,
   project,
   handleOpen,
@@ -48,7 +46,7 @@ const ProjectCard = ({
           },
         });
         if (response.status === 200) {
-          setModuleCount(response.data.count);
+          setModuleCount(response.data.length);
           setLoading(false);
         } else {
           console.error(`Error fetching modules for course ${id}`);
@@ -65,6 +63,8 @@ const ProjectCard = ({
     getModuleCount();
   }, []);
 
+  const imageUrl = img?.replace("image/upload/", "");
+
   return (
     <div className="relative">
       <div
@@ -76,9 +76,12 @@ const ProjectCard = ({
         className=" w-full cursor-pointer h-auto shadow-md rounded-[8px] bg-[#FFF]"
       >
         <Image
-          src={img}
-          alt="img"
-          className="rounded-tr-[4px] w-full rounded-tl-[4px]"
+          src={imageUrl}
+          width={100}
+          height={100}
+          alt={title}
+          priority
+          className="rounded-tr-[4px] max-w-[357px] max-h-[191px] object-contain w-full rounded-tl-[4px]"
         />
         <div className="p-2">
           <div className="md:mb-14 mb-5">

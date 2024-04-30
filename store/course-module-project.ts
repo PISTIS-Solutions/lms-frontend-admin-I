@@ -18,10 +18,10 @@ interface CourseFormState {
 }
 
 interface ModuleFormData {
+  module_sub_title: string;
   module_title: string;
   module_url: string;
   description: string;
-  module_sub_title: string;
 }
 interface ModuleFormState {
   filteredModuleDataStore: ModuleFormData[];
