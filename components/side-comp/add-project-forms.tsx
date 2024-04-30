@@ -409,7 +409,7 @@ const AddProjectForms = () => {
               <h1>Modules</h1>
               {filteredModuleDataStore.map((module: any) => {
                 return (
-                  <ul>
+                  <ul key={module.id}>
                     <ol className="py-1">
                       <span className="font-semibold text-main">
                         Module Title:

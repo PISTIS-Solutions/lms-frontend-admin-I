@@ -28,7 +28,7 @@ const SideProjects = ({
         <div className="">
           {project?.map((head: any, index: number) => {
             return (
-              <div>
+              <div key={head.id}>
                 {!bool ? (
                   <div
                     key={head.id}
