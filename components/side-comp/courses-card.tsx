@@ -75,8 +75,8 @@ const CoursesCard = ({
     getModuleCount();
   }, []);
 
-  const cloudinaryUrl = image;
-  const imageUrl = cloudinaryUrl.replace("image/upload/", "");
+  // const cloudinaryUrl = image;
+  // const imageUrl = cloudinaryUrl.replace("image/upload/", "");
 
   return (
     <div className="relative">
@@ -89,7 +89,7 @@ const CoursesCard = ({
         className=" w-full cursor-pointer h-auto shadow-md rounded-[8px] bg-[#FFF]"
       >
         <Image
-          src={imageUrl}
+          src={image}
           width={100}
           height={100}
           alt={title}
