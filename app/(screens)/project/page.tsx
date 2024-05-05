@@ -166,7 +166,7 @@ const Project = () => {
                     id={project.id}
                     handleCardClick={handleCardClick}
                     handleOpen={() => handleOpen(project.id)}
-                    img={project.course_image}
+                    img={project.course_image_url}
                     title={project.title}
                     paragraph={project.paragraph}
                     module={project.module}

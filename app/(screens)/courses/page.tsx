@@ -177,7 +177,7 @@ const Courses = () => {
               courses.map((course: any) => (
                 <div key={course.id}>
                   <CoursesCard
-                    image={course.course_image}
+                    image={course.course_image_url}
                     id={course.id}
                     title={course.title}
                     duration={course.course_duration}
