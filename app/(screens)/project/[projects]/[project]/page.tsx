@@ -148,12 +148,12 @@ const SideProject = () => {
       try {
         const adminAccessToken = Cookies.get("adminAccessToken");
         seteditLoading(true);
-        const response = await axios.patch(
-          `${urls.getCourses}${courseID}/projects/${projectID}/`,
+        const response = await axios.post(
+          `${urls.getCourses}${courseID}/projects/`,
           {
             project_title: projectTitle,
             project_url: projectLink,
-            project_description: description,
+            project_hint: description,
           },
           {
             headers: {
@@ -260,9 +260,17 @@ const SideProject = () => {
                       dangerouslySetInnerHTML={{
                         __html: project?.project_description,
                       }}
-                      className="font-normal py-2 text-[#3E3E3E] text-base md:text-xl"
+                      className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
                     ></p>
-                    {/* <p className="text-[#3E3E3E]"></p> */}
+                     <span>
+                      <p>Hint: </p>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: project?.project_hint,
+                        }}
+                        className="font-normal py-2 text-[#3E3E3E] text-base md:text-xl"
+                      ></p>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -339,12 +347,12 @@ const SideProject = () => {
               </div>
 
               <div className="py-2">
-                <label className=" text-base">Video Link</label>
+                <label className=" text-base">Github Link</label>
                 <Input
                   value={projectLink}
                   onChange={(e) => setProjectLink(e.target.value)}
                   type="url"
-                  placeholder="Input Project video link"
+                  placeholder="Input Project github link"
                 />
               </div>
               <div className="py-2">
@@ -352,7 +360,7 @@ const SideProject = () => {
                 <ReactQuill
                   modules={{ toolbar: toolbarOptions }}
                   theme="snow"
-                  placeholder="Input Project details"
+                  placeholder="Input Project Hint"
                   value={description}
                   onChange={setDescription}
                   className="w-full"

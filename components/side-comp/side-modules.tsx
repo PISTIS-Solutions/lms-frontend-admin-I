@@ -38,13 +38,13 @@ const SideModules = ({
               {module.module_title}
             </h2>
           </div>
-          <p
+          {/* <p
             className={`md:text-sm text-xs font-normal ${
               module.id === selectedModuleId ? "block" : "hidden"
             }`}
           >
             {module.module_sub_title}
-          </p>
+          </p> */}
           <hr />
         </div>
       ))}

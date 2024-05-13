@@ -40,20 +40,14 @@ const Module = () => {
   };
 
   const [moduleTitle, setModuletitle] = useState("");
-  const [modulesubTitle, setModulesubtitle] = useState("");
+  const [modulesGithubLink, setModuleGithubLink] = useState("");
   const [modulesLink, setModuleLink] = useState("");
-  const [description, setDescription] = useState("");
   const [editLoading, seteditLoading] = useState(false);
 
   const editModule = async (e: any) => {
     e.preventDefault();
 
-    if (
-      moduleTitle !== "" &&
-      modulesubTitle !== "" &&
-      modulesLink !== "" &&
-      description !== ""
-    ) {
+    if (moduleTitle !== "" && modulesGithubLink !== "" && modulesLink !== "") {
       try {
         const adminAccessToken = Cookies.get("adminAccessToken");
         seteditLoading(true);
@@ -61,9 +55,8 @@ const Module = () => {
           `${urls.getCourses}${courseID}/modules/`,
           {
             module_title: moduleTitle,
-            module_sub_title: modulesubTitle,
-            module_url: modulesLink,
-            description: description,
+            module_url: modulesGithubLink,
+            module_video_link: modulesLink,
           },
           {
             headers: {
@@ -76,7 +69,7 @@ const Module = () => {
         if (response.status === 200) {
           seteditLoading(false);
           setOpenModal(false);
-          toast.success("Module successfully edited!", {
+          toast.success("Module successfully added!", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: true,
@@ -205,15 +198,6 @@ const Module = () => {
                 />
               </div>
               <div className="py-2">
-                <label className=" text-base">Sub-title</label>
-                <Input
-                  value={modulesubTitle}
-                  onChange={(e) => setModulesubtitle(e.target.value)}
-                  type="text"
-                  placeholder="Input module sub-title"
-                />
-              </div>
-              <div className="py-2">
                 <label className=" text-base">Video Link</label>
                 <Input
                   value={modulesLink}
@@ -223,14 +207,12 @@ const Module = () => {
                 />
               </div>
               <div className="py-2">
-                <label className=" text-base">Description</label>
-                <ReactQuill
-                  modules={{ toolbar: toolbarOptions }}
-                  theme="snow"
-                  placeholder="Input module details"
-                  value={description}
-                  onChange={setDescription}
-                  className="w-full"
+                <label className=" text-base">Github Link</label>
+                <Input
+                  value={modulesGithubLink}
+                  onChange={(e) => setModuleGithubLink(e.target.value)}
+                  type="url"
+                  placeholder="Input github video link"
                 />
               </div>
             </div>

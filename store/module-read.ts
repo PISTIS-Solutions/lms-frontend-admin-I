@@ -33,6 +33,7 @@ const useModuleRead = create<readStudent>((set, get) => ({
       set({ moduleData: response.data });
       if (response.status === 200) {
         set({ moduleLoading: false });
+        console.log(response.data, "rd");
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {

@@ -173,11 +173,11 @@ const Courses = () => {
                 <Loader2 className=" w-8 h-8 animate-spin" />
                 <p>Loading Courses</p>
               </div>
-            ) : courses && courses.length > 0 ? (
-              courses.map((course: any) => (
+            ) : courses && courses?.length > 0 ? (
+              courses?.map((course: any) => (
                 <div key={course.id}>
                   <CoursesCard
-                    image={course.course_image_url}
+                    image={course?.course_image_url}
                     id={course.id}
                     title={course.title}
                     duration={course.course_duration}

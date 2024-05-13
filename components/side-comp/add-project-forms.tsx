@@ -81,7 +81,7 @@ const AddProjectForms = () => {
 
       if (
         !courseTitle ||
-        !description ||
+        // !description ||
         !courseLink ||
         !selectedFile ||
         !filteredModuleDataStore.length ||
@@ -108,18 +108,16 @@ const AddProjectForms = () => {
         "course_duration",
         convertToISO8601(hours, minutes, seconds)
       );
-      payload.append("overview", description);
       payload.append("course_url", courseLink);
       payload.append("course_image", selectedFile);
 
       filteredModuleDataStore.forEach((module: any, index: any) => {
         payload.append(`modules[${index}]module_title`, module.module_title);
-        payload.append(
-          `modules[${index}]module_sub_title`,
-          module.module_sub_title
-        );
-        payload.append(`modules[${index}]description`, module.description);
         payload.append(`modules[${index}]module_url`, module.module_url);
+        payload.append(
+          `modules[${index}]module_video_link`,
+          module.module_Github_url
+        );
       });
 
       filteredProjectDataStore.forEach((project: any, index: any) => {
@@ -128,11 +126,12 @@ const AddProjectForms = () => {
           project.project_title
         );
         payload.append(
-          `projects[${index}]project_description`,
+          `projects[${index}]project_hint`,
           project.project_description
         );
         payload.append(`projects[${index}]project_url`, project.project_url);
       });
+
       const response = await axios.post(urls.uploadCourses, payload, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
@@ -151,7 +150,6 @@ const AddProjectForms = () => {
           theme: "dark",
         });
         router.push("/courses");
-        
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -255,7 +253,7 @@ const AddProjectForms = () => {
   useEffect(() => {
     if (
       !courseTitle ||
-      !description ||
+      // !description ||
       !courseLink ||
       !filteredModuleDataStore.length
     ) {
@@ -416,12 +414,12 @@ const AddProjectForms = () => {
                       </span>{" "}
                       <br /> {module.module_title}
                     </ol>
-                    <ol className="py-1">
+                    {/* <ol className="py-1">
                       <span className="font-semibold text-main">
                         Module SubTitle:
                       </span>{" "}
                       <br /> {module.module_sub_title}
-                    </ol>
+                    </ol> */}
                     <ol className="py-1">
                       <span className="font-semibold text-main">
                         Module Description:

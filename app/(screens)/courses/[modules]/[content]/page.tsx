@@ -45,15 +45,14 @@ const Content = () => {
     router.replace(`/courses/${courseID}/${moduleId}`);
   };
   const [moduleTitle, setModuletitle] = useState("");
-  const [modulesubTitle, setModulesubtitle] = useState("");
   const [modulesLink, setModuleLink] = useState("");
-  const [description, setDescription] = useState("");
+  const [modulesGithubLink, setModuleGithubLink] = useState("");
   const [editLoading, seteditLoading] = useState(false);
 
   const editModule = async (e: any) => {
     e.preventDefault();
 
-    // if (moduleTitle !== "" && modulesubTitle !== "" && modulesLink !== "") {
+    if (moduleTitle !== "" && modulesLink !== "") {
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
       seteditLoading(true);
@@ -61,9 +60,8 @@ const Content = () => {
         `${urls.getCourses}${courseID}/modules/${moduleID}/`,
         {
           module_title: moduleTitle,
-          module_sub_title: modulesubTitle,
-          module_url: modulesLink,
-          description: description,
+          module_video_link: modulesLink,
+          module_url: modulesGithubLink,
         },
         {
           headers: {
@@ -117,17 +115,17 @@ const Content = () => {
     } finally {
       seteditLoading(false);
     }
-    // } else {
-    //   toast.error("Check fields fields!", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: false,
-    //     draggable: false,
-    //     theme: "dark",
-    //   });
-    // }
+    } else {
+      toast.error("Check fields fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+    }
   };
 
   useEffect(() => {
@@ -174,7 +172,7 @@ const Content = () => {
                     width="100%"
                     height="100%"
                     autoplay={true}
-                    url={moduleData?.module_url}
+                    url={moduleData?.module_video_link}
                     className="md:h-[428px] md:my-0 my-4"
                     config={{
                       youtube: {
@@ -185,8 +183,8 @@ const Content = () => {
                       },
                     }}
                   />
-                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
-                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" />
+                  {/* <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
+                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" /> */}
                 </span>
                 <ScrollArea className="h-[428px] rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
                   {loading ? (
@@ -253,13 +251,14 @@ const Content = () => {
                     placeholder="Input module title"
                   />
                 </div>
+
                 <div className="py-2">
-                  <label className=" text-base">Sub-title</label>
+                  <label className=" text-base">Gihub Link</label>
                   <Input
-                    value={modulesubTitle}
-                    onChange={(e) => setModulesubtitle(e.target.value)}
-                    type="text"
-                    placeholder="Input module sub-title"
+                    value={modulesGithubLink}
+                    onChange={(e) => setModuleGithubLink(e.target.value)}
+                    type="url"
+                    placeholder="Input module github link"
                   />
                 </div>
                 <div className="py-2">
@@ -269,17 +268,6 @@ const Content = () => {
                     onChange={(e) => setModuleLink(e.target.value)}
                     type="url"
                     placeholder="Input module video link"
-                  />
-                </div>
-                <div className="py-2">
-                  <label className=" text-base">Description</label>
-                  <ReactQuill
-                    modules={{ toolbar: toolbarOptions }}
-                    theme="snow"
-                    placeholder="Input module details"
-                    value={description}
-                    onChange={setDescription}
-                    className="w-full"
                   />
                 </div>
               </div>

@@ -93,7 +93,7 @@ const CoursesCard = ({
           width={100}
           height={100}
           alt={title}
-          className="rounded-tr-[4px] max-w-[357px] max-h-[191px] object-contain w-full rounded-tl-[4px]"
+          className="rounded-tr-[4px] h-[191px] object-cover w-full rounded-tl-[4px]"
         />
         <div className="p-2">
           <div className="md:mb-14 mb-5">

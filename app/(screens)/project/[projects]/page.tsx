@@ -45,6 +45,7 @@ const SingleProject = () => {
         }
       );
       setProject(response.data);
+      console.log(response.data);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -105,7 +106,7 @@ const SingleProject = () => {
           {
             project_title: projectTitle,
             project_url: projectLink,
-            project_description: description,
+            project_hint: description,
           },
           {
             headers: {
@@ -174,6 +175,7 @@ const SingleProject = () => {
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
+      <ToastContainer />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <ArrowLeft
@@ -211,8 +213,17 @@ const SingleProject = () => {
                       dangerouslySetInnerHTML={{
                         __html: project?.[0]?.project_description,
                       }}
-                      className="font-normal py-2 text-[#3E3E3E] text-base md:text-xl"
+                      className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
                     ></p>
+                    <span>
+                      <p>Hint: </p>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: project?.[0]?.project_hint,
+                        }}
+                        className="font-normal py-2 text-[#3E3E3E] text-base md:text-xl"
+                      ></p>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -288,12 +299,12 @@ const SingleProject = () => {
               </div>
 
               <div className="py-2">
-                <label className=" text-base">Video Link</label>
+                <label className=" text-base">Github Link</label>
                 <Input
                   value={projectLink}
                   onChange={(e) => setProjectLink(e.target.value)}
                   type="url"
-                  placeholder="Input Project video link"
+                  placeholder="Input Project github link"
                 />
               </div>
               <div className="py-2">
@@ -301,7 +312,7 @@ const SingleProject = () => {
                 <ReactQuill
                   modules={{ toolbar: toolbarOptions }}
                   theme="snow"
-                  placeholder="Input Project details"
+                  placeholder="Input Project Hint"
                   value={description}
                   onChange={setDescription}
                   className="w-full"

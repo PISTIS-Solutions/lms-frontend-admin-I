@@ -27,7 +27,7 @@ const PublishBtn = ({ loading, onContinue, upload, test }: BtnTypes) => {
   const handleConditionalLogging = () => {
     if (
       courseTitle &&
-      description &&
+      // description &&
       courseLink &&
       filteredModuleDataStore.length > 0 &&
       filteredProjectDataStore.length > 0

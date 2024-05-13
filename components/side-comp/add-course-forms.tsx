@@ -58,7 +58,7 @@ const AddCourseForms = () => {
       hours &&
       minutes &&
       courseLink &&
-      description &&
+      // description &&
       selectedFile
     ) {
       toast.success("Course Created", {
@@ -130,7 +130,7 @@ const AddCourseForms = () => {
                 </div>
               </div>
             </FormItem>
-            <FormItem className="py-2">
+            {/* <FormItem className="py-2">
               <label className="py-2">Description</label>
               <ReactQuill
                 modules={{ toolbar: toolbarOptions }}
@@ -140,7 +140,7 @@ const AddCourseForms = () => {
                 onChange={setDescription}
                 className="w-full"
               />
-            </FormItem>
+            </FormItem> */}
             <FormItem className="py-2">
               <label className="py-2">Course Link</label>
               <Input
