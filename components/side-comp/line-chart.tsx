@@ -10,7 +10,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { faker } from "@faker-js/faker";
 import { Line } from "react-chartjs-2";
 
 export const options = {
@@ -34,18 +33,21 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
+const labels = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-// export const data = {
-//   labels,
-//   datasets: [
-//     {
-//       data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-//       borderColor: "rgb(255, 99, 132)",
-//       backgroundColor: "rgba(255, 99, 132, 0.5)",
-//     },
-//   ],
-// };
 interface ChartDetails {
   data: number[];
   labels: string[];
@@ -63,10 +65,10 @@ export const LineChart: React.FC<LineProps> = ({ chartDetails }) => {
         data: chartDetails.data,
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
+        tension: 0.1
       },
     ],
   };
-
 
   return <Line options={options} data={data} />;
 };

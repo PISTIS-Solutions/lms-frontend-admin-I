@@ -16,6 +16,8 @@ const TopNav = () => {
   const userName = studentData?.full_name;
   const initials = userName ? userName.charAt(0).toUpperCase() : "";
 
+  
+
   return (
     <Link href="/settings">
       <div className="flex items-center gap-1 md:gap-2">

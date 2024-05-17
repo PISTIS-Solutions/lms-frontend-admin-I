@@ -35,8 +35,7 @@ const Courses = () => {
       });
       if (response.status === 200) {
         setCourses(response.data);
-        console.log(response.data, "cs");
-        // window.location.reload();
+        
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {

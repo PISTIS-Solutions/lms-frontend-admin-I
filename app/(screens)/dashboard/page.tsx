@@ -232,17 +232,6 @@ const Dashboard = () => {
                   <h1 className="pl-4 text-xs md:text-xl font-semibold">
                     Enrollment activity{" "}
                   </h1>
-                  {/* <select
-                    className="border md:text-xl text-sm sm:text-lg border-main rounded-[8px]"
-                    name="months"
-                    id="months"
-                  >
-                    {months.map((month, index) => (
-                      <option key={index} value={month}>
-                        {month || "Select Month"}{" "}
-                      </option>
-                    ))}
-                  </select> */}
                 </div>
                 <LineChart chartDetails={chartDetails} />
               </div>

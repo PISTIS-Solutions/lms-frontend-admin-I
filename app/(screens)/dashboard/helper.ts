@@ -1,17 +1,3 @@
-const labels = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 function getMonthFromDate(dateString: string) {
   const date = new Date(dateString);
   const monthIndex = date.getMonth();
@@ -31,17 +17,6 @@ function getMonthFromDate(dateString: string) {
   ];
   return months[monthIndex];
 }
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      data: [3, 2, 2, 43, 1, 3, 2],
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-  ],
-};
 
 interface StudentRecord {
   month: string;

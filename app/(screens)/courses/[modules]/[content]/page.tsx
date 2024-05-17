@@ -53,68 +53,68 @@ const Content = () => {
     e.preventDefault();
 
     if (moduleTitle !== "" && modulesLink !== "") {
-    try {
-      const adminAccessToken = Cookies.get("adminAccessToken");
-      seteditLoading(true);
-      const response = await axios.patch(
-        `${urls.getCourses}${courseID}/modules/${moduleID}/`,
-        {
-          module_title: moduleTitle,
-          module_video_link: modulesLink,
-          module_url: modulesGithubLink,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-            "Content-Type": "application/json",
+      try {
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        seteditLoading(true);
+        const response = await axios.patch(
+          `${urls.getCourses}${courseID}/modules/${moduleID}/`,
+          {
+            module_title: moduleTitle,
+            module_video_link: modulesLink,
+            module_url: modulesGithubLink,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${adminAccessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-      if (response.status === 200) {
+        if (response.status === 200) {
+          seteditLoading(false);
+          setOpenModal(false);
+          toast.success("Module successfully edited!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+          // window.parent.location = window.parent.location.href;
+          fetchModuleRead(courseID, moduleID);
+          fetchCourseRead(courseID);
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await editModule(e);
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
         seteditLoading(false);
-        setOpenModal(false);
-        toast.success("Module successfully edited!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-        // window.parent.location = window.parent.location.href;
-        fetchModuleRead(courseID, moduleID);
-        fetchCourseRead(courseID);
       }
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await editModule(e);
-      } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      }
-    } finally {
-      seteditLoading(false);
-    }
     } else {
       toast.error("Check fields fields!", {
         position: "top-right",
@@ -248,7 +248,7 @@ const Content = () => {
                     type="text"
                     value={moduleTitle}
                     onChange={(e) => setModuletitle(e.target.value)}
-                    placeholder="Input module title"
+                    placeholder={moduleData?.module_title}
                   />
                 </div>
 
@@ -258,7 +258,7 @@ const Content = () => {
                     value={modulesGithubLink}
                     onChange={(e) => setModuleGithubLink(e.target.value)}
                     type="url"
-                    placeholder="Input module github link"
+                    placeholder={moduleData?.module_url}
                   />
                 </div>
                 <div className="py-2">
@@ -267,7 +267,7 @@ const Content = () => {
                     value={modulesLink}
                     onChange={(e) => setModuleLink(e.target.value)}
                     type="url"
-                    placeholder="Input module video link"
+                    placeholder={moduleData?.module_video_link}
                   />
                 </div>
               </div>

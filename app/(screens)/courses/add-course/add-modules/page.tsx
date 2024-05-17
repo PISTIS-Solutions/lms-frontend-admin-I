@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 
 import SideNav from "@/components/side-comp/side-nav";
@@ -5,13 +6,22 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import AddCourseForms from "@/components/side-comp/add-course-forms";
 import AddModuleForms from "@/components/side-comp/add-module-forms";
 import TopNav from "@/components/side-comp/topNav";
+import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 
 const AddModule = () => {
+  const router = useRouter();
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
       <div className="ml-0 lg:ml-64 overflow-y-scroll h-screen">
-        <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
+        <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
+          <ChevronLeft
+            onClick={() => {
+              router.back();
+            }}
+            className="w-5 h-5 cursor-pointer text-main"
+          />
           <TopNav />
         </div>
         <div className=" flex justify-center w-full mt-5 md:mt-10">
