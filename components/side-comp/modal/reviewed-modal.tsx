@@ -65,7 +65,9 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
       <div>
         <ToastContainer />
         <div className="flex justify-between items-center">
-          <h1 className="md:text-2xl text-lg font-medium">Terraform</h1>
+          <h1 className="md:text-2xl text-lg font-medium">
+            {person?.course?.title}
+          </h1>
           <span
             onClick={handleCloseModalApproved}
             className="border-2 cursor-pointer border-main p-2 rounded-sm w-[32px] h-[32px] flex justify-center items-center"
