@@ -45,9 +45,18 @@ const SignIn = () => {
           draggable: false,
           theme: "dark",
         });
-        Cookies.set("adminAccessToken", response.data.access);
-        Cookies.set("adminRefreshToken", response.data.refresh);
-        Cookies.set("fullName", response.data.user.full_name);
+        Cookies.set("adminAccessToken", response.data.access, {
+          sameSite: "None",
+          secure: true,
+        });
+        Cookies.set("adminRefreshToken", response.data.refresh, {
+          sameSite: "None",
+          secure: true,
+        });
+        Cookies.set("fullName", response.data.user.full_name, {
+          sameSite: "None",
+          secure: true,
+        });
         route.replace("/dashboard");
         setLoading(false);
       }

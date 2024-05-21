@@ -113,7 +113,10 @@ const Project = () => {
             access: adminAccessToken,
           });
 
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
+          Cookies.set("adminAccessToken", refreshResponse.data.access, {
+            sameSite: "None",
+            secure: true,
+          });
 
           await deleteCourse(courseId);
         } catch (refreshError: any) {
