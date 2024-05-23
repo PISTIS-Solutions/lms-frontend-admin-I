@@ -84,10 +84,19 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
           <h1 className="text-[#000066] text-base md:text-xl font-medium">
             Submission link
           </h1>
-          <p className="text-[#3E3E3E] text-base md:text-lg">
-            {" "}
-            {!loadSubmit ? submitDetails?.submission_link : "Please wait..."}
-          </p>
+          <span className="text-[#3E3E3E] text-base md:text-lg">
+            {!loadSubmit ? (
+              <a
+                target="_blank"
+                className="cursor-pointer"
+                href={submitDetails?.submission_link}
+              >
+                {submitDetails?.submission_link}
+              </a>
+            ) : (
+              <p>Please wait...</p>
+            )}
+          </span>
         </div>
 
         <div className="my-4">

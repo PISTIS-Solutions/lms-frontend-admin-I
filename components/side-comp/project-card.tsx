@@ -73,7 +73,7 @@ const ProjectCard = ({
           handleCardClick(id);
           // fetchProjectRead()
         }}
-        className=" w-full cursor-pointer h-auto shadow-md rounded-[8px] bg-[#FFF]"
+        className=" w-full cursor-pointer h-[374px] shadow-md rounded-[8px] bg-[#FFF]"
       >
         <Image
           src={img}
@@ -85,10 +85,10 @@ const ProjectCard = ({
         />
         <div className="p-2">
           <div className="md:mb-14 mb-5">
-            <h1 className="md:text-xl text-sm font-medium">{title}</h1>
-            <p className="md:text-lg text-xs text-[#3E3E3E]">{paragraph}</p>
+            <h1 className="md:text-xl text-base font-medium">{title}</h1>
+            {/* <p className="md:text-lg text-xs text-[#3E3E3E]">{paragraph}</p> */}
           </div>
-          <div className="mt-4">
+          <div className="absolute bottom-3">
             <div className="flex md:text-base text-xs items-center gap-x-1">
               <BookText className="text-main" />
               {loading ? (
