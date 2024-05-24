@@ -25,12 +25,28 @@ import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import axios from "axios";
 import { urls } from "@/utils/config";
+// import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+
 
 const Content = () => {
   const params = useParams<{ modules: string; content: string }>();
   const router = useRouter();
   const courseID = params.modules;
   const moduleID = params.content;
+
+  const Image = ({ alt, src, baseUrl }: any) => {
+    const imageURL = src.startsWith("http") ? src : `${baseUrl}${src}`;
+
+    return (
+      <Image
+        src={imageURL}
+        alt={alt}
+        style={{ maxWidth: "100%", height: "auto" }}
+      />
+    );
+  };
 
   const [selectedModuleId, setSelectedModuleId] = useState(moduleID);
   const { moduleData, fetchModuleRead, moduleLoading } = useModuleRead();
@@ -44,10 +60,26 @@ const Content = () => {
     setSelectedModuleId(moduleId === selectedModuleId ? null : moduleId);
     router.replace(`/courses/${courseID}/${moduleId}`);
   };
-  const [moduleTitle, setModuletitle] = useState("");
+  const [moduleTitle, setModuleTitle] = useState("");
   const [modulesLink, setModuleLink] = useState("");
   const [modulesGithubLink, setModuleGithubLink] = useState("");
   const [editLoading, seteditLoading] = useState(false);
+
+  useEffect(() => {
+    if (moduleData?.module_title) {
+      setModuleTitle(moduleData.module_title);
+    }
+    if (moduleData?.module_video_link) {
+      setModuleLink(moduleData.module_video_link);
+    }
+    if (moduleData?.module_url) {
+      setModuleGithubLink(moduleData.module_url);
+    }
+  }, [moduleData]);
+
+  const handleInputChange = (setter: any) => (e: any) => {
+    setter(e.target.value);
+  };
 
   const editModule = async (e: any) => {
     e.preventDefault();
@@ -171,17 +203,9 @@ const Content = () => {
                     controls={false}
                     width="100%"
                     height="100%"
-                    autoplay={true}
+                    autoPlay={true}
                     url={moduleData?.module_video_link}
                     className="md:h-[428px] md:my-0 my-4"
-                    config={{
-                      youtube: {
-                        playerVars: {
-                          controls: 0,
-                          modestbranding: 1,
-                        },
-                      },
-                    }}
                   />
                   {/* <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
                   <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" /> */}
@@ -215,13 +239,16 @@ const Content = () => {
                     <Edit3 />
                   </span>
                 </div>
-                <div>
-                  <p
+                <div className="py-4 text-[#3E3E3E]">
+                  {/* <p
                     dangerouslySetInnerHTML={{
                       __html: moduleData?.description,
                     }}
                     className="py-4 text-[#3E3E3E]"
-                  ></p>
+                  ></p> */}
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {moduleData?.description}
+                  </ReactMarkdown>
                 </div>
               </div>
             </div>
@@ -247,7 +274,7 @@ const Content = () => {
                   <Input
                     type="text"
                     value={moduleTitle}
-                    onChange={(e) => setModuletitle(e.target.value)}
+                    onChange={handleInputChange(setModuleTitle)}
                     placeholder={moduleData?.module_title}
                   />
                 </div>
@@ -255,18 +282,18 @@ const Content = () => {
                 <div className="py-2">
                   <label className=" text-base">Gihub Link</label>
                   <Input
-                    value={modulesGithubLink}
-                    onChange={(e) => setModuleGithubLink(e.target.value)}
                     type="url"
+                    value={modulesLink}
+                    onChange={handleInputChange(setModuleLink)}
                     placeholder={moduleData?.module_url}
                   />
                 </div>
                 <div className="py-2">
                   <label className=" text-base">Video Link</label>
                   <Input
-                    value={modulesLink}
-                    onChange={(e) => setModuleLink(e.target.value)}
                     type="url"
+                    value={modulesGithubLink}
+                    onChange={handleInputChange(setModuleGithubLink)}
                     placeholder={moduleData?.module_video_link}
                   />
                 </div>

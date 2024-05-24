@@ -20,6 +20,10 @@ import { Input } from "@/components/ui/input";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "@/components/side-comp/toolbar";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import Paragraph from '@/utils/paragraph';
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -256,61 +260,36 @@ const SideProject = () => {
                     <h2 className="font-medium text-lg md:text-2xl text-main">
                       {project?.project_title}
                     </h2>
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: project?.project_description,
-                      }}
+                    <Markdown
                       className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
-                    ></p>
-                     <span>
-                      <p>Hint: </p>
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: project?.project_hint,
+                      remarkPlugins={[remarkGfm]}
+                    >
+                      {project?.project_description}
+                    </Markdown>
+                    <span>
+                      <p className="text-main font-semibold">Hint: </p>
+                      <ReactMarkdown
+                        className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
+                        remarkPlugins={[remarkGfm]}
+                      >
+                        {project?.project_hint}
+                      </ReactMarkdown>
+                      {/* <ReactMarkdown
+                        className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          p: ({ node, ...props }) => (
+                            <Paragraph node={node} {...props} />
+                          ),
                         }}
-                        className="font-normal py-2 text-[#3E3E3E] text-base md:text-xl"
-                      ></p>
+                      >
+                         {project?.project_hint}
+                      </ReactMarkdown> */}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* {showList && (
-            <div className=" absolute bg-slate-100/50 w-full mt-2 px-4 right-0 top-0 lg:hidden block">
-              <div className="bg-white shadow-md">
-                <div className="text-main p-4 text-lg md:text-2xl font-medium flex justify-between items-center py-2">
-                  <h3>Projects</h3>
-                  <span className="flex items-center gap-1 cursor-pointer">
-                    <p className="underline">Add</p>
-                    <Plus />
-                  </span>
-                  <span>
-                    <X className="text-red-500" onClick={handleShowList} />
-                  </span>
-                </div>
-                <div className="">
-                  {dummyHeader.map((head, index) => {
-                    return (
-                      <div key={index} className="cursor-pointer hover:bg-main">
-                        <h3 className="text-base md:text-lg py-3 px-4 hover:text-white flex justify-between items-center font-medium">
-                          {index + 1}. {head.title}
-                          <ChevronRight />
-                        </h3>
-                        <hr />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="my-5">
-                <Button className="bg-sub w-full text-xl font-medium text-black hover:bg-main hover:text-white">
-                  Submit
-                </Button>
-              </div>
-            </div>
-          )} */}
-
             <SideProjects
               project={projectList}
               handleItemClick={handleItemClick}

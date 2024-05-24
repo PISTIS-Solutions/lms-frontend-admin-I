@@ -35,7 +35,7 @@ const Courses = () => {
       });
       if (response.status === 200) {
         setCourses(response.data);
-        
+        console.log(response.data, "rd")
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -177,11 +177,11 @@ const Courses = () => {
                 <div key={course.id}>
                   <CoursesCard
                     image={course?.course_image_url}
-                    id={course.id}
-                    title={course.title}
-                    duration={course.course_duration}
+                    id={course?.id}
+                    title={course?.title}
+                    duration={course?.course_duration}
                     handleCardClick={handleCardClick}
-                    handleOpen={() => handleOpen(course.id)}
+                    handleOpen={() => handleOpen(course?.id)}
                   />
                 </div>
               ))

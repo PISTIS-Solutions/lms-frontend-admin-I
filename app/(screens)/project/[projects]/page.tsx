@@ -3,9 +3,8 @@
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import SideNav from "@/components/side-comp/side-nav";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus, X } from "lucide-react";
-import { dummydata } from "@/app/data/dummyModules";
+
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
 import axios from "axios";
@@ -22,6 +21,8 @@ import { toolbarOptions } from "@/components/side-comp/toolbar";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import SideProjects from "@/components/side-comp/side-projects";
 import { Input } from "@/components/ui/input";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const SingleProject = () => {
   const router = useRouter();
@@ -209,61 +210,25 @@ const SingleProject = () => {
                     <h2 className="font-medium text-lg md:text-2xl text-main">
                       {project?.[0]?.project_title}
                     </h2>
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: project?.[0]?.project_description,
-                      }}
+                    <Markdown
                       className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
-                    ></p>
+                      remarkPlugins={[remarkGfm]}
+                    >
+                      {project?.[0]?.project_description}
+                    </Markdown>
                     <span>
-                      <p>Hint: </p>
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: project?.[0]?.project_hint,
-                        }}
-                        className="font-normal py-2 text-[#3E3E3E] text-base md:text-xl"
-                      ></p>
+                      <p className="text-main font-semibold">Hint: </p>
+                      <Markdown
+                        className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
+                        remarkPlugins={[remarkGfm]}
+                      >
+                        {project?.[0]?.project_hint}
+                      </Markdown>
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* {showList && (
-            <div className=" absolute bg-slate-100/50 w-full mt-2 px-4 right-0 top-0 lg:hidden block">
-              <div className="bg-white shadow-md">
-                <div className="text-main p-4 text-lg md:text-2xl font-medium flex justify-between items-center py-2">
-                  <h3>Projects</h3>
-                  <span className="flex items-center gap-1 cursor-pointer">
-                    <p className="underline">Add</p>
-                    <Plus />
-                  </span>
-                  <span>
-                    <X className="text-red-500" onClick={handleShowList} />
-                  </span>
-                </div>
-                <div className="">
-                  {dummyHeader.map((head, index) => {
-                    return (
-                      <div key={index} className="cursor-pointer hover:bg-main">
-                        <h3 className="text-base md:text-lg py-3 px-4 hover:text-white flex justify-between items-center font-medium">
-                          {index + 1}. {head.title}
-                          <ChevronRight />
-                        </h3>
-                        <hr />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="my-5">
-                <Button className="bg-sub w-full text-xl font-medium text-black hover:bg-main hover:text-white">
-                  Submit
-                </Button>
-              </div>
-            </div>
-          )} */}
-
             <SideProjects
               project={project}
               handleItemClick={handleItemClick}

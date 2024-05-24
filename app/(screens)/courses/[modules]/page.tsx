@@ -9,9 +9,7 @@ import useCourseRead from "@/store/course-read";
 import "react-toastify/dist/ReactToastify.css";
 import SideModules from "@/components/side-comp/side-modules";
 import { Input } from "@/components/ui/input";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { toolbarOptions } from "@/components/side-comp/toolbar";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import axios from "axios";
 import { urls } from "@/utils/config";
+import ReactMarkdown from "react-markdown";
 
 const Module = () => {
   const router = useRouter();
@@ -157,10 +156,12 @@ const Module = () => {
                 <h1 className="md:text-2xl text-xl text-main py-2">
                   {courseRead?.title}
                 </h1>
-                <p
+                {/* <span
                   dangerouslySetInnerHTML={{ __html: courseRead?.overview }}
                   className="text-[#3E3E3E] text-justify md:text-base text-sm"
-                ></p>
+                ></span> */}
+
+                <ReactMarkdown>{courseRead?.overview}</ReactMarkdown>
               </div>
               <SideModules
                 handleModal={handleModal}
