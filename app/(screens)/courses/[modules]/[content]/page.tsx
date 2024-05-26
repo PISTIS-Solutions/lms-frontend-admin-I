@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import SideNav from "@/components/side-comp/side-nav";
-import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus, X } from "lucide-react";
+import { ArrowLeft, ChevronRight, Edit3, Loader2, X } from "lucide-react";
 
 import ReactPlayer from "react-player";
 
@@ -14,10 +14,6 @@ import useModuleRead from "@/store/module-read";
 import SideModules from "@/components/side-comp/side-modules";
 import useCourseRead from "@/store/course-read";
 import { Input } from "@/components/ui/input";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import { toolbarOptions } from "@/components/side-comp/toolbar";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
@@ -25,28 +21,25 @@ import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import axios from "axios";
 import { urls } from "@/utils/config";
-// import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
-
+import {
+  CustomH2,
+  code,
+  customH3,
+  customOL,
+  customP,
+  customTD,
+  customTH,
+  customUL,
+  strong,
+} from "@/utils/markdown";
 
 const Content = () => {
   const params = useParams<{ modules: string; content: string }>();
   const router = useRouter();
   const courseID = params.modules;
   const moduleID = params.content;
-
-  const Image = ({ alt, src, baseUrl }: any) => {
-    const imageURL = src.startsWith("http") ? src : `${baseUrl}${src}`;
-
-    return (
-      <Image
-        src={imageURL}
-        alt={alt}
-        style={{ maxWidth: "100%", height: "auto" }}
-      />
-    );
-  };
 
   const [selectedModuleId, setSelectedModuleId] = useState(moduleID);
   const { moduleData, fetchModuleRead, moduleLoading } = useModuleRead();
@@ -200,12 +193,21 @@ const Content = () => {
               <div className="md:grid flex flex-col-reverse gap-x-2 grid-cols-10">
                 <span className="relative col-span-7">
                   <ReactPlayer
-                    controls={false}
+                    controls={true}
                     width="100%"
                     height="100%"
-                    autoPlay={true}
+                    playing={false}
                     url={moduleData?.module_video_link}
                     className="md:h-[428px] md:my-0 my-4"
+                    config={{
+                      youtube: {
+                        playerVars: {
+                          
+                          modestbranding: 1,
+                          controls: 1,
+                        },
+                      },
+                    }}
                   />
                   {/* <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
                   <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" /> */}
@@ -239,14 +241,28 @@ const Content = () => {
                     <Edit3 />
                   </span>
                 </div>
-                <div className="py-4 text-[#3E3E3E]">
+                <div>
                   {/* <p
                     dangerouslySetInnerHTML={{
                       __html: moduleData?.description,
                     }}
                     className="py-4 text-[#3E3E3E]"
                   ></p> */}
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown
+                    className="py-4 text-[#3E3E3E]"
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h2: CustomH2,
+                      h3: customH3,
+                      ol: customOL,
+                      p: customP,
+                      ul: customUL,
+                      th: customTH,
+                      td: customTD,
+                      strong: strong,
+                      code: code
+                    }}
+                  >
                     {moduleData?.description}
                   </ReactMarkdown>
                 </div>

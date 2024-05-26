@@ -23,7 +23,17 @@ import { toolbarOptions } from "@/components/side-comp/toolbar";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
-import Paragraph from '@/utils/paragraph';
+import {
+  CustomH2,
+  code,
+  customH3,
+  customOL,
+  customP,
+  customTD,
+  customTH,
+  customUL,
+  strong,
+} from "@/utils/markdown";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -263,6 +273,17 @@ const SideProject = () => {
                     <Markdown
                       className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
                       remarkPlugins={[remarkGfm]}
+                      components={{
+                        h2: CustomH2,
+                        h3: customH3,
+                        ol: customOL,
+                        p: customP,
+                        ul: customUL,
+                        th: customTH,
+                        td: customTD,
+                        strong: strong,
+                        code: code
+                      }}
                     >
                       {project?.project_description}
                     </Markdown>
@@ -271,20 +292,19 @@ const SideProject = () => {
                       <ReactMarkdown
                         className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
                         remarkPlugins={[remarkGfm]}
+                        components={{
+                          h2: CustomH2,
+                          h3: customH3,
+                          ol: customOL,
+                          p: customP,
+                          ul: customUL,
+                          th: customTH,
+                          td: customTD,
+                          strong: strong,
+                        }}
                       >
                         {project?.project_hint}
                       </ReactMarkdown>
-                      {/* <ReactMarkdown
-                        className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          p: ({ node, ...props }) => (
-                            <Paragraph node={node} {...props} />
-                          ),
-                        }}
-                      >
-                         {project?.project_hint}
-                      </ReactMarkdown> */}
                     </span>
                   </div>
                 </div>
