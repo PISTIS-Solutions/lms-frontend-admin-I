@@ -71,7 +71,21 @@ const SignIn = () => {
           draggable: false,
           theme: "dark",
         });
-      } else {
+      } else if (
+        error?.response?.data?.detail ===
+        "No active account found with the given credentials"
+      ) {
+        toast.error("Invalid email or password!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } 
+      else {
         toast.error(error?.response?.data?.detail, {
           position: "top-right",
           autoClose: 5000,
