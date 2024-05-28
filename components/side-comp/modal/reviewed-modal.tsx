@@ -66,7 +66,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
         <ToastContainer />
         <div className="flex justify-between items-center">
           <h1 className="md:text-2xl text-lg font-medium">
-            {person?.course?.title}
+            {person?.project?.title}
           </h1>
           <span
             onClick={handleCloseModalApproved}
@@ -88,7 +88,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
             {!loadSubmit ? (
               <a
                 target="_blank"
-                className="cursor-pointer"
+                className="cursor-pointer break-words"
                 href={submitDetails?.submission_link}
               >
                 {submitDetails?.submission_link}

@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "install": "npm install",
+    "dev": "next dev",
     "build": "next build",
-    "dev": "next dev -p 80",
-    "start": "next start -p 80",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
