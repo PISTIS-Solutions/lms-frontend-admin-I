@@ -77,83 +77,83 @@ const Content = () => {
   const editModule = async (e: any) => {
     e.preventDefault();
 
-    console.log(" module_title:", moduleTitle,);
-    console.log("module_video_link:", modulesLink)
-    console.log(modulesGithubLink, "modgit")
-    // if (moduleTitle !== "" && modulesLink !== "") {
-    //   try {
-    //     const adminAccessToken = Cookies.get("adminAccessToken");
-    //     seteditLoading(true);
-    //     const response = await axios.patch(
-    //       `${urls.getCourses}${courseID}/modules/${moduleID}/`,
-    //       {
-    //         module_title: moduleTitle,
-    //         module_video_link: modulesLink,
-    //         module_url: modulesGithubLink,
-    //       },
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${adminAccessToken}`,
-    //           "Content-Type": "application/json",
-    //         },
-    //       }
-    //     );
+    // console.log(" module_title:", moduleTitle,);
+    // console.log("module_video_link:", modulesLink)
+    // console.log(modulesGithubLink, "modgit")
+    if (moduleTitle !== "" && modulesLink !== "") {
+      try {
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        seteditLoading(true);
+        const response = await axios.patch(
+          `${urls.getCourses}${courseID}/modules/${moduleID}/`,
+          {
+            module_title: moduleTitle,
+            module_video_link: modulesLink,
+            module_url: modulesGithubLink,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${adminAccessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-    //     if (response.status === 200) {
-    //       seteditLoading(false);
-    //       setOpenModal(false);
-    //       toast.success("Module successfully edited!", {
-    //         position: "top-right",
-    //         autoClose: 5000,
-    //         hideProgressBar: true,
-    //         closeOnClick: true,
-    //         pauseOnHover: false,
-    //         draggable: false,
-    //         theme: "dark",
-    //       });
-    //       // window.parent.location = window.parent.location.href;
-    //       fetchModuleRead(courseID, moduleID);
-    //       fetchCourseRead(courseID);
-    //     }
-    //   } catch (error: any) {
-    //     if (error.response && error.response.status === 401) {
-    //       await refreshAdminToken();
-    //       await editModule(e);
-    //     } else if (error?.message === "Network Error") {
-    //       toast.error("Check your network!", {
-    //         position: "top-right",
-    //         autoClose: 5000,
-    //         hideProgressBar: true,
-    //         closeOnClick: true,
-    //         pauseOnHover: false,
-    //         draggable: false,
-    //         theme: "dark",
-    //       });
-    //     } else {
-    //       toast.error(error?.response?.data?.detail, {
-    //         position: "top-right",
-    //         autoClose: 5000,
-    //         hideProgressBar: true,
-    //         closeOnClick: true,
-    //         pauseOnHover: false,
-    //         draggable: false,
-    //         theme: "dark",
-    //       });
-    //     }
-    //   } finally {
-    //     seteditLoading(false);
-    //   }
-    // } else {
-    //   toast.error("Check fields fields!", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: false,
-    //     draggable: false,
-    //     theme: "dark",
-    //   });
-    // }
+        if (response.status === 200) {
+          seteditLoading(false);
+          setOpenModal(false);
+          toast.success("Module successfully edited!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+          // window.parent.location = window.parent.location.href;
+          fetchModuleRead(courseID, moduleID);
+          fetchCourseRead(courseID);
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await editModule(e);
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
+        seteditLoading(false);
+      }
+    } else {
+      toast.error("Check fields fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+    }
   };
 
   useEffect(() => {
