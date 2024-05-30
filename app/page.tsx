@@ -75,7 +75,7 @@ const SignIn = () => {
         error?.response?.data?.detail ===
         "No active account found with the given credentials"
       ) {
-        toast.error("Invalid password!", {
+        toast.error("Incorrect email and password!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
