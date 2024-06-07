@@ -259,7 +259,7 @@ const Dashboard = () => {
                             key={index}
                             className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]"
                           >
-                            <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px] hover:text-black">
+                            <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px]">
                               <AvatarImage src={project?.student?.profile_photo} />
                               <AvatarFallback>{initials}</AvatarFallback>
                             </Avatar>
