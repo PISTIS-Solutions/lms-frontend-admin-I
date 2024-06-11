@@ -15,7 +15,7 @@ const PaginatedTable = () => {
   const studentsPerPage = 4;
 
   useEffect(() => {
-    fetchStudents();
+    fetchStudents(currentPage);
   }, []);
 
   const totalPages = Math.ceil(students?.results?.length / studentsPerPage);
