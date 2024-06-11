@@ -97,7 +97,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
         students: response.data.results,
         count: response.data.count
       });
-      console.log(response.data.count, "rd")
+      console.log(response.data, "rd")
     } catch (error: any) {
       console.error("Error fetching students:", error.message);
       if (error.response && error.response.status === 401) {
