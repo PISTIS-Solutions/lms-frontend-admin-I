@@ -100,7 +100,7 @@ const Dashboard = () => {
       });
       setProjectOverview(response.data);
       setOverviewLoad(false);
-      // console.log(response, "grado");
+      console.log(response, "grado");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -261,7 +261,7 @@ const Dashboard = () => {
                           >
                             <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px]">
                               <AvatarImage src={project?.student?.profile_photo} />
-                              <AvatarFallback>{initials}</AvatarFallback>
+                              <AvatarFallback className="hover:bg-main bg-[#FBFBFB] hover:text-white">{initials}</AvatarFallback>
                             </Avatar>
                             <p className="md:text-lg text-sm">
                               Project {project?.project?.title} submitted by{" "}
