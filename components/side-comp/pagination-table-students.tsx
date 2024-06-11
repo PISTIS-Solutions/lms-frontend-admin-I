@@ -3,93 +3,58 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, Loader2Icon } from "lucide-react";
 import useStudentsStore from "@/store/fetch-students";
-import useStudentInfoStore from "@/store/read-student";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const PaginatedTable = () => {
   const { students, loading, fetchStudents } = useStudentsStore();
-  // const { fetchStudentInfo } = useStudentInfoStore();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
-  const studentsPerPage = 4;
 
   useEffect(() => {
     fetchStudents(currentPage);
-  }, []);
-
-  const totalPages = Math.ceil(students?.results?.length / studentsPerPage);
+  }, [currentPage]);
 
   const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    setCurrentPage((prevPage) => prevPage + 1);
   };
 
   const prevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prevPage) => prevPage - 1);
     }
   };
-
-  const handlePageClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
   const readStudent = (id: any) => {
-    // fetchStudentInfo(id);
     router.push(`/students/${id}`);
   };
 
   const renderStudents = () => {
-    const startIndex = (currentPage - 1) * studentsPerPage;
-    const endIndex = Math.min(startIndex + studentsPerPage, students.count);
-    return students.results
-      .filter(
-        (person: any) => person.is_student && person.has_complete_onboarding
-      )
-      .slice(startIndex, endIndex)
-      .map((person: any) => (
-        <tr
-          onClick={() => readStudent(person.id)}
-          key={person.id}
-          className="cursor-pointer"
-        >
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.full_name}
-          </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.email}
-          </td>
-          
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.location}
-          </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.plan}
-          </td>
-        </tr>
-      ));
-  };
-
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(
-        <p
-          key={i}
-          onClick={() => handlePageClick(i)}
-          className={
-            i === currentPage
-              ? "cursor-pointer font-semibold text-main"
-              : "text-slate-400 cursor-pointer"
-          }
-        >
-          {i}
-        </p>
-      );
-    }
-    return pageNumbers;
+    return (
+      students
+        ?.filter(
+          (person: any) => person?.is_student && person?.has_complete_onboarding
+        )
+        .map((person: any) => (
+          <tr
+            onClick={() => readStudent(person.id)}
+            key={person.id}
+            className="cursor-pointer"
+          >
+            <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+              {person.full_name}
+            </td>
+            <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+              {person.email}
+            </td>
+            <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+              {person.location}
+            </td>
+            <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+              {person.plan}
+            </td>
+          </tr>
+        ))
+    );
   };
 
   return (
@@ -110,7 +75,6 @@ const PaginatedTable = () => {
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Email
             </th>
-           
             <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
               Location
             </th>
@@ -126,9 +90,7 @@ const PaginatedTable = () => {
                 <Loader2Icon className="animate-spin" /> Loading...
               </td>
             </tr>
-          ) : students.results &&
-            // students.results.is_student === true &&
-            students.count > 0 ? (
+          ) : students && students.length > 0 ? (
             renderStudents()
           ) : (
             <tr>
@@ -141,27 +103,22 @@ const PaginatedTable = () => {
       </table>
 
       <div className="flex items-center justify-end gap-2 md:gap-5 mt-2">
-        <div>
-          <Button
-            className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-            onClick={prevPage}
-            disabled={currentPage === 1}
-          >
-            <ArrowLeft />
-            Previous
-          </Button>
-        </div>
-        <div className="flex space-x-4">{renderPageNumbers()}</div>
-        <div>
-          <Button
-            onClick={nextPage}
-            className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-            disabled={currentPage === totalPages}
-          >
-            <ArrowRight />
-            Next
-          </Button>
-        </div>
+        <Button
+          className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+          onClick={prevPage}
+          disabled={currentPage === 1}
+        >
+          <ArrowLeft />
+          Previous
+        </Button>
+        <Button
+          onClick={nextPage}
+          className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+          disabled={students?.length !== 10}
+        >
+          <ArrowRight />
+          Next
+        </Button>
       </div>
     </div>
   );
