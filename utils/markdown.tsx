@@ -16,12 +16,20 @@ export const customUL = ({ node, ...props }: any) => (
 export const customTH = ({ node, ...props }: any) => (
   <th className="bg-main text-white text-lg p-2 text-left" {...props} />
 );
-export const customTD = ({node, ...props}:any) =>(
-  <td className="border border-black p-2" {...props}/>
-)
-export const strong = ({node, ...props}:any)=>(
-  <strong className=" font-normal" {...props}/>
-)
-export const code = ({node, ...props}:any)=>(
-  <code className="text-white bg-main px-2 py-1 m-1" {...props}/>
-)
+export const customTD = ({ node, ...props }: any) => (
+  <td className="border border-black p-2" {...props} />
+);
+export const strong = ({ node, ...props }: any) => (
+  <strong className=" font-normal" {...props} />
+);
+export const code = ({ node, ...props }: any) => (
+  <code className="text-white bg-main px-2 py-1 m-1" {...props} />
+);
+export const customLink = ({ node, ...props }: any) => (
+  <a
+    target="_blank"
+    href={...node}
+    className="text-blue cursor-pointer bg-main px-2 py-1 m-1"
+    {...props}
+  />
+);
