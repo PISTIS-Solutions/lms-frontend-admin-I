@@ -25,3 +25,10 @@ export const strong = ({node, ...props}:any)=>(
 export const code = ({node, ...props}:any)=>(
   <code className="text-white bg-main px-2 py-1 m-1" {...props}/>
 )
+export const customLink = ({ node, ...props }: any) => (
+  <a
+    target="_blank"
+    className="text-main font-semibold cursor-pointer italic"
+    {...props}
+  />
+);

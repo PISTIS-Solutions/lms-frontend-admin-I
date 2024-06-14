@@ -33,6 +33,7 @@ import {
   customTH,
   customUL,
   strong,
+  customLink
 } from "@/utils/markdown";
 
 const Content = () => {
@@ -214,7 +215,7 @@ const Content = () => {
                   {/* <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
                   <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" /> */}
                 </span>
-                <ScrollArea className="h-[428px] rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
+                <ScrollArea className="md:h-[428px] h-auto rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
                   {loading ? (
                     <div className="w-[100%] flex items-center justify-center h-screen">
                       <Loader2 className=" w-8 h-8 animate-spin" />
@@ -263,6 +264,7 @@ const Content = () => {
                       td: customTD,
                       strong: strong,
                       code: code,
+                      a:customLink
                     }}
                   >
                     {moduleData?.description}

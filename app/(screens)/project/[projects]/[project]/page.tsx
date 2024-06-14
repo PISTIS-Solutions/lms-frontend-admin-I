@@ -33,6 +33,7 @@ import {
   customTH,
   customUL,
   strong,
+  customLink
 } from "@/utils/markdown";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -282,7 +283,8 @@ const SideProject = () => {
                         th: customTH,
                         td: customTD,
                         strong: strong,
-                        code: code
+                        code: code,
+                        a:customLink
                       }}
                     >
                       {project?.project_description}
@@ -301,6 +303,8 @@ const SideProject = () => {
                           th: customTH,
                           td: customTD,
                           strong: strong,
+                          code: code,
+                          a:customLink
                         }}
                       >
                         {project?.project_hint}
