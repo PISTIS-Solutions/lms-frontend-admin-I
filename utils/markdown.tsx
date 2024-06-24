@@ -28,7 +28,7 @@ export const code = ({node, ...props}:any)=>(
 export const customLink = ({ node, ...props }: any) => (
   <a
     target="_blank"
-    className="text-main font-semibold cursor-pointer italic"
+    className="text-main font-semibold cursor-pointer italic underline"
     {...props}
   />
 );
