@@ -99,10 +99,10 @@ const Project = () => {
         // window.location.reload();
         fetchCourses();
       } else {
-        console.error("Failed to delete course.");
+        // console.error("Failed to delete course.");
       }
     } catch (error: any) {
-      console.error("Error deleting course:", error.message);
+      // console.error("Error deleting course:", error.message);
       if (error.response && error.response.status === 401) {
         try {
           const adminRefreshToken = Cookies.get("adminRefreshToken");

@@ -56,7 +56,7 @@ const CoursesCard = ({
           },
         });
 
-        console.log(response.status);
+        // console.log(response.status);
         if (response.status === 200) {
           const count = response.data.length;
           setModuleCount(count);

@@ -26,7 +26,7 @@ const Student = () => {
     fetchProjectReview(id);
   }, []);
 
-  console.log(studentData,"sd")
+  // console.log(studentData,"sd")
 
   return (
     <main className="relative">

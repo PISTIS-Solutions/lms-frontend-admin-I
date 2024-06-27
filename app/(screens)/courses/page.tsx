@@ -35,7 +35,7 @@ const Courses = () => {
       });
       if (response.status === 200) {
         setCourses(response.data);
-        console.log(response.data, "rd")
+        // console.log(response.data, "rd")
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -97,10 +97,10 @@ const Courses = () => {
         // window.location.reload();
         fetchCourses();
       } else {
-        console.error("Failed to delete course.");
+        // console.error("Failed to delete course.");
       }
     } catch (error: any) {
-      console.error("Error deleting course:", error.response.data.detail);
+      // console.error("Error deleting course:", error.response.data.detail);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await deleteCourse(courseId);

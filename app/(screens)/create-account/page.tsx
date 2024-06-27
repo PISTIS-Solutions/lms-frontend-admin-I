@@ -49,7 +49,7 @@ const SignUp = () => {
         throw new Error("Password and Confirm do not match");
       }
     } catch (error) {
-      console.error("An error occurred:", error);
+      // console.error("An error occurred:", error);
     }
   }
   function containsSpecialCharacters(str: string): boolean {

@@ -25,8 +25,11 @@ const StudentPage = () => {
     fetchStudents(currentPage);
   }, [currentPage]);
 
-  const nextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+  const nextPage = async () => {
+    const nextPageStudents = await fetchStudents(currentPage + 1);
+    if (nextPageStudents?.length > 0) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
 
   const prevPage = () => {
@@ -294,7 +297,7 @@ const StudentPage = () => {
                     <Button
                       onClick={nextPage}
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-                      disabled={students?.length !== 10}
+                      disabled={students?.length < 10 || currentPage * 10 >= count}
                     >
                       <ArrowRight />
                       Next

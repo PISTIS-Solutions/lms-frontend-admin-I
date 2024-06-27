@@ -61,7 +61,7 @@ const SettingsPage = () => {
   useEffect(() => {
     fetchStudentData();
   }, []);
-  console.log(studentData?.email, "sd");
+  // console.log(studentData?.email, "sd");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   // const [phoneNumber, setPhoneNumber] = useState("");
@@ -121,7 +121,7 @@ const SettingsPage = () => {
           Cookies.remove("adminAccessTokenx");
         }
       } catch (error: any) {
-        console.log(error);
+        // console.log(error);
         if (error.response && error.response.status === 401) {
           try {
             await refreshToken();
