@@ -3,10 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "build": "npm install",
+    "start": "next build && next start -p 80"
   },
   "dependencies": {
     "@faker-js/faker": "^8.2.0",
