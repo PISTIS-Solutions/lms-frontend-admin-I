@@ -86,7 +86,7 @@
 //       set({ loading: true });
 //       const adminAccessToken = Cookies.get("adminAccessToken");
 //       const response = await axios.get(
-//         `https://pistis-lms-backend.onrender.com/api/v1/auth/users/student/?page=${page}`,
+//         `https://s3tq3grix3.us-east-1.awsapprunner.com/api/v1/auth/users/student/?page=${page}`,
 //         {
 //           headers: {
 //             Authorization: `Bearer ${adminAccessToken}`,
@@ -156,7 +156,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(
-        `https://pistis-lms-backend.onrender.com/api/v1/auth/users/student/?page=${page}`,
+        `https://s3tq3grix3.us-east-1.awsapprunner.com/api/v1/auth/users/student/?page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
