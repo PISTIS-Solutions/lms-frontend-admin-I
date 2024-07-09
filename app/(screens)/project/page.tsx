@@ -11,7 +11,7 @@ import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
-import { dummydata } from "@/app/data/dummyModules";
+// import { dummydata } from "@/app/data/dummyModules";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopNav from "@/components/side-comp/topNav";

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 import SideNav from "@/components/side-comp/side-nav";
-import { projectData } from "@/app/data/projectData";
+// import { projectData } from "@/app/data/projectData";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -96,7 +96,7 @@ const Grading = () => {
                   <th className="py-4">Link</th>
                 </tr>
               </thead>
-              <tbody className="relative alternating-row-bg">
+              {/* <tbody className="relative alternating-row-bg">
                 {projectData
                   .filter((person) => {
                     const isMatchingSearch = person.name
@@ -166,7 +166,7 @@ const Grading = () => {
                       </tr>
                     </>
                   ))}
-              </tbody>
+              </tbody> */}
             </table>
           </div>
         </div>
