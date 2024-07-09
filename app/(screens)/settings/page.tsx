@@ -199,7 +199,7 @@ const SettingsPage = () => {
   const [generalLoading, setGeneralLoading] = useState(false);
   const onSubmitGeneral = async (e: any) => {
     e.preventDefault();
-    if (fullName && selectedFile) {
+    if (fullName) {
       try {
         // console.log(email, "em");
         setGeneralLoading(true);

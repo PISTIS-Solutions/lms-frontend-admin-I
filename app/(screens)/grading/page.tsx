@@ -78,7 +78,7 @@ const Grading = () => {
                 <option value="all" onClick={() => setSelectedStatus("")}>
                   Sort by
                 </option>
-                <option value="Pending">Pending</option>
+                <option value="Submitted">Pending</option>
                 <option value="reviewed">Reviewed</option>
                 <option value="No Submission">No Submission</option>
               </select>
@@ -103,8 +103,8 @@ const Grading = () => {
                       .toLowerCase()
                       .includes(searchInput.toLowerCase());
                     const isMatchingStatus =
-                      (selectedStatus === "Pending" &&
-                        person.status === "Pending") ||
+                      (selectedStatus === "Submitted" &&
+                        person.status === "Submitted") ||
                       (selectedStatus === "reviewed" &&
                         person.status === "reviewed") ||
                       (selectedStatus === "No Submission" &&
@@ -133,7 +133,7 @@ const Grading = () => {
                           className={`py-4 capitalize ${
                             !person.status
                               ? "text-gray-600"
-                              : person.status === "Pending"
+                              : person.status === "Submitted"
                               ? "text-orange-500"
                               : person.status === "reviewed"
                               ? "text-green-500"
@@ -145,7 +145,7 @@ const Grading = () => {
                         <td className="py-4 text-main">
                           {!person.status ? (
                             "-"
-                          ) : person.status === "Pending" ? (
+                          ) : person.status === "Submitted" ? (
                             <p
                               onClick={() => handleModal(person)}
                               className="bg-[#F8F9FF] rounded-[24px] text-center p-1 w-[107px] cursor-pointer"

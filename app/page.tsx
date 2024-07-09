@@ -22,6 +22,7 @@ const SignIn = () => {
 
   const onsubmitLogin = async (e: any) => {
     e.preventDefault();
+    console.log("clicked")
     try {
       setLoading(true);
       if (!containsSpecialCharacters(formStore.password)) {
@@ -34,7 +35,7 @@ const SignIn = () => {
         email: formStore.email,
         password: formStore.password,
       });
-
+      console.log(response, "res");
       if (response.status === 200) {
         toast.success("Successfully Logged in!", {
           position: "top-right",
@@ -84,8 +85,7 @@ const SignIn = () => {
           draggable: false,
           theme: "dark",
         });
-      } 
-      else {
+      } else {
         toast.error(error?.response?.data?.detail, {
           position: "top-right",
           autoClose: 5000,

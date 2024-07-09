@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus, X } from "lucide-react";
-import { dummydata } from "@/app/data/dummyModules";
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
 import axios from "axios";
@@ -291,7 +290,7 @@ const SideProject = () => {
                     </Markdown>
                     <span>
                       <p className="text-main font-semibold">Hint: </p>
-                      <ReactMarkdown
+                      <Markdown
                         className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -303,12 +302,12 @@ const SideProject = () => {
                           th: customTH,
                           td: customTD,
                           strong: strong,
+                          a:customLink,
                           code: code,
-                          a:customLink
                         }}
                       >
                         {project?.project_hint}
-                      </ReactMarkdown>
+                      </Markdown>
                     </span>
                   </div>
                 </div>

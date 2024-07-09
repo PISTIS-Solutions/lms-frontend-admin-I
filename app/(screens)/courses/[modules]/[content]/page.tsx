@@ -35,6 +35,7 @@ import {
   strong,
   customLink
 } from "@/utils/markdown";
+import Link from "next/link";
 
 const Content = () => {
   const params = useParams<{ modules: string; content: string }>();
@@ -177,10 +178,14 @@ const Content = () => {
           <TopNav />
         </div>
         <div className="">
-          <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
-            <p className="text-[#000066]">Course Content</p>
+        <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
+            <Link href="/courses">
+              <p className="text-[#000066]">Course Content</p>
+            </Link>
             <ChevronRight className="text-[#000066]" />
-            <p className="text-[#000066]">Modules</p>
+            <Link href={`/courses/${moduleID}`}>
+              <p className="text-[#000066]">Modules</p>
+            </Link>
             <ChevronRight className="text-[#000066]" />
             <p className="text-[#000066]"> {moduleData?.module_title}</p>
           </div>

@@ -172,6 +172,7 @@ const AddProjectForms = () => {
           router.push("/courses");
         }
       } catch (error: any) {
+        console.log(error, "err")
         if (error.response && error.response.status === 401) {
           await refreshAdminToken();
           await uploadProject();

@@ -132,15 +132,19 @@ const StudentPage = () => {
   // };
 
   const filteredStudents = students?.filter((student: any) =>
-    student?.full_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  student?.has_complete_onboarding &&
+  student?.is_student &&
+  student?.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+);
 
   const renderStudents = () => {
     // const startIndex = (currentPage - 1) * students?.length;
     // const endIndex = Math.min(startIndex + students?.length, count);
     return (
       filteredStudents
-        .filter((person: any) => person?.has_complete_onboarding)
+        .filter(
+          (person: any) => person?.has_complete_onboarding && person?.is_student
+        )
         // .slice(startIndex, endIndex)
         .map((person: any) => (
           <React.Fragment key={person?.id}>
@@ -297,7 +301,9 @@ const StudentPage = () => {
                     <Button
                       onClick={nextPage}
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-                      disabled={students?.length < 10 || currentPage * 10 >= count}
+                      disabled={
+                        students?.length < 10 || currentPage * 10 >= count
+                      }
                     >
                       <ArrowRight />
                       Next
