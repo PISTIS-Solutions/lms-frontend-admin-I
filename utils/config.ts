@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-export const baseURL = "http://backend.dev.pististechub.io/api/v1/auth";
+export const baseURL = "https://backend.dev.pististechub.io/api/v1/auth";
 
 
 const courseID = Cookies.get("courseId");
