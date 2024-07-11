@@ -35,8 +35,7 @@ const Courses = () => {
       });
       if (response.status === 200) {
         setCourses(response.data);
-        console.log(response.data, "cs");
-        // window.location.reload();
+        // console.log(response.data, "rd")
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -98,10 +97,10 @@ const Courses = () => {
         // window.location.reload();
         fetchCourses();
       } else {
-        console.error("Failed to delete course.");
+        // console.error("Failed to delete course.");
       }
     } catch (error: any) {
-      console.error("Error deleting course:", error.response.data.detail);
+      // console.error("Error deleting course:", error.response.data.detail);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await deleteCourse(courseId);
@@ -173,16 +172,16 @@ const Courses = () => {
                 <Loader2 className=" w-8 h-8 animate-spin" />
                 <p>Loading Courses</p>
               </div>
-            ) : courses && courses.length > 0 ? (
-              courses.map((course: any) => (
+            ) : courses && courses?.length > 0 ? (
+              courses?.map((course: any) => (
                 <div key={course.id}>
                   <CoursesCard
-                    image={course.course_image}
-                    id={course.id}
-                    title={course.title}
-                    duration={course.course_duration}
+                    image={course?.course_image_url}
+                    id={course?.id}
+                    title={course?.title}
+                    duration={course?.course_duration}
                     handleCardClick={handleCardClick}
-                    handleOpen={() => handleOpen(course.id)}
+                    handleOpen={() => handleOpen(course?.id)}
                   />
                 </div>
               ))

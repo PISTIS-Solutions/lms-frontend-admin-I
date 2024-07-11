@@ -56,7 +56,7 @@ const CoursesCard = ({
           },
         });
 
-        console.log(response.status);
+        // console.log(response.status);
         if (response.status === 200) {
           const count = response.data.length;
           setModuleCount(count);
@@ -75,8 +75,8 @@ const CoursesCard = ({
     getModuleCount();
   }, []);
 
-  const cloudinaryUrl = image;
-  const imageUrl = cloudinaryUrl.replace("image/upload/", "");
+  // const cloudinaryUrl = image;
+  // const imageUrl = cloudinaryUrl.replace("image/upload/", "");
 
   return (
     <div className="relative">
@@ -86,22 +86,22 @@ const CoursesCard = ({
           fetchCourseRead(id);
           handleCardClick(id);
         }}
-        className=" w-full cursor-pointer h-auto shadow-md rounded-[8px] bg-[#FFF]"
+        className=" w-full cursor-pointer h-[374px] shadow-md rounded-[8px] bg-[#fff]"
       >
         <Image
-          src={imageUrl}
+          src={image}
           width={100}
           height={100}
           alt={title}
-          className="rounded-tr-[4px] max-w-[357px] max-h-[191px] object-contain w-full rounded-tl-[4px]"
+          className="rounded-tr-[4px] h-[191px] object-cover w-full rounded-tl-[4px]"
         />
         <div className="p-2">
           <div className="md:mb-14 mb-5">
-            <h1 className="md:text-xl text-sm capitalize font-medium">
+            <h1 className="md:text-xl text-base capitalize font-medium">
               {title}
             </h1>
           </div>
-          <div className="flex items-center gap-x-4 mt-4">
+          <div className="flex items-center gap-x-4 absolute bottom-3">
             <div className="flex md:text-base text-xs items-center gap-x-1">
               <BookText className="text-main" />
               {loading ? (

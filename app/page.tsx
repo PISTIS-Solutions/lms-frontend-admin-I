@@ -22,6 +22,7 @@ const SignIn = () => {
 
   const onsubmitLogin = async (e: any) => {
     e.preventDefault();
+    console.log("clicked")
     try {
       setLoading(true);
       if (!containsSpecialCharacters(formStore.password)) {
@@ -34,7 +35,7 @@ const SignIn = () => {
         email: formStore.email,
         password: formStore.password,
       });
-
+      console.log(response, "res");
       if (response.status === 200) {
         toast.success("Successfully Logged in!", {
           position: "top-right",
@@ -45,15 +46,37 @@ const SignIn = () => {
           draggable: false,
           theme: "dark",
         });
-        Cookies.set("adminAccessToken", response.data.access);
-        Cookies.set("adminRefreshToken", response.data.refresh);
-        Cookies.set("fullName", response.data.user.full_name);
+        Cookies.set("adminAccessToken", response.data.access, {
+          sameSite: "None",
+          secure: true,
+        });
+        Cookies.set("adminRefreshToken", response.data.refresh, {
+          sameSite: "None",
+          secure: true,
+        });
+        Cookies.set("fullName", response.data.user.full_name, {
+          sameSite: "None",
+          secure: true,
+        });
         route.replace("/dashboard");
         setLoading(false);
       }
     } catch (error: any) {
       if (error?.message === "Network Error") {
         toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else if (
+        error?.response?.data?.detail ===
+        "No active account found with the given credentials"
+      ) {
+        toast.error("Incorrect email and password!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,

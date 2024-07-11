@@ -68,7 +68,7 @@ const AddProjectModal = ({
           `${urls.getCourses}${data.course}/projects/`,
           {
             project_title: data.projectTitle,
-            project_description: description,
+            project_hint: description,
             project_url: data.projectLink,
           },
           {
@@ -205,7 +205,7 @@ const AddProjectModal = ({
                       <Input
                         type="url"
                         className="bg-[#FAFAFA]"
-                        placeholder="Input Project Sub-Title"
+                        placeholder="Input Github Link"
                         {...field}
                       />
                     </FormControl>

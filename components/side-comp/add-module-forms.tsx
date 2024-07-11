@@ -1,35 +1,16 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Textarea } from "../ui/textarea";
-import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
 import { useRouter } from "next/navigation";
 
-import dynamic from 'next/dynamic';
-import "react-quill/dist/quill.snow.css";
-import { toolbarOptions } from "./toolbar";
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
 const AddModuleForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
-  const { setFilteredModuleData, courseTitle, description, courseLink } =
+  const { setFilteredModuleData, courseTitle, courseLink } =
     useCourseFormStore();
   const router = useRouter();
 
@@ -62,9 +43,8 @@ const AddModuleForms = () => {
 
   interface ModuleFormData {
     module_title: string;
-    module_sub_title: string;
-    description: string;
     module_url: string;
+    module_Github_url: string;
   }
   const [loading, setLoading] = useState<boolean>(false);
   const onContinue = () => {
@@ -74,27 +54,17 @@ const AddModuleForms = () => {
         const moduleTitleInput = document.getElementById(
           `moduleTitle-${section.id}`
         ) as HTMLInputElement | null;
-        const modulesubTitleInput = document.getElementById(
-          `modulesubTitle-${section.id}`
-        ) as HTMLInputElement | null;
         const moduleLinkInput = document.getElementById(
           `moduleLink-${section.id}`
         ) as HTMLInputElement | null;
-        const moduleDetailsInput = document.getElementById(
-          `moduleDetails-${section.id}`
-        ) as HTMLElement | null;
-
-        if (
-          moduleTitleInput &&
-          modulesubTitleInput &&
-          moduleLinkInput &&
-          moduleDetailsInput
-        ) {
+        const moduleGithubLinkInput = document.getElementById(
+          `moduleGithubLink-${section.id}`
+        ) as HTMLInputElement | null;
+        if (moduleTitleInput && moduleLinkInput && moduleGithubLinkInput) {
           return {
             module_title: moduleTitleInput.value,
-            module_sub_title: modulesubTitleInput.value,
             module_url: moduleLinkInput.value,
-            description: moduleDetailsInput?.textContent ?? "",
+            module_Github_url: moduleGithubLinkInput.value,
           };
         } else {
           return null;
@@ -106,21 +76,17 @@ const AddModuleForms = () => {
       const moduleTitleInput = document.getElementById(
         `moduleTitle-${section.id}`
       ) as HTMLInputElement | null;
-      const modulesubTitleInput = document.getElementById(
-        `modulesubTitle-${section.id}`
-      ) as HTMLInputElement | null;
       const moduleLinkInput = document.getElementById(
         `moduleLink-${section.id}`
       ) as HTMLInputElement | null;
-      const moduleDetailsInput = document.getElementById(
-        `moduleDetails-${section.id}`
-      ) as HTMLElement | null;
+      const moduleGithubLinkInput = document.getElementById(
+        `moduleGithubLink-${section.id}`
+      ) as HTMLInputElement | null;
 
       return (
         moduleTitleInput?.value.trim() !== "" &&
-        modulesubTitleInput?.value.trim() !== "" &&
         moduleLinkInput?.value.trim() !== "" &&
-        (moduleDetailsInput?.textContent?.trim() ?? "") !== ""
+        moduleGithubLinkInput?.value.trim() !== ""
       );
     });
 
@@ -152,7 +118,7 @@ const AddModuleForms = () => {
   };
 
   useEffect(() => {
-    if (!courseTitle || !description || !courseLink) {
+    if (!courseTitle || !courseLink) {
       toast.error("Error! Add Course again!", {
         position: "top-right",
         autoClose: 5000,
@@ -213,21 +179,21 @@ const AddModuleForms = () => {
             </div>
             <div>
               <label className="md:text-xl text-sm text-[#3E3E3E]">
-                <p className="mt-2">Sub-Title</p>
+                <p className="mt-2">Video Link</p>
               </label>
               <div>
                 <Input
-                  type="text"
-                  name={`modulesubTitle-${section.id}`}
-                  id={`modulesubTitle-${section.id}`}
+                  type="url"
+                  name={`moduleGithubLink-${section.id}`}
+                  id={`moduleGithubLink-${section.id}`}
                   className="bg-[#FAFAFA]"
-                  placeholder="Input Module Sub-Title"
+                  placeholder="Input Video Link"
                 />
               </div>
             </div>
             <div>
               <label className="md:text-xl text-sm text-[#3E3E3E]">
-                <p className="mt-2">Video Link</p>
+                <p className="mt-2">Github Link</p>
               </label>
               <div>
                 <Input
@@ -235,24 +201,7 @@ const AddModuleForms = () => {
                   name={`moduleLink-${section.id}`}
                   id={`moduleLink-${section.id}`}
                   className="bg-[#FAFAFA]"
-                  placeholder="Input Module Description"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="md:text-xl text-sm text-[#3E3E3E]">
-                <p className="mt-2">Content Details</p>
-              </label>
-              <div>
-                <ReactQuill
-                  modules={{ toolbar: toolbarOptions }}
-                  theme="snow"
-                  // name={`moduleDetails-${section.id}`}
-                  id={`moduleDetails-${section.id}`}
-                  className="bg-[#FAFAFA]"
-                  placeholder="Input module content details"
-                  // value={description}
-                  // onChange={setDescription}
+                  placeholder="Input Github Link"
                 />
               </div>
             </div>

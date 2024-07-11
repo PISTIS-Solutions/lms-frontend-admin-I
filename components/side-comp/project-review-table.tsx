@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, Loader2Icon } from "lucide-react";
-import { projectData } from "@/app/data/projectData";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -10,7 +9,7 @@ import PendingModal from "./modal/pending-modal";
 import ReviewedModal from "./modal/reviewed-modal";
 
 const ProjectReview = ({ reviewLoad, projectReview }: any) => {
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -39,10 +38,6 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
   const router = useRouter();
-
-  //   const handleCardClick = (id: any) => {
-  //     router.push(`/students/${id}`);
-  //   };
 
   const [selectedPerson, setSelectedPerson] = useState(null);
   const handleModal = (person: any) => {
@@ -82,19 +77,22 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
       <table className="w-full mt-2 text-left">
         <thead className="text-main">
           <tr className="bg-[#F8F9FF] py-2 w-full">
-            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">
+            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
               Course Title
             </th>
-            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">
+            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
+              Project Title
+            </th>
+            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
               Deadline
             </th>
-            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">
+            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
               Date Submitted
             </th>
-            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">
+            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
               Status
             </th>
-            <th className="md:py-4 px-2 md:px-0 md:text-base text-xs py-2">
+            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
               Link
             </th>
           </tr>
@@ -113,8 +111,11 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
             currentData?.map((person: any, index: number) => (
               <>
                 <tr key={index}>
-                  <td className="md:py-4 px-2 md:px-0 md:text-base text-xs py-1 capitalize cursor-pointer">
+                  <td className="md:py-4 px-2 md:px-2 md:text-base text-xs py-1 capitalize cursor-pointer">
                     {person?.course?.title}
+                  </td>
+                  <td className="md:py-4 px-2 md:px-2 md:text-base text-xs py-1 capitalize cursor-pointer">
+                    {person?.project?.title}
                   </td>
                   <td className="md:py-4 md:text-base text-xs py-1">
                     {formatDate(person.deadline)}
@@ -129,7 +130,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                     className={`md:py-4 md:text-base text-left text-xs py-1 capitalize ${
                       !person.status
                         ? "text-gray-600"
-                        : person.status === "Pending"
+                        : person.status === "Submitted"
                         ? "text-orange-500"
                         : person.status === "Reviewed"
                         ? "text-green-500"
@@ -138,20 +139,20 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                   >
                     {!person.status ? "No Submission" : person.status}
                   </td>
-                  <td className="md:py-4 md:text-base text-xs py-1 text-main">
+                  <td className="md:py-4 md:text-base px-2 text-xs py-1 text-main">
                     {!person.status ? (
                       "-"
-                    ) : person.status === "Pending" ? (
+                    ) : person.status === "Submitted" ? (
                       <p
                         onClick={() => handleModal(person)}
-                        className="bg-[#F8F9FF] rounded-[24px] text-center p-1 w-[107px] cursor-pointer"
+                        className="bg-[#F8F9FF] rounded-[24px]  text-center p-1 w-[107px] cursor-pointer"
                       >
                         Review
                       </p>
                     ) : person.status === "Reviewed" ? (
                       <p
                         onClick={() => handleModalApproved(person)}
-                        className="bg-white border border-[#EEEEFB] rounded-[24px] text-center p-1 w-[107px] cursor-pointer"
+                        className="bg-white border border-[#EEEEFB] rounded-[24px]  text-center p-1 w-[107px] cursor-pointer"
                       >
                         View
                       </p>

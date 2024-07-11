@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import SideNav from "@/components/side-comp/side-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus, X } from "lucide-react";
-import { dummydata } from "@/app/data/dummyModules";
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
 import axios from "axios";
@@ -20,6 +19,21 @@ import { Input } from "@/components/ui/input";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "@/components/side-comp/toolbar";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import {
+  CustomH2,
+  code,
+  customH3,
+  customOL,
+  customP,
+  customTD,
+  customTH,
+  customUL,
+  strong,
+  customLink
+} from "@/utils/markdown";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -148,12 +162,12 @@ const SideProject = () => {
       try {
         const adminAccessToken = Cookies.get("adminAccessToken");
         seteditLoading(true);
-        const response = await axios.patch(
-          `${urls.getCourses}${courseID}/projects/${projectID}/`,
+        const response = await axios.post(
+          `${urls.getCourses}${courseID}/projects/`,
           {
             project_title: projectTitle,
             project_url: projectLink,
-            project_description: description,
+            project_hint: description,
           },
           {
             headers: {
@@ -256,53 +270,49 @@ const SideProject = () => {
                     <h2 className="font-medium text-lg md:text-2xl text-main">
                       {project?.project_title}
                     </h2>
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: project?.project_description,
+                    <Markdown
+                      className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h2: CustomH2,
+                        h3: customH3,
+                        ol: customOL,
+                        p: customP,
+                        ul: customUL,
+                        th: customTH,
+                        td: customTD,
+                        strong: strong,
+                        code: code,
+                        a:customLink
                       }}
-                      className="font-normal py-2 text-[#3E3E3E] text-base md:text-xl"
-                    ></p>
-                    {/* <p className="text-[#3E3E3E]"></p> */}
+                    >
+                      {project?.project_description}
+                    </Markdown>
+                    <span>
+                      <p className="text-main font-semibold">Hint: </p>
+                      <Markdown
+                        className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          h2: CustomH2,
+                          h3: customH3,
+                          ol: customOL,
+                          p: customP,
+                          ul: customUL,
+                          th: customTH,
+                          td: customTD,
+                          strong: strong,
+                          a:customLink,
+                          code: code,
+                        }}
+                      >
+                        {project?.project_hint}
+                      </Markdown>
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* {showList && (
-            <div className=" absolute bg-slate-100/50 w-full mt-2 px-4 right-0 top-0 lg:hidden block">
-              <div className="bg-white shadow-md">
-                <div className="text-main p-4 text-lg md:text-2xl font-medium flex justify-between items-center py-2">
-                  <h3>Projects</h3>
-                  <span className="flex items-center gap-1 cursor-pointer">
-                    <p className="underline">Add</p>
-                    <Plus />
-                  </span>
-                  <span>
-                    <X className="text-red-500" onClick={handleShowList} />
-                  </span>
-                </div>
-                <div className="">
-                  {dummyHeader.map((head, index) => {
-                    return (
-                      <div key={index} className="cursor-pointer hover:bg-main">
-                        <h3 className="text-base md:text-lg py-3 px-4 hover:text-white flex justify-between items-center font-medium">
-                          {index + 1}. {head.title}
-                          <ChevronRight />
-                        </h3>
-                        <hr />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="my-5">
-                <Button className="bg-sub w-full text-xl font-medium text-black hover:bg-main hover:text-white">
-                  Submit
-                </Button>
-              </div>
-            </div>
-          )} */}
-
             <SideProjects
               project={projectList}
               handleItemClick={handleItemClick}
@@ -339,12 +349,12 @@ const SideProject = () => {
               </div>
 
               <div className="py-2">
-                <label className=" text-base">Video Link</label>
+                <label className=" text-base">Github Link</label>
                 <Input
                   value={projectLink}
                   onChange={(e) => setProjectLink(e.target.value)}
                   type="url"
-                  placeholder="Input Project video link"
+                  placeholder="Input Project github link"
                 />
               </div>
               <div className="py-2">
@@ -352,7 +362,7 @@ const SideProject = () => {
                 <ReactQuill
                   modules={{ toolbar: toolbarOptions }}
                   theme="snow"
-                  placeholder="Input Project details"
+                  placeholder="Input Project Hint"
                   value={description}
                   onChange={setDescription}
                   className="w-full"

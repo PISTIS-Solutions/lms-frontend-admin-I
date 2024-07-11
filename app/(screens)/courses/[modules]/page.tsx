@@ -9,9 +9,7 @@ import useCourseRead from "@/store/course-read";
 import "react-toastify/dist/ReactToastify.css";
 import SideModules from "@/components/side-comp/side-modules";
 import { Input } from "@/components/ui/input";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { toolbarOptions } from "@/components/side-comp/toolbar";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +17,21 @@ import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import axios from "axios";
 import { urls } from "@/utils/config";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+import {
+  CustomH2,
+  code,
+  customH3,
+  customOL,
+  customP,
+  customTD,
+  customTH,
+  customUL,
+  strong,
+  customLink
+} from "@/utils/markdown";
 
 const Module = () => {
   const router = useRouter();
@@ -40,20 +53,14 @@ const Module = () => {
   };
 
   const [moduleTitle, setModuletitle] = useState("");
-  const [modulesubTitle, setModulesubtitle] = useState("");
+  const [modulesGithubLink, setModuleGithubLink] = useState("");
   const [modulesLink, setModuleLink] = useState("");
-  const [description, setDescription] = useState("");
   const [editLoading, seteditLoading] = useState(false);
 
   const editModule = async (e: any) => {
     e.preventDefault();
 
-    if (
-      moduleTitle !== "" &&
-      modulesubTitle !== "" &&
-      modulesLink !== "" &&
-      description !== ""
-    ) {
+    if (moduleTitle !== "" && modulesGithubLink !== "" && modulesLink !== "") {
       try {
         const adminAccessToken = Cookies.get("adminAccessToken");
         seteditLoading(true);
@@ -61,9 +68,8 @@ const Module = () => {
           `${urls.getCourses}${courseID}/modules/`,
           {
             module_title: moduleTitle,
-            module_sub_title: modulesubTitle,
-            module_url: modulesLink,
-            description: description,
+            module_url: modulesGithubLink,
+            module_video_link: modulesLink,
           },
           {
             headers: {
@@ -76,7 +82,7 @@ const Module = () => {
         if (response.status === 200) {
           seteditLoading(false);
           setOpenModal(false);
-          toast.success("Module successfully edited!", {
+          toast.success("Module successfully added!", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: true,
@@ -164,10 +170,29 @@ const Module = () => {
                 <h1 className="md:text-2xl text-xl text-main py-2">
                   {courseRead?.title}
                 </h1>
-                <p
+                {/* <span
                   dangerouslySetInnerHTML={{ __html: courseRead?.overview }}
                   className="text-[#3E3E3E] text-justify md:text-base text-sm"
-                ></p>
+                ></span> */}
+
+                <ReactMarkdown
+                  className="py-4 text-[#3E3E3E]"
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h2: CustomH2,
+                    h3: customH3,
+                    ol: customOL,
+                    p: customP,
+                    ul: customUL,
+                    th: customTH,
+                    td: customTD,
+                    strong: strong,
+                    code:code,
+                    a:customLink
+                  }}
+                >
+                  {courseRead?.overview}
+                </ReactMarkdown>
               </div>
               <SideModules
                 handleModal={handleModal}
@@ -205,15 +230,6 @@ const Module = () => {
                 />
               </div>
               <div className="py-2">
-                <label className=" text-base">Sub-title</label>
-                <Input
-                  value={modulesubTitle}
-                  onChange={(e) => setModulesubtitle(e.target.value)}
-                  type="text"
-                  placeholder="Input module sub-title"
-                />
-              </div>
-              <div className="py-2">
                 <label className=" text-base">Video Link</label>
                 <Input
                   value={modulesLink}
@@ -223,14 +239,12 @@ const Module = () => {
                 />
               </div>
               <div className="py-2">
-                <label className=" text-base">Description</label>
-                <ReactQuill
-                  modules={{ toolbar: toolbarOptions }}
-                  theme="snow"
-                  placeholder="Input module details"
-                  value={description}
-                  onChange={setDescription}
-                  className="w-full"
+                <label className=" text-base">Github Link</label>
+                <Input
+                  value={modulesGithubLink}
+                  onChange={(e) => setModuleGithubLink(e.target.value)}
+                  type="url"
+                  placeholder="Input github video link"
                 />
               </div>
             </div>

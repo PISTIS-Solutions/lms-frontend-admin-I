@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import SideNav from "@/components/side-comp/side-nav";
-import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus, X } from "lucide-react";
+import { ArrowLeft, ChevronRight, Edit3, Loader2, X } from "lucide-react";
 
 import ReactPlayer from "react-player";
 
@@ -14,10 +14,6 @@ import useModuleRead from "@/store/module-read";
 import SideModules from "@/components/side-comp/side-modules";
 import useCourseRead from "@/store/course-read";
 import { Input } from "@/components/ui/input";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import { toolbarOptions } from "@/components/side-comp/toolbar";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
@@ -25,6 +21,21 @@ import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import axios from "axios";
 import { urls } from "@/utils/config";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import {
+  CustomH2,
+  code,
+  customH3,
+  customOL,
+  customP,
+  customTD,
+  customTH,
+  customUL,
+  strong,
+  customLink
+} from "@/utils/markdown";
+import Link from "next/link";
 
 const Content = () => {
   const params = useParams<{ modules: string; content: string }>();
@@ -44,90 +55,107 @@ const Content = () => {
     setSelectedModuleId(moduleId === selectedModuleId ? null : moduleId);
     router.replace(`/courses/${courseID}/${moduleId}`);
   };
-  const [moduleTitle, setModuletitle] = useState("");
-  const [modulesubTitle, setModulesubtitle] = useState("");
+  const [moduleTitle, setModuleTitle] = useState("");
   const [modulesLink, setModuleLink] = useState("");
-  const [description, setDescription] = useState("");
+  const [modulesGithubLink, setModuleGithubLink] = useState("");
   const [editLoading, seteditLoading] = useState(false);
+
+  useEffect(() => {
+    if (moduleData?.module_title) {
+      setModuleTitle(moduleData.module_title);
+    }
+    if (moduleData?.module_video_link) {
+      setModuleLink(moduleData.module_video_link);
+    }
+    if (moduleData?.module_url) {
+      setModuleGithubLink(moduleData.module_url);
+    }
+  }, [moduleData]);
+
+  const handleInputChange = (setter: any) => (e: any) => {
+    setter(e.target.value);
+  };
 
   const editModule = async (e: any) => {
     e.preventDefault();
 
-    // if (moduleTitle !== "" && modulesubTitle !== "" && modulesLink !== "") {
-    try {
-      const adminAccessToken = Cookies.get("adminAccessToken");
-      seteditLoading(true);
-      const response = await axios.patch(
-        `${urls.getCourses}${courseID}/modules/${moduleID}/`,
-        {
-          module_title: moduleTitle,
-          module_sub_title: modulesubTitle,
-          module_url: modulesLink,
-          description: description,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-            "Content-Type": "application/json",
+    // console.log(" module_title:", moduleTitle,);
+    // console.log("module_video_link:", modulesLink)
+    // console.log(modulesGithubLink, "modgit")
+    if (moduleTitle !== "" && modulesLink !== "") {
+      try {
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        seteditLoading(true);
+        const response = await axios.patch(
+          `${urls.getCourses}${courseID}/modules/${moduleID}/`,
+          {
+            module_title: moduleTitle,
+            module_video_link: modulesLink,
+            module_url: modulesGithubLink,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${adminAccessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-      if (response.status === 200) {
+        if (response.status === 200) {
+          seteditLoading(false);
+          setOpenModal(false);
+          toast.success("Module successfully edited!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+          // window.parent.location = window.parent.location.href;
+          fetchModuleRead(courseID, moduleID);
+          fetchCourseRead(courseID);
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await editModule(e);
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
         seteditLoading(false);
-        setOpenModal(false);
-        toast.success("Module successfully edited!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-        // window.parent.location = window.parent.location.href;
-        fetchModuleRead(courseID, moduleID);
-        fetchCourseRead(courseID);
       }
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await editModule(e);
-      } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      }
-    } finally {
-      seteditLoading(false);
+    } else {
+      toast.error("Check fields fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
     }
-    // } else {
-    //   toast.error("Check fields fields!", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: false,
-    //     draggable: false,
-    //     theme: "dark",
-    //   });
-    // }
   };
 
   useEffect(() => {
@@ -150,10 +178,14 @@ const Content = () => {
           <TopNav />
         </div>
         <div className="">
-          <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
-            <p className="text-[#000066]">Course Content</p>
+        <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
+            <Link href="/courses">
+              <p className="text-[#000066]">Course Content</p>
+            </Link>
             <ChevronRight className="text-[#000066]" />
-            <p className="text-[#000066]">Modules</p>
+            <Link href={`/courses/${moduleID}`}>
+              <p className="text-[#000066]">Modules</p>
+            </Link>
             <ChevronRight className="text-[#000066]" />
             <p className="text-[#000066]"> {moduleData?.module_title}</p>
           </div>
@@ -170,25 +202,25 @@ const Content = () => {
               <div className="md:grid flex flex-col-reverse gap-x-2 grid-cols-10">
                 <span className="relative col-span-7">
                   <ReactPlayer
-                    controls={false}
+                    controls={true}
                     width="100%"
                     height="100%"
-                    autoplay={true}
-                    url={moduleData?.module_url}
+                    playing={false}
+                    url={moduleData?.module_video_link}
                     className="md:h-[428px] md:my-0 my-4"
                     config={{
                       youtube: {
                         playerVars: {
-                          controls: 0,
                           modestbranding: 1,
+                          controls: 1,
                         },
                       },
                     }}
                   />
-                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
-                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" />
+                  {/* <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
+                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" /> */}
                 </span>
-                <ScrollArea className="h-[428px] rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
+                <ScrollArea className="md:h-[428px] h-auto rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
                   {loading ? (
                     <div className="w-[100%] flex items-center justify-center h-screen">
                       <Loader2 className=" w-8 h-8 animate-spin" />
@@ -218,12 +250,30 @@ const Content = () => {
                   </span>
                 </div>
                 <div>
-                  <p
+                  {/* <p
                     dangerouslySetInnerHTML={{
                       __html: moduleData?.description,
                     }}
                     className="py-4 text-[#3E3E3E]"
-                  ></p>
+                  ></p> */}
+                  <ReactMarkdown
+                    className="py-4 text-[#3E3E3E]"
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h2: CustomH2,
+                      h3: customH3,
+                      ol: customOL,
+                      p: customP,
+                      ul: customUL,
+                      th: customTH,
+                      td: customTD,
+                      strong: strong,
+                      code: code,
+                      a:customLink
+                    }}
+                  >
+                    {moduleData?.description}
+                  </ReactMarkdown>
                 </div>
               </div>
             </div>
@@ -249,37 +299,27 @@ const Content = () => {
                   <Input
                     type="text"
                     value={moduleTitle}
-                    onChange={(e) => setModuletitle(e.target.value)}
-                    placeholder="Input module title"
+                    onChange={handleInputChange(setModuleTitle)}
+                    placeholder={moduleData?.module_title}
                   />
                 </div>
+
                 <div className="py-2">
-                  <label className=" text-base">Sub-title</label>
+                  <label className=" text-base">Gihub Link</label>
                   <Input
-                    value={modulesubTitle}
-                    onChange={(e) => setModulesubtitle(e.target.value)}
-                    type="text"
-                    placeholder="Input module sub-title"
+                    type="url"
+                   value={modulesGithubLink}
+                    onChange={handleInputChange(setModuleGithubLink)}
+                    placeholder={moduleData?.module_url}
                   />
                 </div>
                 <div className="py-2">
                   <label className=" text-base">Video Link</label>
                   <Input
-                    value={modulesLink}
-                    onChange={(e) => setModuleLink(e.target.value)}
                     type="url"
-                    placeholder="Input module video link"
-                  />
-                </div>
-                <div className="py-2">
-                  <label className=" text-base">Description</label>
-                  <ReactQuill
-                    modules={{ toolbar: toolbarOptions }}
-                    theme="snow"
-                    placeholder="Input module details"
-                    value={description}
-                    onChange={setDescription}
-                    className="w-full"
+                    value={modulesLink}
+                    onChange={handleInputChange(setModuleLink)}
+                    placeholder={moduleData?.module_video_link}
                   />
                 </div>
               </div>

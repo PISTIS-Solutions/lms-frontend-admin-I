@@ -30,6 +30,7 @@ const useCourseRead = create<readStudent>((set, get) => ({
       set({ courseRead: response.data });
       set({ response: response.status });
       if (response.status === 200) {
+        // console.log(response.data, "rs")
         // router.push(`/courses/modules`);
         set({ loading: false });
       }

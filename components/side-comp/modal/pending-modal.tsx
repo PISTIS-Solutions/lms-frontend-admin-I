@@ -144,7 +144,9 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
       <div>
         <ToastContainer />
         <div className="flex justify-between items-center">
-          <h1 className="md:text-2xl text-lg font-medium">Terraform</h1>
+          <h1 className="md:text-2xl text-lg font-medium">
+            {person?.project?.title}
+          </h1>
           <span
             onClick={handleCloseModal}
             className="border-2 cursor-pointer border-main p-2 rounded-sm w-[32px] h-[32px] flex justify-center items-center"
@@ -161,9 +163,22 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
           <h1 className="text-[#000066] text-base md:text-xl font-medium">
             Submission link
           </h1>
-          <p className="text-[#3E3E3E] text-base md:text-lg">
+          <span className="text-[#3E3E3E] text-base md:text-lg">
+            {!loadSubmit ? (
+              <a
+                target="_blank"
+                className="cursor-pointer break-words"
+                href={submitDetails?.submission_link}
+              >
+                {submitDetails?.submission_link}
+              </a>
+            ) : (
+              <p>Please wait...</p>
+            )}
+          </span>
+          {/* <p className="text-[#3E3E3E] text-base md:text-lg">
             {!loadSubmit ? submitDetails?.submission_link : "Please wait..."}
-          </p>
+          </p> */}
         </div>
 
         <div className="my-4">

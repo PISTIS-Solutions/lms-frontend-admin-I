@@ -232,17 +232,6 @@ const Dashboard = () => {
                   <h1 className="pl-4 text-xs md:text-xl font-semibold">
                     Enrollment activity{" "}
                   </h1>
-                  {/* <select
-                    className="border md:text-xl text-sm sm:text-lg border-main rounded-[8px]"
-                    name="months"
-                    id="months"
-                  >
-                    {months.map((month, index) => (
-                      <option key={index} value={month}>
-                        {month || "Select Month"}{" "}
-                      </option>
-                    ))}
-                  </select> */}
                 </div>
                 <LineChart chartDetails={chartDetails} />
               </div>
@@ -270,9 +259,9 @@ const Dashboard = () => {
                             key={index}
                             className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]"
                           >
-                            <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px] hover:text-black">
+                            <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px]">
                               <AvatarImage src={project?.student?.profile_photo} />
-                              <AvatarFallback>{initials}</AvatarFallback>
+                              <AvatarFallback className="hover:bg-main bg-[#FBFBFB] hover:text-white">{initials}</AvatarFallback>
                             </Avatar>
                             <p className="md:text-lg text-sm">
                               Project {project?.project?.title} submitted by{" "}

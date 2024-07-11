@@ -11,7 +11,7 @@ import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
-import { dummydata } from "@/app/data/dummyModules";
+// import { dummydata } from "@/app/data/dummyModules";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopNav from "@/components/side-comp/topNav";
@@ -99,10 +99,10 @@ const Project = () => {
         // window.location.reload();
         fetchCourses();
       } else {
-        console.error("Failed to delete course.");
+        // console.error("Failed to delete course.");
       }
     } catch (error: any) {
-      console.error("Error deleting course:", error.message);
+      // console.error("Error deleting course:", error.message);
       if (error.response && error.response.status === 401) {
         try {
           const adminRefreshToken = Cookies.get("adminRefreshToken");
@@ -113,7 +113,10 @@ const Project = () => {
             access: adminAccessToken,
           });
 
-          Cookies.set("adminAccessToken", refreshResponse.data.access);
+          Cookies.set("adminAccessToken", refreshResponse.data.access, {
+            sameSite: "None",
+            secure: true,
+          });
 
           await deleteCourse(courseId);
         } catch (refreshError: any) {
@@ -166,7 +169,7 @@ const Project = () => {
                     id={project.id}
                     handleCardClick={handleCardClick}
                     handleOpen={() => handleOpen(project.id)}
-                    img={project.course_image}
+                    img={project.course_image_url}
                     title={project.title}
                     paragraph={project.paragraph}
                     module={project.module}

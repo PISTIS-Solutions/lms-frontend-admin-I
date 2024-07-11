@@ -30,6 +30,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import useStudentStore from "@/store/fetch-student";
+import { useRouter } from "next/navigation";
 
 const passwordSchema = z.object({
   currentPassword: z.string(),
@@ -60,7 +61,7 @@ const SettingsPage = () => {
   useEffect(() => {
     fetchStudentData();
   }, []);
-  console.log(studentData?.email, "sd")
+  // console.log(studentData?.email, "sd");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   // const [phoneNumber, setPhoneNumber] = useState("");
@@ -120,7 +121,7 @@ const SettingsPage = () => {
           Cookies.remove("adminAccessTokenx");
         }
       } catch (error: any) {
-        console.log(error);
+        // console.log(error);
         if (error.response && error.response.status === 401) {
           try {
             await refreshToken();
@@ -198,7 +199,7 @@ const SettingsPage = () => {
   const [generalLoading, setGeneralLoading] = useState(false);
   const onSubmitGeneral = async (e: any) => {
     e.preventDefault();
-    if (fullName && selectedFile) {
+    if (fullName) {
       try {
         // console.log(email, "em");
         setGeneralLoading(true);
@@ -285,16 +286,23 @@ const SettingsPage = () => {
     setShowConfirmPassword((prev) => !prev);
   };
 
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
   const DeactivateStudent = async () => {
     try {
       setLoading(true);
-      const accessToken = Cookies.get("authToken");
-      const response = await axios.delete(urls.deleteStudent, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.post(
+        urls.deleteStudent,
+        {
+          confirm_deactivation: true,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         toast.success("Account Deactivated!", {
@@ -306,6 +314,8 @@ const SettingsPage = () => {
           draggable: false,
           theme: "dark",
         });
+        Cookies.remove("adminAccessToken");
+        router.replace("/");
       }
     } catch (error: any) {
       setLoading(false);
@@ -337,8 +347,6 @@ const SettingsPage = () => {
       setLoading(false);
     }
   };
-
-
 
   return (
     <main className="relative h-screen bg-[#FBFBFB]">

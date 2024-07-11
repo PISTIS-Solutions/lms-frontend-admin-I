@@ -35,6 +35,13 @@ const AddProjectForms = () => {
     minutes,
     seconds,
     filteredModuleDataStore,
+    setCourseLink,
+    setSelectedFile,
+    setHours,
+    setMinutes,
+    setFilteredModuleData,
+    setSeconds,
+    setCourseTitle,
   } = useCourseFormStore();
 
   const addSection = () => {
@@ -67,119 +74,142 @@ const AddProjectForms = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const uploadProject = async (): Promise<void> => {
-    try {
-      const adminAccessToken = Cookies.get("adminAccessToken");
-      const convertToISO8601 = (
-        hours: number,
-        minutes: number,
-        seconds: number
-      ): string => {
-        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-        return `PT${totalSeconds}S`;
-      };
-      setLoading(true);
+    if (
+      courseTitle !== "" &&
+      courseLink !== "" &&
+      filteredModuleDataStore.length !== 0  &&
+      filteredProjectDataStore.length !== 0
+    ) {
+      try {
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        const convertToISO8601 = (
+          hours: number,
+          minutes: number,
+          seconds: number
+        ): string => {
+          const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+          return `PT${totalSeconds}S`;
+        };
+        setLoading(true);
 
-      if (
-        !courseTitle ||
-        !description ||
-        !courseLink ||
-        !selectedFile ||
-        !filteredModuleDataStore.length ||
-        !filteredProjectDataStore.length
-      ) {
-        toast.error("Error! Add Course again!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
+        if (
+          !courseTitle ||
+          // !description ||
+          !courseLink ||
+          !selectedFile ||
+          !filteredModuleDataStore.length ||
+          !filteredProjectDataStore.length
+        ) {
+          toast.error("Error! Add Course again!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+          setLoading(false);
+          router.replace("/courses/add-course");
+          return;
+        }
+
+        const payload = new FormData();
+
+        payload.append("title", courseTitle);
+        payload.append(
+          "course_duration",
+          convertToISO8601(hours, minutes, seconds)
+        );
+        payload.append("course_url", courseLink);
+        payload.append("course_image", selectedFile);
+
+        filteredModuleDataStore.forEach((module: any, index: any) => {
+          payload.append(`modules[${index}]module_title`, module.module_title);
+          payload.append(`modules[${index}]module_url`, module.module_url);
+          payload.append(
+            `modules[${index}]module_video_link`,
+            module.module_Github_url
+          );
         });
+
+        filteredProjectDataStore.forEach((project: any, index: any) => {
+          payload.append(
+            `projects[${index}]project_title`,
+            project.project_title
+          );
+          payload.append(
+            `projects[${index}]project_hint`,
+            project.project_description
+          );
+          payload.append(`projects[${index}]project_url`, project.project_url);
+        });
+
+        const response = await axios.post(urls.uploadCourses, payload, {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (response.status === 201) {
+          toast.success(response.data.title + " added", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+          setCourseTitle("");
+          setCourseLink("");
+          setHours(0);
+          setMinutes(0);
+          setSeconds(0);
+          setFilteredModuleData([]);
+          setFilteredProjectData([]);
+          router.push("/courses");
+        }
+      } catch (error: any) {
+        console.log(error, "err")
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await uploadProject();
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else if (error?.response?.status === 400) {
+          toast.error("Check links and form fields properly!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
         setLoading(false);
-        router.replace("/courses/add-course");
-        return;
       }
-
-      const payload = new FormData();
-
-      payload.append("title", courseTitle);
-      payload.append(
-        "course_duration",
-        convertToISO8601(hours, minutes, seconds)
-      );
-      payload.append("overview", description);
-      payload.append("course_url", courseLink);
-      payload.append("course_image", selectedFile);
-
-      filteredModuleDataStore.forEach((module: any, index: any) => {
-        payload.append(`modules[${index}]module_title`, module.module_title);
-        payload.append(
-          `modules[${index}]module_sub_title`,
-          module.module_sub_title
-        );
-        payload.append(`modules[${index}]description`, module.description);
-        payload.append(`modules[${index}]module_url`, module.module_url);
-      });
-
-      filteredProjectDataStore.forEach((project: any, index: any) => {
-        payload.append(
-          `projects[${index}]project_title`,
-          project.project_title
-        );
-        payload.append(
-          `projects[${index}]project_description`,
-          project.project_description
-        );
-        payload.append(`projects[${index}]project_url`, project.project_url);
-      });
-      const response = await axios.post(urls.uploadCourses, payload, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response.status === 201) {
-        toast.success(response.data.title + " added", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-        router.push("/courses");
-        
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await uploadProject();
-      } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -255,7 +285,7 @@ const AddProjectForms = () => {
   useEffect(() => {
     if (
       !courseTitle ||
-      !description ||
+      // !description ||
       !courseLink ||
       !filteredModuleDataStore.length
     ) {
@@ -416,12 +446,12 @@ const AddProjectForms = () => {
                       </span>{" "}
                       <br /> {module.module_title}
                     </ol>
-                    <ol className="py-1">
+                    {/* <ol className="py-1">
                       <span className="font-semibold text-main">
                         Module SubTitle:
                       </span>{" "}
                       <br /> {module.module_sub_title}
-                    </ol>
+                    </ol> */}
                     <ol className="py-1">
                       <span className="font-semibold text-main">
                         Module Description:

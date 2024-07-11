@@ -26,6 +26,8 @@ const Student = () => {
     fetchProjectReview(id);
   }, []);
 
+  // console.log(studentData,"sd")
+
   return (
     <main className="relative">
       <SideNav />
@@ -48,7 +50,7 @@ const Student = () => {
                     height={100}
                     src={studentData?.profile_photo}
                     alt={studentData?.full_name}
-                    className="w-28 h-auto"
+                    className=" w-32 h-32 rounded-full object-cover"
                   />
                   <div>
                     <h3 className="lg:text-lg text-base font-medium text-500">
@@ -90,6 +92,7 @@ const Student = () => {
               <div className=" text-[#939393] text-xs md:text-lg text-right pr-2">
                 <p>Time left: {studentData?.time_left?.time_left}</p>
                 <p>Last login: {studentData?.last_login}</p>
+                <p>Status: {studentData?.plan}</p>
               </div>
             </div>
             <div>

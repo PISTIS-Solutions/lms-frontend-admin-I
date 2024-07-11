@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 
-export const baseURL = "https://pistis-lms-backend.onrender.com/api/v1/auth";
+export const baseURL = "https://backend.dev.pististechub.io/api/v1/auth";
+
 
 const courseID = Cookies.get("courseId");
 
@@ -19,7 +20,7 @@ export const urls = {
   // studentRead: `${baseURL}/users/student/{id}/`,
   updateStudentProfile: `${baseURL}/users/student/me/`,
   setStudentPassword: `${baseURL}/users/student/set_password/`,
-  projectOverview: `${baseURL}/courses/pending-grading/`,
+  projectOverview: `${baseURL}/pending-grading/`,
   deleteStudent: `${baseURL}/users/student/deactivate_me/`,
   projectReview: `${baseURL}/users/admin/project-review/`,
   manageStudentPlan : `${baseURL}/users/admin/manage-subscriptions/`

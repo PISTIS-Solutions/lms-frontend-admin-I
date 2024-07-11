@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 import SideNav from "@/components/side-comp/side-nav";
-import { projectData } from "@/app/data/projectData";
+// import { projectData } from "@/app/data/projectData";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -78,7 +78,7 @@ const Grading = () => {
                 <option value="all" onClick={() => setSelectedStatus("")}>
                   Sort by
                 </option>
-                <option value="Pending">Pending</option>
+                <option value="Submitted">Pending</option>
                 <option value="reviewed">Reviewed</option>
                 <option value="No Submission">No Submission</option>
               </select>
@@ -96,15 +96,15 @@ const Grading = () => {
                   <th className="py-4">Link</th>
                 </tr>
               </thead>
-              <tbody className="relative alternating-row-bg">
+              {/* <tbody className="relative alternating-row-bg">
                 {projectData
                   .filter((person) => {
                     const isMatchingSearch = person.name
                       .toLowerCase()
                       .includes(searchInput.toLowerCase());
                     const isMatchingStatus =
-                      (selectedStatus === "Pending" &&
-                        person.status === "Pending") ||
+                      (selectedStatus === "Submitted" &&
+                        person.status === "Submitted") ||
                       (selectedStatus === "reviewed" &&
                         person.status === "reviewed") ||
                       (selectedStatus === "No Submission" &&
@@ -133,7 +133,7 @@ const Grading = () => {
                           className={`py-4 capitalize ${
                             !person.status
                               ? "text-gray-600"
-                              : person.status === "Pending"
+                              : person.status === "Submitted"
                               ? "text-orange-500"
                               : person.status === "reviewed"
                               ? "text-green-500"
@@ -145,7 +145,7 @@ const Grading = () => {
                         <td className="py-4 text-main">
                           {!person.status ? (
                             "-"
-                          ) : person.status === "Pending" ? (
+                          ) : person.status === "Submitted" ? (
                             <p
                               onClick={() => handleModal(person)}
                               className="bg-[#F8F9FF] rounded-[24px] text-center p-1 w-[107px] cursor-pointer"
@@ -166,7 +166,7 @@ const Grading = () => {
                       </tr>
                     </>
                   ))}
-              </tbody>
+              </tbody> */}
             </table>
           </div>
         </div>
