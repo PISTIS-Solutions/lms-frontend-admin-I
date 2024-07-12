@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-export const baseURL = "https://backend.dev.pististechub.io/api/v1/auth";
+export const baseURL = "https://backend.pististechub.io/api/v1/auth";
 
 
 const courseID = Cookies.get("courseId");
@@ -17,7 +17,6 @@ export const urls = {
   forgotPassword: `${baseURL}/users/student/reset_password/`,
   deleteCourse: `${baseURL}/courses`,
   getStudents: `${baseURL}/users/student/`,
-  // studentRead: `${baseURL}/users/student/{id}/`,
   updateStudentProfile: `${baseURL}/users/student/me/`,
   setStudentPassword: `${baseURL}/users/student/set_password/`,
   projectOverview: `${baseURL}/pending-grading/`,
