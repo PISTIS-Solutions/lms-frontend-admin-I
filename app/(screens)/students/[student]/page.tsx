@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import SideNav from "@/components/side-comp/side-nav";
 import Image from "next/image";
-import student from "@/public/assets/testImg.png";
+import user from "@/public/assets/avatar.jpg";
 import ProjectReview from "@/components/side-comp/project-review-table";
 import TopNav from "@/components/side-comp/topNav";
 import { Loader2 } from "lucide-react";
@@ -26,7 +26,7 @@ const Student = () => {
     fetchProjectReview(id);
   }, []);
 
-  // console.log(studentData,"sd")
+  // console.log(studentData, "sd");
 
   return (
     <main className="relative">
@@ -48,7 +48,7 @@ const Student = () => {
                   <Image
                     width={100}
                     height={100}
-                    src={studentData?.profile_photo}
+                    src={studentData?.profile_photo || user}
                     alt={studentData?.full_name}
                     className=" w-32 h-32 rounded-full object-cover"
                   />
