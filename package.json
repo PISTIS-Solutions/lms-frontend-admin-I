@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "npm install",
-    "start": "next build && next start -p 80"
+    "start": "next build && next start -p 80",
+    "dev" : "next dev"
   },
   "dependencies": {
     "@faker-js/faker": "^8.2.0",
