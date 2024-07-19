@@ -32,35 +32,30 @@ const StudentPage = () => {
     }
   };
 
+
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage((prevPage) => prevPage - 1);
     }
   };
 
-  // const handlePageClick = (pageNumber: number) => {
-  //   setCurrentPage(pageNumber);
-  // };
-
-  const readStudent = (id: any) => {
+  const readStudent = (id:any) => {
     router.push(`/students/${id}`);
   };
 
-  const toggleStudentOptions = (index: any) => {
+  const toggleStudentOptions = (index:any) => {
     setExpandedStudent(expandedStudent === index ? null : index);
   };
 
   const [loadingManage, setLoadingManage] = useState(false);
 
-  const manageStudentSubscription = async (id: string, plan: string) => {
+  const manageStudentSubscription = async (id:any, plan:any) => {
     try {
       setLoadingManage(true);
       const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.patch(
         `${urls.manageStudentPlan}${id}/`,
-        {
-          plan: plan,
-        },
+        { plan },
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
@@ -81,11 +76,11 @@ const StudentPage = () => {
         fetchStudents(currentPage);
         setExpandedStudent(null);
       }
-    } catch (error: any) {
+    } catch (error:any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await manageStudentSubscription(id, plan);
-      } else if (error?.message === "Network Error") {
+      } else if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -96,7 +91,7 @@ const StudentPage = () => {
           theme: "dark",
         });
       } else {
-        toast.error(error?.response?.data?.detail, {
+        toast.error(error.response?.data?.detail, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -111,108 +106,77 @@ const StudentPage = () => {
     }
   };
 
-  // const renderPageNumbers = () => {
-  //   const pageNumbers = [];
-  //   for (let i = 1; i <= totalPages; i++) {
-  //     pageNumbers.push(
-  //       <p
-  //         key={i}
-  //         onClick={() => handlePageClick(i)}
-  //         className={
-  //           i === currentPage
-  //             ? "cursor-pointer font-semibold text-main"
-  //             : "text-slate-400 cursor-pointer"
-  //         }
-  //       >
-  //         {i}
-  //       </p>
-  //     );
-  //   }
-  //   return pageNumbers;
-  // };
-
-  const filteredStudents = students?.filter((student: any) =>
-  student?.has_complete_onboarding &&
-  student?.is_student &&
-  student?.full_name.toLowerCase().includes(searchQuery.toLowerCase())
-);
+  const filteredStudents = students?.filter((student) =>
+    student?.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const renderStudents = () => {
-    // const startIndex = (currentPage - 1) * students?.length;
-    // const endIndex = Math.min(startIndex + students?.length, count);
-    return (
-      filteredStudents
-        .filter(
-          (person: any) => person?.has_complete_onboarding && person?.is_student
-        )
-        // .slice(startIndex, endIndex)
-        .map((person: any) => (
-          <React.Fragment key={person?.id}>
-            <tr className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 ">
-              <td
-                className="cursor-pointer"
-                onClick={() => {
-                  readStudent(person?.id);
-                }}
-              >
-                {person?.full_name}
-              </td>
-              <td>{person?.email}</td>
-              <td>{person?.courses_completed}</td>
-              <td>{person?.phone_number}</td>
-              <td>{person?.plan}</td>
-              <td
-                onClick={() => toggleStudentOptions(person?.id)}
-                className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
-              >
-                Manage
-              </td>
-            </tr>
+    return filteredStudents.map((person) => (
+      <React.Fragment key={person?.id}>
+        <tr className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 ">
+          <td
+            className="cursor-pointer"
+            onClick={() => {
+              readStudent(person?.id);
+            }}
+          >
+            {person?.full_name}
+          </td>
+          <td>{person?.email}</td>
+          <td>{person?.courses_completed}</td>
+          <td>{person?.phone_number}</td>
+          <td>{person?.plan}</td>
+          <td
+            onClick={() => toggleStudentOptions(person?.id)}
+            className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
+          >
+            Manage
+          </td>
+        </tr>
 
-            {expandedStudent === person.id && (
-              <div
-                className="bg-[#ffff] z-10 p-2 w-26 md:w-42 rounded-[8px] shadow-md absolute right-0"
-                key={`${person.id}`}
-              >
-                <h1 className="md:text-xl text-sm font-medium text-center pb-2">
-                  Manage Access
-                </h1>
-                <hr />
-                {!loadingManage ? (
-                  <div>
-                    <p
-                      onClick={() => {
-                        manageStudentSubscription(person.id, "Paid");
-                      }}
-                      className="md:text-lg text-xs py-1 text-left cursor-pointer"
-                    >
-                      Paid
-                    </p>
-                    <p
-                      onClick={() => {
-                        manageStudentSubscription(person.id, "Free");
-                      }}
-                      className="md:text-lg text-xs py-1 text-left cursor-pointer"
-                    >
-                      Free
-                    </p>
-                    <p
-                      onClick={() => {
-                        manageStudentSubscription(person.id, "Blocked");
-                      }}
-                      className="md:text-lg text-xs py-1 text-left cursor-pointer"
-                    >
-                      Revoke
-                    </p>
-                  </div>
-                ) : (
-                  <Loader2Icon className="animate-spin text-main" />
-                )}
+        {expandedStudent === person.id && (
+          <div
+            className="bg-[#ffff] z-10 p-2 w-26 md:w-42 rounded-[8px] shadow-md absolute right-0"
+            key={`${person.id}`}
+          >
+            <h1 className="md:text-xl text-sm font-medium text-center pb-2">
+              Manage Access
+            </h1>
+            <hr />
+            {!loadingManage ? (
+              <div>
+                <p
+                  onClick={() => {
+                    manageStudentSubscription(person.id, "Paid");
+                  }}
+                  className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                >
+                  Paid
+                </p>
+                <p
+                  onClick={() => {
+                    manageStudentSubscription(person.id, "Free");
+                  }}
+                  className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                >
+                  Free
+                </p>
+                <p
+                  onClick={() => {
+                    manageStudentSubscription(person.id, "Blocked");
+                  }}
+                  className="md:text-lg text-xs py-1 text-left cursor-pointer"
+                >
+                  Revoke
+                </p>
               </div>
+            ) : (
+              <Loader2Icon className="animate-spin text-main" />
             )}
-          </React.Fragment>
-        ))
-    );
+          </div>
+        )}
+      </React.Fragment>
+    ));
   };
 
   return (
@@ -296,7 +260,6 @@ const StudentPage = () => {
                       Previous
                     </Button>
                   </div>
-                  {/* <div className="flex space-x-4">{renderPageNumbers()}</div> */}
                   <div>
                     <Button
                       onClick={nextPage}
