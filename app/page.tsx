@@ -22,7 +22,7 @@ const SignIn = () => {
 
   const onsubmitLogin = async (e: any) => {
     e.preventDefault();
-    console.log("clicked")
+    // console.log("clicked")
     try {
       setLoading(true);
       if (!containsSpecialCharacters(formStore.password)) {
