@@ -65,6 +65,7 @@ const SettingsPage = () => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   // const [phoneNumber, setPhoneNumber] = useState("");
+  const router = useRouter()
 
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
@@ -118,7 +119,8 @@ const SettingsPage = () => {
             theme: "dark",
           });
 
-          Cookies.remove("adminAccessTokenx");
+          Cookies.remove("adminAccessToken");
+          router.replace("/")
         }
       } catch (error: any) {
         // console.log(error);
@@ -286,7 +288,7 @@ const SettingsPage = () => {
     setShowConfirmPassword((prev) => !prev);
   };
 
-  const router = useRouter()
+
   const [loading, setLoading] = useState(false);
   const DeactivateStudent = async () => {
     try {
