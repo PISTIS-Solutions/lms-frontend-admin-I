@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 
-export const baseURL = process.env.NEXT_PUBLIC_API_URL;
+// export const baseURL = process.env.NEXT_PUBLIC_API_URL;
+export const baseURL = "https://backend.dev.pististechub.io/api/v1/auth";
 
 
 const courseID = Cookies.get("courseId");
@@ -22,6 +23,6 @@ export const urls = {
   projectOverview: `${baseURL}/pending-grading/`,
   deleteStudent: `${baseURL}/users/student/deactivate_me/`,
   projectReview: `${baseURL}/users/admin/project-review/`,
-  manageStudentPlan : `${baseURL}/users/admin/manage-subscriptions/`
-
+  manageStudentPlan : `${baseURL}/users/admin/manage-subscriptions/`,
+// base:   `${}`
 };

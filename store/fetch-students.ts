@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { urls } from "@/utils/config";
+import { baseURL, urls } from "@/utils/config";
 import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 
@@ -22,7 +22,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/student/?page=${page}`,
+        `${baseURL}/users/student/?page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
