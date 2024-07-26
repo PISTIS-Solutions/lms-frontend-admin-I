@@ -257,12 +257,10 @@ const Dashboard = () => {
                           : "";
                         return (
                           <Link
+                            key={index}
                             href={`/students/${project?.student?.student_id}`}
                           >
-                            <div
-                              key={index}
-                              className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]"
-                            >
+                            <div className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]">
                               <Avatar className="md:w-[55px] w-[40px] md:h-[55px] h-[40px] hover:bg-transparent hover:text-current">
                                 <AvatarImage
                                   src={project?.student?.profile_photo}
