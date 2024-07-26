@@ -32,6 +32,7 @@ const StudentPage = () => {
     }
   };
 
+
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage((prevPage) => prevPage - 1);

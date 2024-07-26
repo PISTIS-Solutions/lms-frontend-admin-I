@@ -23,6 +23,7 @@ import TopNav from "@/components/side-comp/topNav";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
+import Link from "next/link";
 
 interface AdminData {
   total_courses: number;
@@ -43,7 +44,7 @@ const Dashboard = () => {
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const route = useRouter();
+  const router = useRouter();
 
   const fetchAdminData = async () => {
     try {
@@ -100,7 +101,7 @@ const Dashboard = () => {
       });
       setProjectOverview(response.data);
       setOverviewLoad(false);
-      // console.log(response, "grado");
+      console.log(response, "grado");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -255,19 +256,25 @@ const Dashboard = () => {
                           ? userName.charAt(0).toUpperCase()
                           : "";
                         return (
-                          <div
+                          <Link
                             key={index}
-                            className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]"
+                            href={`/students/${project?.student?.student_id}`}
                           >
-                            <Avatar className="md:w-[61px] w-[40px] md:h-[61px] h-[40px]">
-                              <AvatarImage src={project?.student?.profile_photo} />
-                              <AvatarFallback className="hover:bg-main bg-[#FBFBFB] hover:text-white">{initials}</AvatarFallback>
-                            </Avatar>
-                            <p className="md:text-lg text-sm">
-                              Project {project?.project?.title} submitted by{" "}
-                              {project?.student?.full_name}
-                            </p>{" "}
-                          </div>
+                            <div className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]">
+                              <Avatar className="md:w-[55px] w-[40px] md:h-[55px] h-[40px] hover:bg-transparent hover:text-current">
+                                <AvatarImage
+                                  src={project?.student?.profile_photo}
+                                />
+                                <AvatarFallback className="bg-white hover:bg-transparent hover:text-current">
+                                  {initials}
+                                </AvatarFallback>
+                              </Avatar>
+                              <p className="md:text-lg text-sm">
+                                Project {project?.project?.title} submitted by{" "}
+                                {project?.student?.full_name}
+                              </p>
+                            </div>
+                          </Link>
                         );
                       })
                     ) : (
