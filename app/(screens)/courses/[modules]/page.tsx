@@ -140,7 +140,7 @@ const Module = () => {
   }, [courseID]);
 
   return (
-    <main className="relative h-screen bg-[#FBFBFB]">
+    <main className="relative h-screen bg-[#F8F9FF]">
       <SideNav />
       <ToastContainer />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">

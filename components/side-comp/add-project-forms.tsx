@@ -339,14 +339,7 @@ const AddProjectForms = () => {
 
           <form className="my-4">
             <div>
-              <div className="flex  flex-end">
-                {/* <button
-                  onClick={() => {
-                    handlepreview();
-                  }}
-                >
-                  Preview
-                </button> */}
+              <div className="flex flex-end">
               </div>
               <label className="md:text-xl text-sm text-[#3E3E3E]">
                 <p className="">Project Title</p>
@@ -371,7 +364,7 @@ const AddProjectForms = () => {
                   name={`projectLink-${section.id}`}
                   id={`projectLink-${section.id}`}
                   className="bg-[#FAFAFA]"
-                  placeholder="Input Project Sub-Title"
+                  placeholder="Input Project Link"
                 />
               </div>
             </div>

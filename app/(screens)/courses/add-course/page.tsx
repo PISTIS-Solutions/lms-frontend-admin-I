@@ -35,7 +35,7 @@ const AddCourse = () => {
               <div className="bg-[#D6DADE] w-full h-[4px]"></div>
               <div className="w-[50px] h-[18px] md:h-[25px] rounded-full bg-sub" />
             </div>
-            <div className="rounded-[8px] border-t-4 border-t-primary bg-white h-full p-2 md:p-6  ">
+            <div className="rounded-[8px] border-t-4 border-t-primary bg-white h-full p-2 md:p-6">
               <div>
                 <div>
                   <AddCourseForms />

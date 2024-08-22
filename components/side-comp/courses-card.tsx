@@ -1,82 +1,96 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-
-import img from "@/public/assets/course/ansible.png";
-import {
-  BookText,
-  Hourglass,
-  Loader2,
-  LucideLoader2,
-  Trash2,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { LucideLoader2 } from "lucide-react";
+import { FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import useCourseRead from "@/store/course-read";
 import { Button } from "../ui/button";
-// import img from "@/public/assets/course/ansible.png"
+import modIcon from "@/public/assets/modIcon.svg";
+import timer from "@/public/assets/timer.svg";
+import { FaEllipsisVertical } from "react-icons/fa6";
+import { BiEdit } from "react-icons/bi";
+import { useOutsideClick } from "@/utils/outsideClick";
+import useModuleCount from "@/store/module-count";
 
 interface cardProps {
   id: number;
-  // img: any;
   title: string;
-  // paragraph: string;
-  // module: { moduleHeader: string; moduleBody: string }[];
   duration: number;
   handleCardClick: any;
   handleOpen: any;
   image: any;
+  openEditModal: any;
 }
 
 const CoursesCard = ({
   id,
-  // img,
   title,
-  // paragraph,
-  // module,
   duration,
+  image,
   handleCardClick,
   handleOpen,
-  image,
+  openEditModal,
 }: cardProps) => {
+  // const [loading, setLoading] = useState(false);
+  const { fetchCourseRead } = useCourseRead();
+  // const [moduleCount, setModuleCount] = useState(0);
+
+  // useEffect(() => {
+  //   const getModuleCount = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const adminAccessToken = Cookies.get("adminAccessToken");
+  //       const response = await axios.get(`${urls.getCourses}${id}/modules/`, {
+  //         headers: {
+  //           Authorization: `Bearer ${adminAccessToken}`,
+  //         },
+  //       });
+
+  //       // console.log(response.status);
+  //       if (response.status === 200) {
+  //         const count = response.data.length;
+  //         setModuleCount(count);
+  //         setLoading(false);
+  //       } else {
+  //         // console.error(`Error fetching modules for course ${id}`);
+  //         setModuleCount(0);
+  //       }
+  //     } catch (error: any) {
+  //       setModuleCount(0);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   getModuleCount();
+  // }, []);
+
+  const { getModuleCount } = useModuleCount();
   const [moduleCount, setModuleCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const { fetchCourseRead } = useCourseRead();
 
   useEffect(() => {
-    const getModuleCount = async () => {
+    const fetchModuleCount = async () => {
       setLoading(true);
-      try {
-        const adminAccessToken = Cookies.get("adminAccessToken");
-        const response = await axios.get(`${urls.getCourses}${id}/modules/`, {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-          },
-        });
-
-        // console.log(response.status);
-        if (response.status === 200) {
-          const count = response.data.length;
-          setModuleCount(count);
-          setLoading(false);
-        } else {
-          // console.error(`Error fetching modules for course ${id}`);
-          setModuleCount(0);
-        }
-      } catch (error: any) {
-        setModuleCount(0);
-      } finally {
-        setLoading(false);
-      }
+      const count = await getModuleCount(id);
+      setModuleCount(count);
+      setLoading(false);
     };
 
-    getModuleCount();
-  }, []);
+    fetchModuleCount();
+  }, [id, getModuleCount]);
 
-  // const cloudinaryUrl = image;
-  // const imageUrl = cloudinaryUrl.replace("image/upload/", "");
+  const [openOptions, setOpenOptions] = useState(false);
+  const openOptionsFunct = () => {
+    setOpenOptions(true);
+  };
+
+  const optionsRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(optionsRef, () => setOpenOptions(false));
 
   return (
     <div className="relative">
@@ -86,7 +100,7 @@ const CoursesCard = ({
           fetchCourseRead(id);
           handleCardClick(id);
         }}
-        className=" w-full cursor-pointer h-[374px] shadow-md rounded-[8px] bg-[#fff]"
+        className=" w-full cursor-pointer h-[374px] shadow-md rounded-[8px] bg-[#fff] p-2"
       >
         <Image
           src={image}
@@ -103,7 +117,8 @@ const CoursesCard = ({
           </div>
           <div className="flex items-center gap-x-4 absolute bottom-3">
             <div className="flex md:text-base text-xs items-center gap-x-1">
-              <BookText className="text-main" />
+              {/* <BookText className="text-main" /> */}
+              <Image src={modIcon} alt="" />
               {loading ? (
                 <>
                   <LucideLoader2 className="animate-spin" />
@@ -114,18 +129,39 @@ const CoursesCard = ({
               module
             </div>
             <div className="flex md:text-base text-xs items-center gap-x-1">
-              <Hourglass className="text-main" />
+              {/* <Hourglass className="text-main" /> */}
+              <Image src={timer} alt="" />
               {duration}
             </div>
           </div>
         </div>
       </div>
-      <Button
-        onClick={handleOpen}
-        className="p-2 bg-white cursor-pointer rounded-full w-[35px] h-[35px] flex justify-center items-center absolute top-2 right-2 hover:bg-red-500 duration-150 ease-in-out text-red-500 hover:text-white"
+      <button
+        onClick={openOptionsFunct}
+        className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center absolute top-4 right-4 duration-150 ease-in-out"
       >
-        <Trash2 className="" />
-      </Button>
+        <FaEllipsisVertical className="text-primary" />
+      </button>
+      {openOptions && (
+        <div
+          className="bg-white rounded-[8px] p-4 h-auto absolute top-4 right-4 w-[140px]"
+          ref={optionsRef}
+        >
+          <div className="flex items-center gap-x-1 cursor-pointer hover:bg-primary hover:text-white hover:rounded-[8px] p-0.5">
+            <BiEdit className="w-[14px] h-[14px]" />
+            <p onClick={openEditModal} className=" text-xs font-normal">
+              Edit Course
+            </p>
+          </div>
+          <div
+            onClick={handleOpen}
+            className="flex items-center gap-x-1 text-red-500 font-medium cursor-pointer hover:bg-red-500 mt-1 hover:text-white hover:rounded-[8px] p-0.5"
+          >
+            <FaTrashAlt className="w-[14px] h-[14px]" />
+            <p className=" text-xs font-normal">Delete Course</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

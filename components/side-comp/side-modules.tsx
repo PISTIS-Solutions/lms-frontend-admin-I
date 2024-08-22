@@ -10,15 +10,15 @@ const SideModules = ({
 }: any) => {
   return (
     <div className="bg-white rounded-[8px] my-2 md:my-0 p-2 lg:col-span-3 col-span-10 shadow-sm">
-      <div className="flex justify-between mb-4 items-center">
+      <div className="flex justify-between mb-4 gap-2 items-center">
         <p className="text-main text-base md:text-lg font-semibold">Modules</p>
         {noEdit ? (
           <span
             onClick={handleModal}
-            className="flex items-center gap-x-2 cursor-pointer"
+            className="flex items-center gap-1 bg-sub py-3 hover:bg-white hover:border hover:border-sub hover:text-sub cursor-pointer px-3 text-white rounded-[8px] font-medium"
           >
-            <p className="text-main underline">Add</p>
             <Plus />
+            <p className="hidden text-base md:block">Add a new module</p>
           </span>
         ) : (
           <></>

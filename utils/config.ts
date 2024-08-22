@@ -22,4 +22,5 @@ export const urls = {
   deleteStudent: `${baseURL}/users/student/deactivate_me/`,
   projectReview: `${baseURL}/users/admin/project-review/`,
   manageStudentPlan : `${baseURL}/users/admin/manage-subscriptions/`,
+  // rejectProjectSubmission: `${baseURL}/reject-submission/`
 };

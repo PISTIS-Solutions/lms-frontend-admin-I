@@ -1,9 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 
 import SideNav from "@/components/side-comp/side-nav";
-import { ArrowLeft, ChevronRight, Edit3, Loader2, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Edit3,
+  Loader2,
+  Loader2Icon,
+  X,
+} from "lucide-react";
 
 import ReactPlayer from "react-player";
 
@@ -11,6 +19,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import TopNav from "@/components/side-comp/topNav";
 
 import useModuleRead from "@/store/module-read";
+import modGray from "@/public/assets/modGray.svg";
 import SideModules from "@/components/side-comp/side-modules";
 import useCourseRead from "@/store/course-read";
 import { Input } from "@/components/ui/input";
@@ -33,9 +42,15 @@ import {
   customTH,
   customUL,
   strong,
-  customLink
+  customLink,
 } from "@/utils/markdown";
 import Link from "next/link";
+import { FaEllipsisVertical } from "react-icons/fa6";
+import { useOutsideClick } from "@/utils/outsideClick";
+import { BiEdit } from "react-icons/bi";
+import { FaTrashAlt } from "react-icons/fa";
+import { GrTarget } from "react-icons/gr";
+import { IoTrash } from "react-icons/io5";
 
 const Content = () => {
   const params = useParams<{ modules: string; content: string }>();
@@ -47,6 +62,7 @@ const Content = () => {
   const { moduleData, fetchModuleRead, moduleLoading } = useModuleRead();
   const { courseRead, fetchCourseRead, loading } = useCourseRead();
   const [openModal, setOpenModal] = useState(false);
+  const [modal, setModal] = useState(false);
   const handleModal = () => {
     setOpenModal((prev) => !prev);
   };
@@ -163,8 +179,97 @@ const Content = () => {
     fetchCourseRead(courseID);
   }, [courseID, moduleID, fetchModuleRead, fetchCourseRead]);
 
+  const [openOptions, setOpenOptions] = useState(false);
+  const openOptionsFunct = () => {
+    setOpenOptions(true);
+  };
+
+  const optionsRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(optionsRef, () => setOpenOptions(false));
+
+  const [deleting, setDeleting] = useState(false);
+  const handleOpen = () => {
+    setModal(true);
+  };
+
+  const deleteCourse = async () => {
+    try {
+      const adminAccessToken = Cookies.get("adminAccessToken");
+
+      setDeleting(true);
+      const response = await axios.delete(
+        `${urls.deleteCourse}/${courseID}/modules/${moduleData?.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        setDeleting(false);
+        toast.error(`${moduleData?.module_title} deleted successfully.`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        router.push(`/courses/${courseID}`);
+        // window.location.reload();
+        // fetchCourses();
+      } else {
+        // console.error("Failed to delete course.");
+      }
+    } catch (error: any) {
+      // console.error("Error deleting course:", error.response.data.detail);
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await deleteCourse();
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else if (error.response.data.detail === "Not found.") {
+        toast.error("Course already deleted!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setModal(false);
+      setDeleting(false);
+    }
+  };
+
+  console.log(moduleData, "md")
+
   return (
-    <main className="relative h-screen bg-[#FBFBFB]">
+    <main className="relative h-screen bg-[#F8F9FF]">
       <SideNav />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <ToastContainer />
@@ -178,7 +283,7 @@ const Content = () => {
           <TopNav />
         </div>
         <div className="">
-        <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
+          <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
             <Link href="/courses">
               <p className="text-[#000066]">Course Content</p>
             </Link>
@@ -196,18 +301,46 @@ const Content = () => {
             </div>
           ) : (
             <div>
-              <h1 className=" px-4 text-[#1A1A1A] text-lg md:text-2xl my-4 font-medium">
-                {courseRead?.title}
-              </h1>
+              <div className="relative flex items-center justify-between">
+                <h1 className=" px-4 text-[#1A1A1A] text-lg md:text-2xl my-4 font-medium">
+                  {courseRead?.title}
+                </h1>
+                <button
+                  onClick={openOptionsFunct}
+                  className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center duration-150 ease-in-out"
+                >
+                  <FaEllipsisVertical className="text-primary" />
+                </button>
+                {openOptions && (
+                  <div
+                    className="bg-white rounded-[8px] z-10 p-4 h-auto absolute top-7 right-2 w-[140px] shadow-md"
+                    ref={optionsRef}
+                  >
+                    <div className="flex items-center gap-x-1 cursor-pointer hover:bg-primary hover:text-white hover:rounded-[8px] p-0.5">
+                      <BiEdit className="w-[14px] h-[14px]" />
+                      <p onClick={handleModal} className=" text-xs font-normal">
+                        Edit Module
+                      </p>
+                    </div>
+                    <div
+                      onClick={handleOpen}
+                      className="flex items-center gap-x-1 text-red-500 font-medium cursor-pointer hover:bg-red-500 mt-1 hover:text-white hover:rounded-[8px] p-0.5"
+                    >
+                      <FaTrashAlt className="w-[14px] h-[14px]" />
+                      <p className=" text-xs font-normal">Delete Module</p>
+                    </div>
+                  </div>
+                )}
+              </div>
               <div className="md:grid flex flex-col-reverse gap-x-2 grid-cols-10">
-                <span className="relative col-span-7">
+                <span className="relative col-span-7 md:h-[428px] md:my-0 my-4">
                   <ReactPlayer
                     controls={true}
                     width="100%"
                     height="100%"
                     playing={false}
                     url={moduleData?.module_video_link}
-                    className="md:h-[428px] md:my-0 my-4"
+                    className=""
                     config={{
                       youtube: {
                         playerVars: {
@@ -220,7 +353,7 @@ const Content = () => {
                   {/* <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
                   <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" /> */}
                 </span>
-                <ScrollArea className="md:h-[428px] h-auto rounded-[8px] shadow-md my-2 md:my-0 bg-white col-span-3">
+                <ScrollArea className="my-2 md:my-0 col-span-3 max-h-[428px]">
                   {loading ? (
                     <div className="w-[100%] flex items-center justify-center h-screen">
                       <Loader2 className=" w-8 h-8 animate-spin" />
@@ -236,18 +369,11 @@ const Content = () => {
                   )}
                 </ScrollArea>
               </div>
-              <div className="bg-white shadow-md p-4">
-                <div className="flex justify-between items-center">
+              <div className="bg-white shadow-md p-4 my-2">
+                <div className="">
                   <h1 className="md:text-2xl text-lg font-medium">
                     Module: {moduleData?.module_title}
                   </h1>
-                  <span
-                    onClick={handleModal}
-                    className=" md:text-xl text-sm text-main underline gap-x-2 cursor-pointer flex items-center"
-                  >
-                    <p className="">Edit</p>
-                    <Edit3 />
-                  </span>
                 </div>
                 <div>
                   {/* <p
@@ -269,7 +395,7 @@ const Content = () => {
                       td: customTD,
                       strong: strong,
                       code: code,
-                      a:customLink
+                      a: customLink,
                     }}
                   >
                     {moduleData?.description}
@@ -308,7 +434,7 @@ const Content = () => {
                   <label className=" text-base">Gihub Link</label>
                   <Input
                     type="url"
-                   value={modulesGithubLink}
+                    value={modulesGithubLink}
                     onChange={handleInputChange(setModuleGithubLink)}
                     placeholder={moduleData?.module_url}
                   />
@@ -338,6 +464,54 @@ const Content = () => {
               </Button>
             </div>
           </div>
+        )}
+        {modal && (
+          <section className="absolute top-0 flex justify-center items-center left-0  bg h-screen w-full backdrop-blur-[5px] bg-white/30">
+            <div className="bg-white rounded-[8px] w-1/2 md:w-[608px] shadow-lg md:p-6 px-3">
+              <div className="bg-[#FF0000] w-[72px] mx-auto h-[72px] p-2 rounded-full flex items-center justify-center shadow-md">
+                <IoTrash className=" text-3xl text-white" />
+              </div>
+              <h1 className="md:text-2xl text-lg font-semibold text-center py-2">
+                Are you sure you want to <br /> delete this module?
+              </h1>
+              {/* <p className="md:text-base text-center text-sm text-[#3E3E3E] font-normal">
+                You’ll permanently lose:
+              </p> */}
+              {/* <div className="flex items-center gap-3 justify-center py-8">
+                <div className="flex items-center gap-x-2">
+                  <Image src={modGray} alt="" className="w-[24px] h-[24px]" />
+                  <p className="md:text-base text-center flex items-center text-sm text-[#3E3E3E] font-normal">
+                    0 Module(s)
+                  </p>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <GrTarget className="w-[24px] h-[24px] text-[#3E3E3E]" />
+                  <p className="md:text-base text-center flex items-center text-sm text-[#3E3E3E] font-normal">
+                    0 Project(s)
+                  </p>
+                </div>
+              </div> */}
+              <div className="flex md:gap-x-2 gap-x-1 justify-between my-2 md:my-0 md:justify-end items-center">
+                <p
+                  className="cursor-pointer w-full py-4 rounded-[8px] text-center border border-[#3e3e3e] text-sm md:text-lg hover:bg-[#3e3e3e] hover:text-white font-medium"
+                  onClick={() => setModal(false)}
+                >
+                  Cancel
+                </p>
+                <button
+                  disabled={deleting}
+                  onClick={() => deleteCourse()}
+                  className="bg-[#FF0000] w-full py-4 flex justify-center items-center hover:text-[#ff0000] hover:bg-white hover:border hover:border-[#ff0000] text-white text-sm md:text-lg rounded-[8px] font-medium"
+                >
+                  {deleting ? (
+                    <Loader2Icon className="animate-spin" />
+                  ) : (
+                    <p>Delete Module</p>
+                  )}
+                </button>
+              </div>
+            </div>
+          </section>
         )}
       </div>
     </main>

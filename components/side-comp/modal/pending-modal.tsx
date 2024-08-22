@@ -11,11 +11,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "next/navigation";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
   const params = useParams<{ student: string }>();
   const id = params.student;
   const [submitDetails, setSubmitDetails] = useState<any | null>(null);
   const [loadSubmit, setLoadSubmit] = useState(false);
+  const [rejectSubmit, setRejectSubmit] = useState(false);
   const fetchSubDetails = async () => {
     try {
       setLoadSubmit(true);
@@ -64,8 +68,12 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
   useEffect(() => {
     fetchSubDetails();
   }, []);
+
   const [comment, setComment] = useState("");
+
   const [loading, setLoading] = useState(false);
+
+  //submission funct
   const handleSubmit = async () => {
     if (comment !== "") {
       try {
@@ -96,7 +104,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
           });
           setLoading(false);
           handleCloseModal();
-          window.location.reload();
+          // window.location.reload();
         }
       } catch (error: any) {
         if (error.response && error.response.status === 401) {
@@ -139,6 +147,79 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
     }
   };
 
+  const rejectSubmitFunct = async () => {
+    if (comment !== "") {
+      try {
+        setRejectSubmit(true);
+        const accessToken = Cookies.get("adminAccessToken");
+        const response = await axios.put(
+          `${urls.getCourses}${person?.course?.id}/submissions/${person?.submission_id}/reject/`,
+          {
+            mentor_comments: comment,
+            status: "Rejected",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          toast.success("Project Rejected, Comment added successfully!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+          setRejectSubmit(false);
+          // handleCloseModal();
+          // window.location.reload();
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await rejectSubmitFunct();
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else if (error?.response?.status === 400) {
+          toast.error(error?.response?.data[0], {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
+        setRejectSubmit(false);
+      }
+    }
+  };
+
+
   return (
     <div className="bg-white p-4 w-full mx-2 md:mx-0 md:w-1/3 h-5/6">
       <div>
@@ -173,12 +254,9 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
                 {submitDetails?.submission_link}
               </a>
             ) : (
-              <p>Please wait...</p>
+              <Skeleton />
             )}
           </span>
-          {/* <p className="text-[#3E3E3E] text-base md:text-lg">
-            {!loadSubmit ? submitDetails?.submission_link : "Please wait..."}
-          </p> */}
         </div>
 
         <div className="my-4">
@@ -186,7 +264,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
             Student’s comment
           </h1>
           <p className="text-[#3E3E3E] text-base md:text-lg">
-            {!loadSubmit ? submitDetails?.student_comments : "Please wait..."}
+            {!loadSubmit ? submitDetails?.student_comments : <Skeleton />}
           </p>
         </div>
         <div className="my-4">
@@ -208,9 +286,18 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
             handleSubmit();
           }}
           disabled={loading && loadSubmit}
-          className="bg-sub disabled:bg-sub/25 w-full hover:text-white  text-black"
+          className="bg-sub disabled:bg-sub/25 w-full hover:text-white font-semibold text-black"
         >
           {loading ? <Loader2 className="animate-spin" /> : "Submit"}
+        </Button>
+        <Button
+          onClick={() => {
+            rejectSubmitFunct();
+          }}
+          disabled={loading && rejectSubmit}
+          className="bg-red-700 disabled:bg-red-700/25 w-full hover:text-white  text-white mt-2 font-semibold"
+        >
+          {rejectSubmit ? <Loader2 className="animate-spin" /> : "Reject"}
         </Button>
       </div>
     </div>

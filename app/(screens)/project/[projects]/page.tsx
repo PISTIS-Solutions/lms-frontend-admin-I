@@ -1,9 +1,18 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SideNav from "@/components/side-comp/side-nav";
-import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus, X } from "lucide-react";
+import Image from "next/image";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Edit3,
+  Loader2,
+  Loader2Icon,
+  Plus,
+  X,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
@@ -33,18 +42,35 @@ import {
   customTH,
   customUL,
   strong,
-  customLink
+  customLink,
 } from "@/utils/markdown";
+import { FaEllipsisVertical } from "react-icons/fa6";
+import { useOutsideClick } from "@/utils/outsideClick";
+import { BiEdit } from "react-icons/bi";
+import { FaTrashAlt } from "react-icons/fa";
+import { IoTrash } from "react-icons/io5";
+import { GrTarget } from "react-icons/gr";
+import modIcon from "@/public/assets/modIcon.svg";
+import EditProject from "@/components/side-comp/modal/edit-project";
+import EditProjects from "@/components/side-comp/modal/edit-projects";
 
 const SingleProject = () => {
   const router = useRouter();
-  // const [showList, setShowList] = useState(false);
   const params = useParams<{ projects: string }>();
   const courseID = params.projects;
+  const [openModal, setOpenModal] = useState(false);
+  const [projectTitle, setProjectitle] = useState("");
+  const [projectLink, setProjectLink] = useState("");
+  const [description, setDescription] = useState("");
+  const [editLoading, seteditLoading] = useState(false);
+  const [openOptions, setOpenOptions] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<any | null>(null);
 
+  //fetc project list
   const fetchProjects = async () => {
     try {
       setLoading(true);
@@ -89,6 +115,7 @@ const SingleProject = () => {
     }
   };
 
+  // open project
   const handleItemClick = (projectId: any) => {
     router.replace(`/project/${courseID}/${projectId}`);
   };
@@ -97,17 +124,13 @@ const SingleProject = () => {
     fetchProjects();
   }, [courseID]);
 
-  const [openModal, setOpenModal] = useState(false);
+  // open delete modal
   const handleModal = () => {
     setOpenModal((prev) => !prev);
   };
 
-  const [projectTitle, setProjectitle] = useState("");
-  const [projectLink, setProjectLink] = useState("");
-  const [description, setDescription] = useState("");
-  const [editLoading, seteditLoading] = useState(false);
-
-  const editModule = async (e: any) => {
+  //add new project
+  const addProject = async (e: any) => {
     e.preventDefault();
 
     if (projectTitle !== "" && projectLink !== "" && description !== "") {
@@ -132,7 +155,7 @@ const SingleProject = () => {
         if (response.status === 200) {
           seteditLoading(false);
           setOpenModal(false);
-          toast.success("Project successfully edited!", {
+          toast.success("New project added successfully!", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: true,
@@ -147,7 +170,7 @@ const SingleProject = () => {
       } catch (error: any) {
         if (error.response && error.response.status === 401) {
           await refreshAdminToken();
-          await editModule(e);
+          await addProject(e);
         } else if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
@@ -185,6 +208,176 @@ const SingleProject = () => {
     }
   };
 
+  const openOptionsFunct = () => {
+    setOpenOptions(true);
+  };
+
+  const optionsRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(optionsRef, () => setOpenOptions(false));
+
+  const handleOpen = async () => {
+    setModal(true);
+    setOpenOptions(false);
+  };
+
+  const deleteCourse = async () => {
+    try {
+      const adminAccessToken = Cookies.get("adminAccessToken");
+
+      setDeleting(true);
+      const response = await axios.delete(
+        `${urls.deleteCourse}/${courseID}/projects/${project?.[0]?.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        setDeleting(false);
+        toast.error(`${project?.[0]?.project_title} deleted successfully.`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        router.push(`/project/${project?.[0]?.id}`);
+        // window.location.reload();
+        // fetchProjects()
+        // fetchCourses();
+      } else {
+        // console.error("Failed to delete course.");
+      }
+    } catch (error: any) {
+      // console.error("Error deleting course:", error.response.data.detail);
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await deleteCourse();
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else if (error.response.data.detail === "Not found.") {
+        toast.error("Course already deleted!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setModal(false);
+      setDeleting(false);
+    }
+  };
+
+  //edit functionality
+  const [editModal, setEditModal] = useState(false);
+  const openEditModal = () => {
+    setEditModal(true);
+    setOpenOptions(false);
+  };
+  const editProject = async (e: any) => {
+    e.preventDefault();
+
+    if (projectTitle !== "" && projectLink !== "" && description !== "") {
+      try {
+        const adminAccessToken = Cookies.get("adminAccessToken");
+        seteditLoading(true);
+        const response = await axios.patch(
+          `${urls.getCourses}${courseID}/projects/${project?.[0]?.id}`,
+          {
+            project_title: projectTitle,
+            project_url: projectLink,
+            project_hint: description,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${adminAccessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          seteditLoading(false);
+          setOpenModal(false);
+          toast.success("Project successfully edited!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+          // window.parent.location = window.parent.location.href;
+          fetchProjects();
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          await refreshAdminToken();
+          await editProject(e);
+        } else if (error?.message === "Network Error") {
+          toast.error("Check your network!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        } else {
+          toast.error(error?.response?.data?.detail, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
+      } finally {
+        seteditLoading(false);
+      }
+    } else {
+      toast.error("Check fields fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+    }
+  };
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -199,13 +392,51 @@ const SingleProject = () => {
           />
           <TopNav />
         </div>
-        <div>
-          <div className=" px-4 mt-3 text-xs md;text-sm font-medium flex items-center">
+        {/* <div>
+          <div className=" px-4 mt-3 text-xs md:text-sm font-medium flex items-center">
             <p className="text-[#000066]">Course Content</p>
             <ChevronRight className="text-[#000066]" />
             <p className="text-[#000066]"> {project?.[0]?.course}</p>
             <ChevronRight className="text-[#000066]" />
             <p className="text-[#000066]"> {project?.[0]?.project_title}</p>
+          </div>
+        </div> */}
+        <div className="flex items-center justify-between mt-4 relative">
+          <div className="px-5 ">
+            <p className=" font-medium text-[#666666] text-sm">
+              {project?.[0]?.course}
+            </p>
+            <h3 className=" font-semibold text-2xl text-main">
+              {project?.[0]?.project_title}
+            </h3>
+          </div>
+          <div>
+            <button
+              onClick={openOptionsFunct}
+              className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center duration-150 ease-in-out"
+            >
+              <FaEllipsisVertical className="text-primary" />
+            </button>
+            {openOptions && (
+              <div
+                className="bg-white z-10 shadow-md rounded-[8px] p-4 h-auto absolute top-2 right-4 w-[140px]"
+                ref={optionsRef}
+              >
+                <div className="flex items-center gap-x-1 cursor-pointer hover:bg-primary hover:text-white hover:rounded-[8px] p-0.5">
+                  <BiEdit className="w-[14px] h-[14px]" />
+                  <p onClick={openEditModal} className=" text-xs font-normal">
+                    Edit Project
+                  </p>
+                </div>
+                <div
+                  onClick={handleOpen}
+                  className="flex items-center gap-x-1 text-red-500 font-medium cursor-pointer hover:bg-red-500 mt-1 hover:text-white hover:rounded-[8px] p-0.5"
+                >
+                  <FaTrashAlt className="w-[14px] h-[14px]" />
+                  <p className=" text-xs font-normal">Delete Project</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         {loading ? (
@@ -219,9 +450,9 @@ const SingleProject = () => {
               <div>
                 <div>
                   <div className="p-4">
-                    <h2 className="font-medium text-lg md:text-2xl text-main">
+                    {/* <h2 className="font-medium text-lg md:text-2xl text-main">
                       {project?.[0]?.project_title}
-                    </h2>
+                    </h2> */}
                     <Markdown
                       className="font-normal py-2 text-justify text-[#3E3E3E] text-base md:text-xl"
                       remarkPlugins={[remarkGfm]}
@@ -235,7 +466,7 @@ const SingleProject = () => {
                         td: customTD,
                         strong: strong,
                         code: code,
-                        a:customLink
+                        a: customLink,
                       }}
                     >
                       {project?.[0]?.project_description}
@@ -254,7 +485,7 @@ const SingleProject = () => {
                           th: customTH,
                           td: customTD,
                           strong: strong,
-                          a:customLink,
+                          a: customLink,
                           code: code,
                         }}
                       >
@@ -322,7 +553,7 @@ const SingleProject = () => {
             </div>
             <Button
               onClick={(e) => {
-                editModule(e);
+                addProject(e);
               }}
               disabled={editLoading}
               className="bg-sub hover:text-white disabled:bg-sub/25 rounded-[8px] py-2 font-semibold mt-4 text-black w-full"
@@ -331,6 +562,51 @@ const SingleProject = () => {
             </Button>
           </div>
         </div>
+      )}
+      {modal && (
+        <section className="absolute top-0 flex justify-center items-center left-0  bg h-screen w-full backdrop-blur-[5px] bg-white/30">
+          <div className="bg-white h-[368px] rounded-[8px] w-1/2 md:w-[608px] shadow-lg md:p-6 px-3">
+            <div className="bg-[#FF0000] w-[72px] mx-auto h-[72px] p-2 rounded-full flex items-center justify-center shadow-md">
+              <IoTrash className=" text-3xl text-white" />
+            </div>
+            <h1 className="md:text-2xl text-lg font-semibold text-center py-2">
+              Are you sure you want to <br /> delete this project?
+            </h1>
+            <p className="md:text-base text-center text-sm text-[#3E3E3E] font-normal">
+              You’ll permanently lose this project
+            </p>
+
+            <div className="flex md:gap-x-2 gap-x-1 justify-between mt-10  md:justify-end items-center">
+              <p
+                className="cursor-pointer w-full py-4 rounded-[8px] text-center border border-[#3e3e3e] text-sm md:text-lg hover:bg-[#3e3e3e] hover:text-white font-medium"
+                onClick={() => setModal(false)}
+              >
+                Cancel
+              </p>
+              <button
+                disabled={deleting}
+                onClick={() => deleteCourse()}
+                className="bg-[#FF0000] w-full py-4 flex justify-center items-center hover:text-[#ff0000] hover:bg-white hover:border hover:border-[#ff0000] text-white text-sm md:text-lg rounded-[8px] font-medium"
+              >
+                {deleting ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  <p>Delete Project</p>
+                )}
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+      {editModal && (
+        <section className="absolute top-0 flex justify-center items-center left-0 bg h-screen w-full backdrop-blur-[5px] bg-white/30">
+          <EditProjects
+            courseID={courseID}
+            project={project}
+            setEditModal={setEditModal}
+            fetchProjects={fetchProjects}
+          />
+        </section>
       )}
     </main>
   );

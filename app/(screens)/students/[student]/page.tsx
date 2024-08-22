@@ -13,6 +13,9 @@ import useStudentInfoStore from "@/store/read-student";
 import useStudentsStore from "@/store/fetch-students";
 import usePendingGradeStore from "@/store/project-review";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const Student = () => {
   const { studentData, loading, fetchStudentInfo } = useStudentInfoStore();
   const { projectReview, reviewLoad, fetchProjectReview } =
@@ -54,7 +57,11 @@ const Student = () => {
                   />
                   <div>
                     <h3 className="lg:text-lg text-base font-medium text-500">
-                      {studentData?.full_name}
+                      {studentData?.full_name ? (
+                        studentData?.full_name
+                      ) : (
+                        <Skeleton />
+                      )}
                     </h3>
                     <p className="lg:text-sm text-xs font-normal text-[#3E3E3E]">
                       Name
@@ -64,7 +71,7 @@ const Student = () => {
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
                 <div>
                   <h3 className="lg:text-lg text-base font-medium">
-                    {studentData?.email}
+                    {studentData?.email ? studentData?.email : <Skeleton />}
                   </h3>
                   <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">
                     Email address
@@ -73,7 +80,11 @@ const Student = () => {
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
                 <div>
                   <h3 className="text-base lg:text-lg font-medium">
-                    {studentData?.phone_number}
+                    {studentData?.phone_number ? (
+                      studentData?.phone_number
+                    ) : (
+                      <Skeleton />
+                    )}
                   </h3>
                   <p className="text-sm lg:text-sm font-normal text-[#3E3E3E]">
                     Phone number
@@ -82,7 +93,11 @@ const Student = () => {
                 <div className="bg-[#000066] hidden lg:block w-[2px] h-[71px]" />
                 <div>
                   <h3 className="text-base lg:text-lg font-medium">
-                    {studentData?.location}
+                    {studentData?.location ? (
+                      studentData?.location
+                    ) : (
+                      <Skeleton />
+                    )}
                   </h3>
                   <p className="text-sm, lg:text-sm font-normal text-[#3E3E3E]">
                     Location

@@ -9,6 +9,7 @@ import { urls } from "@/utils/config";
 
 import Cookies from "js-cookie";
 import useProjectRead from "@/store/project-read";
+import useProjectCount from "@/store/projectCount";
 
 interface cardProps {
   id: number;
@@ -31,39 +32,52 @@ const ProjectCard = ({
   project,
   handleOpen,
 }: cardProps) => {
-  const [moduleCount, setModuleCount] = useState(0);
-  const [loading, setLoading] = useState(false);
   const { fetchProjectRead } = useProjectRead();
+  // const [moduleCount, setModuleCount] = useState(0);
+  // const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const getModuleCount = async () => {
-      setLoading(true);
-      try {
-        const adminAccessToken = Cookies.get("adminAccessToken");
-        const response = await axios.get(`${urls.getCourses}${id}/projects/`, {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-          },
-        });
-        if (response.status === 200) {
-          setModuleCount(response.data.length);
-          setLoading(false);
-        } else {
-          console.error(`Error fetching modules for course ${id}`);
-          setModuleCount(0);
-        }
-      } catch (error: any) {
-        console.error(`Error: ${error.message}`);
-        setModuleCount(0);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const getProjectCount = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const adminAccessToken = Cookies.get("adminAccessToken");
+  //       const response = await axios.get(`${urls.getCourses}${id}/projects/`, {
+  //         headers: {
+  //           Authorization: `Bearer ${adminAccessToken}`,
+  //         },
+  //       });
+  //       if (response.status === 200) {
+  //         setModuleCount(response.data.length);
+  //         setLoading(false);
+  //       } else {
+  //         console.error(`Error fetching modules for course ${id}`);
+  //         setModuleCount(0);
+  //       }
+  //     } catch (error: any) {
+  //       console.error(`Error: ${error.message}`);
+  //       setModuleCount(0);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    getModuleCount();
-  }, []);
+  //   getProjectCount();
+  // }, []);
 
   // const imageUrl = img?.replace("image/upload/", "");
+  const { getProjectCount } = useProjectCount();
+  const [moduleCount, setModuleCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchModuleCount = async () => {
+      setLoading(true);
+      const count = await getProjectCount(id);
+      setModuleCount(count);
+      setLoading(false);
+    };
+
+    fetchModuleCount();
+  }, [id, getProjectCount]);
 
   return (
     <div className="relative">
@@ -103,12 +117,12 @@ const ProjectCard = ({
           </div>
         </div>
       </div>
-      <div
+      {/* <div
         onClick={handleOpen}
         className="p-2 bg-white cursor-pointer rounded-full w-[35px] h-[35px] flex justify-center items-center absolute top-2 right-2 hover:bg-red-500 duration-150 ease-in-out text-red-500 hover:text-white"
       >
         <Trash2 className="" />
-      </div>
+      </div> */}
     </div>
   );
 };

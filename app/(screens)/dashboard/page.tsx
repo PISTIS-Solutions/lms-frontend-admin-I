@@ -137,23 +137,6 @@ const Dashboard = () => {
     fetchProjectOverview();
   }, []);
 
-  // const months = [
-  //   "January",
-  //   "February",
-  //   "March",
-  //   "April",
-  //   "May",
-  //   "June",
-  //   "July",
-  //   "August",
-  //   "September",
-  //   "October",
-  //   "November",
-  //   "December",
-  // ];
-
-  // console.log(projectOverview, "PsO")
-
   const userName = Cookies.get("fullName");
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
@@ -170,7 +153,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
             <div className=" col-span-1 lg:col-span-7">
               <div className="flex gap-x-4 overflow-x-scroll justify-between pr-4">
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
+                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -189,7 +172,7 @@ const Dashboard = () => {
                     <BookOpenText className="text-main" />
                   </span>
                 </div>
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
+                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -208,7 +191,7 @@ const Dashboard = () => {
                     <GraduationCap className="text-main" />
                   </span>
                 </div>
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
+                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -234,7 +217,9 @@ const Dashboard = () => {
                     Enrollment activity{" "}
                   </h1>
                 </div>
-                <LineChart chartDetails={chartDetails} />
+                <div className="h-auto md:h-[350px] w-full">
+                  <LineChart chartDetails={chartDetails} />
+                </div>
               </div>
             </div>
             <div className="bg-white h-[370px] md:h-[500px] rounded-[8px] p-2 shadow-sm col-span-3">

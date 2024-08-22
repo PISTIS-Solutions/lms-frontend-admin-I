@@ -139,7 +139,6 @@ const PaginatedTable = () => {
   const { students, loading, fetchStudents, count } = useStudentsStore();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
-
   useEffect(() => {
     fetchStudents(currentPage);
   }, [currentPage]);

@@ -9,7 +9,12 @@ interface StudentsStore {
   students: any[];
   loading: boolean;
   count: number;
-  fetchStudents: (page: number) => Promise<any>;
+  fetchStudents: (
+    page: number,
+    searchQuery?: string,
+    selectedValue?: string,
+    ordering?: string
+  ) => Promise<any>;
 }
 
 const useStudentsStore = create<StudentsStore>((set, get) => ({
@@ -17,12 +22,20 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
   count: 0,
   loading: false,
 
-  fetchStudents: async (page) => {
+  fetchStudents: async (
+    page,
+    searchQuery = "",
+    selectedValue = "",
+    ordering = ""
+  ) => {
     try {
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
+
+      const trimmedQuery = searchQuery.trim();
+
       const response = await axios.get(
-        `${baseURL}/users/student/?page=${page}`,
+        `${baseURL}/users/student/?page=${page}&search=${trimmedQuery}&plan=${selectedValue}&ordering=${ordering}date_joined`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
@@ -30,7 +43,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
         }
       );
       set({
-        students: response.data.results,
+        students: response.data,
         count: response.data.count,
       });
       return response.data.results;
@@ -38,7 +51,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       console.error("Error fetching students:", error.message);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudents(page);
+        await get().fetchStudents(page, searchQuery, selectedValue, ordering);
       } else if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
