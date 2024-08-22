@@ -109,7 +109,7 @@ const Project = () => {
           const adminRefreshToken = Cookies.get("adminRefreshToken");
           const adminAccessToken = Cookies.get("adminAccessToken");
 
-          const refreshResponse = await axios.post(urls.adminRefreshToken, {
+          const refreshResponse = await axios.post(urls.adminRefresh, {
             refresh: adminRefreshToken,
             access: adminAccessToken,
           });
