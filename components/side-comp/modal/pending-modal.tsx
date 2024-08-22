@@ -85,6 +85,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
             project_id: person?.project?.id,
             submission_link: submitDetails?.submission_link,
             mentor_comments: comment,
+            status: "Reviewed"
           },
           {
             headers: {
@@ -104,7 +105,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
           });
           setLoading(false);
           handleCloseModal();
-          // window.location.reload();
+          window.location.reload();
         }
       } catch (error: any) {
         if (error.response && error.response.status === 401) {
@@ -152,8 +153,8 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
       try {
         setRejectSubmit(true);
         const accessToken = Cookies.get("adminAccessToken");
-        const response = await axios.put(
-          `${urls.getCourses}${person?.course?.id}/submissions/${person?.submission_id}/reject/`,
+        const response = await axios.patch(
+          `${urls.getCourses}${person?.course?.id}/submissions/${person?.submission_id}/`,
           {
             mentor_comments: comment,
             status: "Rejected",
@@ -175,8 +176,8 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
             theme: "dark",
           });
           setRejectSubmit(false);
-          // handleCloseModal();
-          // window.location.reload();
+          handleCloseModal();
+          window.location.reload();
         }
       } catch (error: any) {
         if (error.response && error.response.status === 401) {

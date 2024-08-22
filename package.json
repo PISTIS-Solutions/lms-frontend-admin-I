@@ -5,7 +5,6 @@
   "scripts": {
     "build": "npm install",
     "start": "next build && next start -p 80"
-    
   },
   "dependencies": {
     "@faker-js/faker": "^8.2.0",

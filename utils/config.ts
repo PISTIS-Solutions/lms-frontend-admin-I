@@ -7,7 +7,7 @@ const courseID = Cookies.get("courseId");
 export const urls = {
   signin: `${baseURL}/jwt/create/`,
   adminDashboard: `${baseURL}/users/admin/dashboard/`,
-  adminRefreshToken: `${baseURL}/jwt/refresh/`,
+  adminRefresh: `${baseURL}/jwt/refresh/`,
   changePassword: `${baseURL}/users/student/reset_password_confirm/`,
   getCourses: `${baseURL}/courses/`,
   uploadCourses: `${baseURL}/courses/`,
