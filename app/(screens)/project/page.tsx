@@ -192,13 +192,13 @@ const Project = () => {
         </div>
         {modal && (
           <section className="absolute top-0 flex justify-center items-center left-0 bg-slate-100/50 h-screen w-full">
-            <div className="bg-white md:py-14 py-3 px-2 md:px-7 h-[200px] rounded-[8px] w-1/2 md:w-[608px]">
+            <div className="bg-white md:py-14 py-3 px-2 md:px-7 h-[200px] rounded-[8px] w-[90%] md:w-[608px]">
               <h1 className="md:text-2xl text-lg font-medium">Delete Course</h1>
               <p className="md:text-xl text-sm text-[#3E3E3E] font-normal">
                 Are you sure you want to delete this course? You will not be
                 able to retrieve it later
               </p>
-              <div className="flex md:gap-x-2 gap-x-1 justify-between my-2 md:my-0 md:justify-end items-center">
+              <div className="md:flex block md:gap-x-2 gap-x-1 justify-between my-2 md:my-0 md:justify-end items-center">
                 <Button
                   disabled={deleting}
                   onClick={() => deleteCourse(selectedProject!)}
