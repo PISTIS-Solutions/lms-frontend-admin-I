@@ -13,10 +13,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { urls } from "@/utils/config";
-import {
-  AiOutlineSortAscending,
-  AiOutlineSortDescending,
-} from "react-icons/ai";
+import { FaSortDown, FaSortUp } from "react-icons/fa6";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -140,21 +137,20 @@ const StudentPage = () => {
 
     return students.map((person) => (
       <React.Fragment key={person?.id}>
-        {/* const formattedDateTime = formatDateTime(person?.date_joined); */}
-        <tr className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 ">
+        <tr className=" md:text-base text-xs px-3 md:px-0">
           <td
-            className="cursor-pointer"
+            className="cursor-pointer font-semibold text-main py-2 md:py-4"
             onClick={() => {
               readStudent(person?.id);
             }}
           >
             {person?.full_name}
           </td>
-          <td>{person?.email}</td>
-          <td>{person?.courses_completed}</td>
-          <td>{person?.phone_number}</td>
-          <td>{person?.plan}</td>
-          <td>{formatDateTime(person?.date_joined)}</td>
+          <td className="py-2 md:py-4">{person?.email}</td>
+          <td className="py-2 md:py-4">{person?.courses_completed}</td>
+          <td className="py-2 md:py-4">{person?.phone_number}</td>
+          <td className="py-2 md:py-4">{person?.plan}</td>
+          <td className="py-2 md:py-4">{formatDateTime(person?.date_joined)}</td>
           <td
             onClick={() => toggleStudentOptions(person?.id)}
             className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
@@ -220,7 +216,7 @@ const StudentPage = () => {
             <Input
               type="text"
               placeholder="Search student name or email address"
-              className="placeholder:text-[#A2A2A2] text-black text-sm italic rounded-[8px] border border-main"
+              className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm italic rounded-[8px] border border-main"
               value={searchQuery}
               onChange={handleSearch}
               // onChange={(e) => setSearchQuery(e.target.value)}
@@ -228,32 +224,40 @@ const StudentPage = () => {
             <Search className="absolute top-2 right-1" />
           </div>
           <div className="w-full shadow-md my-5 rounded-[8px] bg-white h-auto p-2">
-            <div className="flex justify-between">
-              <h1 className="md:text-2xl text-lg font-medium">
+            <div className="flex justify-between items-center">
+              <h1 className="md:text-2xl text-base font-medium">
                 Students Database
               </h1>
               <div>
                 <p className="text-gray-600 text-xs">Filter by plan</p>
                 <select
                   name="plan-filter"
-                  className="rounded-[8px]"
+                  className="rounded-[8px] md:text-base text-xs"
                   id="filter"
                   value={selectedValue}
                   onChange={(e: any) => {
                     setSelectedValue(e.target.value);
                   }}
                 >
-                  <option value="">Select plan</option>
-                  <option value="free">Free</option>
-                  <option value="paid">Paid</option>
-                  <option value="blocked">Blocked</option>
+                  <option className="md:text-base text-xs" value="">
+                    Select plan
+                  </option>
+                  <option className="md:text-base text-xs" value="free">
+                    Free
+                  </option>
+                  <option className="md:text-base text-xs" value="paid">
+                    Paid
+                  </option>
+                  <option className="md:text-base text-xs" value="blocked">
+                    Blocked
+                  </option>
                 </select>
               </div>
             </div>
             <div>
-              <div className=" overflow-x-scroll md:overflow-x-auto relative">
+              <div className=" overflow-x-scroll md:overflow-x-auto">
                 <ToastContainer />
-                <table className="w-full mt-2 text-center ">
+                <table className="w-full mt-2 text-center relative">
                   <thead className="text-main">
                     <tr className="bg-[#F8F9FF] py-2 w-full">
                       <th className="md:py-4 md:text-base px-5 text-xs py-2">
@@ -271,21 +275,24 @@ const StudentPage = () => {
                       <th className="md:py-4 md:text-base px-5 text-xs py-2">
                         Plan
                       </th>
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2">
+                      <th className="md:py-4 md:text-base px-5 text-xs py-2 flex items-center gap-1">
                         Date Joined{" "}
-                        <span className="flex items-center justify-between">
-                          <AiOutlineSortAscending
-                            onClick={() => {
-                              setOrdering("");
-                            }}
-                            className="border border-main cursor-pointer"
-                          />
-                          <AiOutlineSortDescending
-                            onClick={() => {
-                              setOrdering("-");
-                            }}
-                            className="border border-main cursor-pointer"
-                          />
+                        <span className="">
+                          {ordering !== "" ? (
+                            <FaSortUp
+                              onClick={() => {
+                                setOrdering("");
+                              }}
+                              className="cursor-pointer"
+                            />
+                          ) : (
+                            <FaSortDown
+                              onClick={() => {
+                                setOrdering("-");
+                              }}
+                              className="cursor-pointer"
+                            />
+                          )}
                         </span>
                       </th>
                       <th className="md:py-4 md:text-base px-5 text-xs py-2">
@@ -311,10 +318,10 @@ const StudentPage = () => {
                     )}
                   </tbody>
                 </table>
-                <div className="flex items-center justify-end gap-5 mt-2">
+                <div className="flex items-center justify-end gap-1 mt-2">
                   <div>
                     <Button
-                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       onClick={prevPage}
                       disabled={currentPage === 1}
                     >
@@ -325,7 +332,7 @@ const StudentPage = () => {
                   <div>
                     <Button
                       onClick={nextPage}
-                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       disabled={
                         students?.length < 10 || currentPage * 10 >= count
                       }
