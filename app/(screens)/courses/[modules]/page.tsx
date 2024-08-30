@@ -30,7 +30,7 @@ import {
   customTH,
   customUL,
   strong,
-  customLink
+  customLink,
 } from "@/utils/markdown";
 
 const Module = () => {
@@ -187,8 +187,8 @@ const Module = () => {
                     th: customTH,
                     td: customTD,
                     strong: strong,
-                    code:code,
-                    a:customLink
+                    code: code,
+                    a: customLink,
                   }}
                 >
                   {courseRead?.overview}

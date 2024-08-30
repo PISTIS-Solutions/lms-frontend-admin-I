@@ -66,7 +66,7 @@ const EditCourse = ({
 
     // console.log(hours, minutes, image);
   }, []);
-// console.log(selectedFile)
+  // console.log(selectedFile)
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,15 +107,20 @@ const EditCourse = ({
           const totalSeconds = hours * 3600 + minutes * 60 + seconds;
           return `PT${totalSeconds}S`;
         };
+
+        const formData = new FormData();
+        formData.append("title", courseTitle);
+        formData.append("course_url", courseLink);
+        formData.append(
+          "course_duration",
+          convertToISO8601(hours, minutes, seconds)
+        );
+        formData.append("course_image", selectedFile);
+
         const adminAccessToken = Cookies.get("adminAccessToken");
         const response = await axios.patch(
           `${urls.getCourses}${id}/`,
-          {
-            title: courseTitle,
-            course_url: courseLink,
-            course_duration: convertToISO8601(hours, minutes, seconds),
-            course_image_url: selectedFile,
-          },
+          formData,
           {
             headers: {
               Authorization: `Bearer ${adminAccessToken}`,
@@ -134,7 +139,7 @@ const EditCourse = ({
             draggable: false,
             theme: "dark",
           });
-            window.location.reload();
+          window.location.reload();
         }
       } catch (error: any) {
         if (error.response && error.response.status === 401) {
