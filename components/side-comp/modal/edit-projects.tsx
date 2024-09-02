@@ -65,7 +65,7 @@ const EditProject = ({
 
         if (response.status === 200) {
           seteditLoading(false);
-        //   setEditModal(false);
+          //   setEditModal(false);
           toast.success("Project successfully edited!", {
             position: "top-right",
             autoClose: 5000,
@@ -119,8 +119,6 @@ const EditProject = ({
     }
   };
 
- 
-
   return (
     <div className="rounded-[8px] border-t-4 border-t-primary bg-white p-2 md:p-6 w-[90%]">
       <ToastContainer />
@@ -137,7 +135,7 @@ const EditProject = ({
             <input
               type="text"
               className="bg-[#FAFAFA]  w-full border-none rounded-[8px]"
-            //   placeholder="Input Project Title"
+              //   placeholder="Input Project Title"
               value={projectTitle}
               onChange={(e) => {
                 setProjectitle(e.target.value);
@@ -153,7 +151,7 @@ const EditProject = ({
             <input
               type="url"
               className="bg-[#FAFAFA] w-full border-none rounded-[8px]"
-            //   placeholder="Input Project Link"
+              //   placeholder="Input Project Link"
               value={projectLink}
               onChange={(e) => {
                 setProjectLink(e.target.value);
@@ -170,7 +168,7 @@ const EditProject = ({
               modules={{ toolbar: toolbarOptions }}
               theme="snow"
               className="bg-[#FAFAFA] w-full border-none rounded-[8px]"
-            //   placeholder="Input project hint"
+              //   placeholder="Input project hint"
               value={description}
               onChange={setDescription}
             />

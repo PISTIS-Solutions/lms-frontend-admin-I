@@ -21,6 +21,6 @@ export const urls = {
   projectOverview: `${baseURL}/pending-grading/`,
   deleteStudent: `${baseURL}/users/student/deactivate_me/`,
   projectReview: `${baseURL}/users/admin/project-review/`,
-  manageStudentPlan : `${baseURL}/users/admin/manage-subscriptions/`,
+  manageStudentPlan: `${baseURL}/users/admin/manage-subscriptions/`,
   // rejectProjectSubmission: `${baseURL}/reject-submission/`
 };

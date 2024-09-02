@@ -85,7 +85,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
             project_id: person?.project?.id,
             submission_link: submitDetails?.submission_link,
             mentor_comments: comment,
-            status: "Reviewed"
+            status: "Reviewed",
           },
           {
             headers: {
@@ -219,7 +219,6 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
       }
     }
   };
-
 
   return (
     <div className="bg-white p-4 w-full mx-2 md:mx-0 md:w-1/3 h-5/6">
