@@ -30,7 +30,7 @@ import {
   customTH,
   customUL,
   strong,
-  customLink
+  customLink,
 } from "@/utils/markdown";
 
 const Module = () => {
@@ -140,7 +140,7 @@ const Module = () => {
   }, [courseID]);
 
   return (
-    <main className="relative h-screen bg-[#FBFBFB]">
+    <main className="relative h-screen bg-[#F8F9FF]">
       <SideNav />
       <ToastContainer />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
@@ -187,8 +187,8 @@ const Module = () => {
                     th: customTH,
                     td: customTD,
                     strong: strong,
-                    code:code,
-                    a:customLink
+                    code: code,
+                    a: customLink,
                   }}
                 >
                   {courseRead?.overview}

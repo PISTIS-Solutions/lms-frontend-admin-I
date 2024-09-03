@@ -13,17 +13,31 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { urls } from "@/utils/config";
+import { FaSortDown, FaSortUp } from "react-icons/fa6";
+
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const StudentPage = () => {
   const { students, loading, fetchStudents, count } = useStudentsStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStudent, setExpandedStudent] = useState(null);
+  const [selectedValue, setSelectedValue] = useState("");
+  const [ordering, setOrdering] = useState("");
   const router = useRouter();
 
+  // const handleChange = (value: string) => {
+  //   setSelectedValue(value);
+  //   console.log(`Selected Value: ${value}`); // Debugging
+  // };
+
   useEffect(() => {
-    fetchStudents(currentPage);
-  }, [currentPage]);
+    fetchStudents(currentPage, searchQuery, selectedValue, ordering);
+  }, [currentPage, searchQuery, selectedValue, ordering]);
 
   const nextPage = async () => {
     const nextPageStudents = await fetchStudents(currentPage + 1);
@@ -31,25 +45,21 @@ const StudentPage = () => {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
-
-
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage((prevPage) => prevPage - 1);
     }
   };
-
-  const readStudent = (id:any) => {
+  const readStudent = (id: any) => {
     router.push(`/students/${id}`);
   };
-
-  const toggleStudentOptions = (index:any) => {
+  const toggleStudentOptions = (index: any) => {
     setExpandedStudent(expandedStudent === index ? null : index);
   };
 
   const [loadingManage, setLoadingManage] = useState(false);
 
-  const manageStudentSubscription = async (id:any, plan:any) => {
+  const manageStudentSubscription = async (id: any, plan: any) => {
     try {
       setLoadingManage(true);
       const adminAccessToken = Cookies.get("adminAccessToken");
@@ -76,7 +86,7 @@ const StudentPage = () => {
         fetchStudents(currentPage);
         setExpandedStudent(null);
       }
-    } catch (error:any) {
+    } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await manageStudentSubscription(id, plan);
@@ -106,26 +116,41 @@ const StudentPage = () => {
     }
   };
 
-  const filteredStudents = students?.filter((student) =>
-    student?.full_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
+  //date and time format funct
   const renderStudents = () => {
-    return filteredStudents.map((person) => (
+    function formatDateTime(dateTimeString: any) {
+      const date = new Date(dateTimeString);
+
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+      const year = date.getFullYear();
+
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+
+      return `${day}/${month}/${year} ${hours}:${minutes}`;
+    }
+
+    return students.map((person) => (
       <React.Fragment key={person?.id}>
-        <tr className="md:py-4 md:text-base text-xs py-2 px-3 md:px-0 ">
+        <tr className=" md:text-base text-xs px-3 md:px-0">
           <td
-            className="cursor-pointer"
+            className="cursor-pointer font-semibold text-main py-2 md:py-4"
             onClick={() => {
               readStudent(person?.id);
             }}
           >
             {person?.full_name}
           </td>
-          <td>{person?.email}</td>
-          <td>{person?.courses_completed}</td>
-          <td>{person?.phone_number}</td>
-          <td>{person?.plan}</td>
+          <td className="py-2 md:py-4">{person?.email}</td>
+          <td className="py-2 md:py-4">{person?.courses_completed}</td>
+          <td className="py-2 md:py-4">{person?.phone_number}</td>
+          <td className="py-2 md:py-4">{person?.plan}</td>
+          <td className="py-2 md:py-4">{formatDateTime(person?.date_joined)}</td>
           <td
             onClick={() => toggleStudentOptions(person?.id)}
             className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
@@ -133,7 +158,6 @@ const StudentPage = () => {
             Manage
           </td>
         </tr>
-
         {expandedStudent === person.id && (
           <div
             className="bg-[#ffff] z-10 p-2 w-26 md:w-42 rounded-[8px] shadow-md absolute right-0"
@@ -191,21 +215,49 @@ const StudentPage = () => {
             {/* Search input field */}
             <Input
               type="text"
-              placeholder="Search student name"
-              className="placeholder:text-[#A2A2A2] text-black text-sm italic rounded-[8px] border border-main"
+              placeholder="Search student name or email address"
+              className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm italic rounded-[8px] border border-main"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearch}
+              // onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Search className="absolute top-2 right-1" />
           </div>
           <div className="w-full shadow-md my-5 rounded-[8px] bg-white h-auto p-2">
-            <h1 className="md:text-2xl text-lg font-medium">
-              Students Database
-            </h1>
+            <div className="flex justify-between items-center">
+              <h1 className="md:text-2xl text-base font-medium">
+                Students Database
+              </h1>
+              <div>
+                <p className="text-gray-600 text-xs">Filter by plan</p>
+                <select
+                  name="plan-filter"
+                  className="rounded-[8px] md:text-base text-xs"
+                  id="filter"
+                  value={selectedValue}
+                  onChange={(e: any) => {
+                    setSelectedValue(e.target.value);
+                  }}
+                >
+                  <option className="md:text-base text-xs" value="">
+                    Select plan
+                  </option>
+                  <option className="md:text-base text-xs" value="free">
+                    Free
+                  </option>
+                  <option className="md:text-base text-xs" value="paid">
+                    Paid
+                  </option>
+                  <option className="md:text-base text-xs" value="blocked">
+                    Blocked
+                  </option>
+                </select>
+              </div>
+            </div>
             <div>
-              <div className=" overflow-x-scroll md:overflow-x-auto relative">
+              <div className=" overflow-x-scroll md:overflow-x-auto">
                 <ToastContainer />
-                <table className="w-full mt-2 text-center ">
+                <table className="w-full mt-2 text-center relative">
                   <thead className="text-main">
                     <tr className="bg-[#F8F9FF] py-2 w-full">
                       <th className="md:py-4 md:text-base px-5 text-xs py-2">
@@ -223,6 +275,26 @@ const StudentPage = () => {
                       <th className="md:py-4 md:text-base px-5 text-xs py-2">
                         Plan
                       </th>
+                      <th className="md:py-4 md:text-base px-5 text-xs py-2 flex items-center gap-1">
+                        Date Joined{" "}
+                        <span className="">
+                          {ordering !== "" ? (
+                            <FaSortUp
+                              onClick={() => {
+                                setOrdering("");
+                              }}
+                              className="cursor-pointer"
+                            />
+                          ) : (
+                            <FaSortDown
+                              onClick={() => {
+                                setOrdering("-");
+                              }}
+                              className="cursor-pointer"
+                            />
+                          )}
+                        </span>
+                      </th>
                       <th className="md:py-4 md:text-base px-5 text-xs py-2">
                         Access
                       </th>
@@ -231,28 +303,25 @@ const StudentPage = () => {
                   <tbody className="">
                     {loading ? (
                       <tr>
-                        <td colSpan={6} className="py-4">
-                          <span className="flex items-center justify-center">
-                            <Loader2Icon className="animate-spin" />
-                            <p>Loading</p>
-                          </span>
+                        <td colSpan={7} className="py-4">
+                          <Skeleton />
                         </td>
                       </tr>
-                    ) : filteredStudents && filteredStudents?.length > 0 ? (
+                    ) : students && students?.length > 0 ? (
                       renderStudents()
                     ) : (
                       <tr>
-                        <td colSpan={6} className="py-4">
+                        <td colSpan={7} className="py-4">
                           No data available.
                         </td>
                       </tr>
                     )}
                   </tbody>
                 </table>
-                <div className="flex items-center justify-end gap-5 mt-2">
+                <div className="flex items-center justify-end gap-1 mt-2">
                   <div>
                     <Button
-                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       onClick={prevPage}
                       disabled={currentPage === 1}
                     >
@@ -263,7 +332,7 @@ const StudentPage = () => {
                   <div>
                     <Button
                       onClick={nextPage}
-                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+                      className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       disabled={
                         students?.length < 10 || currentPage * 10 >= count
                       }

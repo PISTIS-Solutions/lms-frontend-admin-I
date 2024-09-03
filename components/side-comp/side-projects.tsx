@@ -16,13 +16,11 @@ const SideProjects = ({
         <div className="text-main p-4 text-lg md:text-2xl font-medium flex justify-between items-center py-2">
           <h3>Projects</h3>
           <span
-            onClick={() => {
-              handleModal();
-            }}
-            className="flex items-center gap-1 cursor-pointer"
+            onClick={handleModal}
+            className="flex items-center gap-1 bg-sub py-3 hover:bg-white hover:border hover:border-sub hover:text-sub cursor-pointer px-3 text-white rounded-[8px] font-medium"
           >
-            <p className="underline">Add</p>
             <Plus />
+            <p className="hidden text-base md:block">Add a new project</p>
           </span>
         </div>
         <div className="">

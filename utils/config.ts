@@ -7,7 +7,7 @@ const courseID = Cookies.get("courseId");
 export const urls = {
   signin: `${baseURL}/jwt/create/`,
   adminDashboard: `${baseURL}/users/admin/dashboard/`,
-  adminRefreshToken: `${baseURL}/jwt/refresh/`,
+  adminRefresh: `${baseURL}/jwt/refresh/`,
   changePassword: `${baseURL}/users/student/reset_password_confirm/`,
   getCourses: `${baseURL}/courses/`,
   uploadCourses: `${baseURL}/courses/`,
@@ -21,5 +21,6 @@ export const urls = {
   projectOverview: `${baseURL}/pending-grading/`,
   deleteStudent: `${baseURL}/users/student/deactivate_me/`,
   projectReview: `${baseURL}/users/admin/project-review/`,
-  manageStudentPlan : `${baseURL}/users/admin/manage-subscriptions/`,
+  manageStudentPlan: `${baseURL}/users/admin/manage-subscriptions/`,
+  // rejectProjectSubmission: `${baseURL}/reject-submission/`
 };

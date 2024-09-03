@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import PendingModal from "./modal/pending-modal";
 import ReviewedModal from "./modal/reviewed-modal";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const ProjectReview = ({ reviewLoad, projectReview }: any) => {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,10 +104,11 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
           {reviewLoad ? (
             <tr>
               <td colSpan={6} className="py-4">
-                <span className="flex items-center justify-center">
+                {/* <span className="flex items-center justify-center">
                   <Loader2Icon className="animate-spin" />
                   <p>Loading</p>
-                </span>
+                </span> */}
+                <Skeleton/>
               </td>
             </tr>
           ) : currentData && currentData.length > 0 ? (
@@ -134,6 +138,8 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                         ? "text-orange-500"
                         : person.status === "Reviewed"
                         ? "text-green-500"
+                        : person.status === "Rejected"
+                        ? "text-red-500"
                         : "text-gray-600"
                     }`}
                   >
@@ -142,7 +148,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                   <td className="md:py-4 md:text-base px-2 text-xs py-1 text-main">
                     {!person.status ? (
                       "-"
-                    ) : person.status === "Submitted" ? (
+                    ) : person.status === "Submitted" || person.status === "Rejected" ? (
                       <p
                         onClick={() => handleModal(person)}
                         className="bg-[#F8F9FF] rounded-[24px]  text-center p-1 w-[107px] cursor-pointer"
@@ -166,7 +172,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
           ) : (
             <tr>
               <td colSpan={6} className="py-4">
-                No data available.
+                No data available yet.
               </td>
             </tr>
           )}

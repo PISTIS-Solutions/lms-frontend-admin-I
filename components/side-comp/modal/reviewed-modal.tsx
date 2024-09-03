@@ -9,6 +9,9 @@ import refreshAdminToken from "@/utils/refreshToken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
   const [submitDetails, setSubmitDetails] = useState<any | null>(null);
   const [loadSubmit, setLoadSubmit] = useState(false);
@@ -60,6 +63,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
   useEffect(() => {
     fetchSubDetails();
   }, []);
+
   return (
     <div className="bg-white p-4 w-full mx-2 md:mx-0 md:w-1/3 h-5/6">
       <div>
@@ -94,7 +98,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
                 {submitDetails?.submission_link}
               </a>
             ) : (
-              <p>Please wait...</p>
+              <Skeleton />
             )}
           </span>
         </div>
@@ -104,7 +108,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
             Student’s comment
           </h1>
           <p className="text-[#3E3E3E] text-base md:text-lg">
-            {!loadSubmit ? submitDetails?.student_comments : "Please wait..."}
+            {!loadSubmit ? submitDetails?.student_comments : <Skeleton />}
           </p>
         </div>
         <div className="my-4">
@@ -112,7 +116,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
             Your comment
           </h1>
           <p className="text-[#3E3E3E] text-base md:text-lg">
-            {!loadSubmit ? submitDetails?.mentor_comments : "Please wait..."}
+            {!loadSubmit ? submitDetails?.mentor_comments : <Skeleton />}
           </p>
         </div>
       </div>

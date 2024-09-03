@@ -1,7 +1,6 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
-import { formatChartData } from "./helper";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,7 +13,7 @@ import {
   Loader2Icon,
 } from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
-import { LineChart } from "@/components/side-comp/line-chart";
+// import { LineChart } from "@/components/side-comp/line-chart";
 import axios from "axios";
 import { urls } from "@/utils/config";
 import { useRouter } from "next/navigation";
@@ -24,6 +23,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import Link from "next/link";
+import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 interface AdminData {
   total_courses: number;
@@ -31,20 +37,31 @@ interface AdminData {
   total_mentors: number;
 }
 
-interface ChartDetails {
-  data: number[];
-  labels: string[];
+interface StudentPerMonth {
+  month: string;
+  count: number;
 }
 
 const Dashboard = () => {
-  const [chartDetails, setChartDetails] = useState<ChartDetails>({
-    data: [],
-    labels: [],
-  });
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [studentPerMonth, setStudentPerMonth] = useState<StudentPerMonth[]>([]);
 
   const router = useRouter();
+
+  const getMonthName = (dateString: string): string => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { month: "long" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  // Function to update the studentPerMonth array with formatted month names
+  const updateMonthNames = (data: StudentPerMonth[]): StudentPerMonth[] => {
+    return data.map((student) => ({
+      ...student,
+      month: getMonthName(student.month),
+    }));
+  };
 
   const fetchAdminData = async () => {
     try {
@@ -54,11 +71,13 @@ const Dashboard = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      setAdminData(response.data);
-      const formattedChartData = formatChartData(
-        response.data.students_per_month
-      );
-      setChartDetails(formattedChartData);
+      if (response.status === 200) {
+        const formattedData = updateMonthNames(
+          response.data.students_per_month
+        );
+        setAdminData(response.data);
+        setStudentPerMonth(formattedData);
+      }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -101,7 +120,6 @@ const Dashboard = () => {
       });
       setProjectOverview(response.data);
       setOverviewLoad(false);
-      console.log(response, "grado");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
@@ -131,28 +149,17 @@ const Dashboard = () => {
       setOverviewLoad(false);
     }
   };
+  const chartConfig = {
+    desktop: {
+      label: "Enrollment activity ",
+      color: "rgb(255, 99, 132)",
+    },
+  } satisfies ChartConfig;
 
   useEffect(() => {
     fetchAdminData();
     fetchProjectOverview();
   }, []);
-
-  // const months = [
-  //   "January",
-  //   "February",
-  //   "March",
-  //   "April",
-  //   "May",
-  //   "June",
-  //   "July",
-  //   "August",
-  //   "September",
-  //   "October",
-  //   "November",
-  //   "December",
-  // ];
-
-  // console.log(projectOverview, "PsO")
 
   const userName = Cookies.get("fullName");
   return (
@@ -170,7 +177,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
             <div className=" col-span-1 lg:col-span-7">
               <div className="flex gap-x-4 overflow-x-scroll justify-between pr-4">
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
+                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -189,7 +196,7 @@ const Dashboard = () => {
                     <BookOpenText className="text-main" />
                   </span>
                 </div>
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
+                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -208,7 +215,7 @@ const Dashboard = () => {
                     <GraduationCap className="text-main" />
                   </span>
                 </div>
-                <div className=" lg:max-w-[209px] w-auto h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
+                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
                   <div>
                     {loading ? (
                       <Loader2 className="animate-spin text-xl" />
@@ -234,10 +241,88 @@ const Dashboard = () => {
                     Enrollment activity{" "}
                   </h1>
                 </div>
-                <LineChart chartDetails={chartDetails} />
+                {/* <div className="h-auto md:h-[350px] w-full"> */}
+                {/* <LineChart chartDetails={chartDetails} /> */}
+                {/* </div> */}
+                {/* <ChartContainer config={chartConfig}>
+                  <LineChart
+                    accessibilityLayer
+                    data={chartData}
+                    margin={{
+                      left: 12,
+                      right: 12,
+                    }}
+                  >
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent hideLabel />}
+                    />
+                    <Line
+                      dataKey="desktop"
+                      type="linear"
+                      stroke="var(--color-desktop)"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ChartContainer> */}
+                <ChartContainer
+                  className="max-h-[450px] w-full"
+                  config={chartConfig}
+                >
+                  <LineChart
+                    accessibilityLayer
+                    data={studentPerMonth}
+                    margin={{
+                      top: 20,
+                      left: 15,
+                      right: 10,
+                    }}
+                  >
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent indicator="line" />}
+                    />
+                    <Line
+                      dataKey="count"
+                      type="natural"
+                      stroke="var(--color-desktop)"
+                      strokeWidth={2}
+                      dot={{
+                        fill: "var(--color-desktop)",
+                      }}
+                      activeDot={{
+                        r: 6,
+                      }}
+                    >
+                      <LabelList
+                        position="top"
+                        offset={12}
+                        className="fill-foreground"
+                        fontSize={12}
+                      />
+                    </Line>
+                  </LineChart>
+                </ChartContainer>
               </div>
             </div>
-            <div className="bg-white h-[370px] md:h-[500px] rounded-[8px] p-2 shadow-sm col-span-3">
+            <div className="bg-white h-[370px] md:h-[650px] rounded-[8px] p-2 shadow-sm col-span-3">
               <h1 className="md:text-2xl text-lg font-medium mb-4">
                 Pending Grading
               </h1>

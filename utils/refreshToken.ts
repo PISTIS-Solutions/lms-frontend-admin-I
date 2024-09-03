@@ -9,7 +9,7 @@ const refreshAdminToken = async (): Promise<void> => {
       access: Cookies.get("adminAccessToken"),
     };
     const refreshResponse = await axios.post(
-      urls.adminRefreshToken,
+      urls.adminRefresh,
       adminTokens
     );
     Cookies.set("adminAccessToken", refreshResponse.data.access, {
