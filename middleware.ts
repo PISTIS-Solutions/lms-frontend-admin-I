@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 // import Cookies from "js-cookie";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
 const protectedRoutes = [
   "/dashboard",
@@ -16,14 +16,16 @@ const protectedRoutes = [
 ];
 
 export default function middleware(req: NextRequest) {
-  const tokenPresent = cookies().get("adminAccessToken")?.value;
+  // const tokenPresent = cookies().get("adminAccessToken")?.value;
+  const tokenPresent = req.cookies.get("adminAccessToken")?.value;
   const isAuthenticated = tokenPresent !== undefined ? true : false;
   if (
     !isAuthenticated &&
     isProtectedRoute(req.nextUrl.pathname, protectedRoutes)
   ) {
-    const absoluteURL = new URL("/", req.nextUrl.origin);
-    return NextResponse.redirect(absoluteURL.toString());
+    // const absoluteURL = new URL("/", req.nextUrl.origin);
+    // return NextResponse.redirect(absoluteURL.toString());
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
@@ -36,3 +38,9 @@ function isProtectedRoute(path: string, protectedRoutes: string[]): boolean {
     return regex.test(path);
   });
 }
+
+export const config = {
+  experimental: {
+    runtime: "edge",
+  },
+};
