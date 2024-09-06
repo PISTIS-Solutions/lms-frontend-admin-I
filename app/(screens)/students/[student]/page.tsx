@@ -107,7 +107,7 @@ const Student = () => {
               <div className=" text-[#939393] text-xs md:text-lg text-right pr-2">
                 <p>Time left: {studentData?.time_left?.time_left}</p>
                 <p>Last login: {studentData?.last_login}</p>
-                <p>Status: {studentData?.plan}</p>
+                <p>Status: {studentData?.status}</p>
               </div>
             </div>
             <div>

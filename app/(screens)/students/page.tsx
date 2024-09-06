@@ -59,13 +59,13 @@ const StudentPage = () => {
 
   const [loadingManage, setLoadingManage] = useState(false);
 
-  const manageStudentSubscription = async (id: any, plan: any) => {
+  const manageStudentSubscription = async (id: any, status: any) => {
     try {
       setLoadingManage(true);
       const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.patch(
-        `${urls.manageStudentPlan}${id}/`,
-        { plan },
+        `${urls.manageStudentStatus}${id}/`,
+        { status: status },
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
@@ -89,7 +89,7 @@ const StudentPage = () => {
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await manageStudentSubscription(id, plan);
+        await manageStudentSubscription(id, status);
       } else if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
@@ -132,25 +132,34 @@ const StudentPage = () => {
       const hours = String(date.getHours()).padStart(2, "0");
       const minutes = String(date.getMinutes()).padStart(2, "0");
 
-      return `${day}/${month}/${year} ${hours}:${minutes}`;
+      return {
+        date: `${day}/${month}/${year}`,
+        time: `${hours}:${minutes}`,
+      };
     }
+    console.log(students);
 
     return students.map((person) => (
       <React.Fragment key={person?.id}>
         <tr className=" md:text-base text-xs px-3 md:px-0">
           <td
-            className="cursor-pointer font-semibold text-main py-2 md:py-4"
+            className="cursor-pointer font-semibold text-main py-2 md:py-4 text-left  px-5"
             onClick={() => {
               readStudent(person?.id);
             }}
           >
             {person?.full_name}
           </td>
-          <td className="py-2 md:py-4">{person?.email}</td>
+          <td className="py-2 md:py-4 text-left">{person?.email}</td>
           <td className="py-2 md:py-4">{person?.courses_completed}</td>
-          <td className="py-2 md:py-4">{person?.phone_number}</td>
-          <td className="py-2 md:py-4">{person?.plan}</td>
-          <td className="py-2 md:py-4">{formatDateTime(person?.date_joined)}</td>
+          <td className="py-2 md:py-4 text-center">{person?.phone_number}</td>
+          <td className="py-2 md:py-4">{person?.status}</td>
+          <td className="py-2 md:py-4">
+            {formatDateTime(person?.date_joined).date}
+          </td>
+          <td className="py-2 md:py-4">
+            {formatDateTime(person?.date_joined).time}
+          </td>
           <td
             onClick={() => toggleStudentOptions(person?.id)}
             className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
@@ -260,42 +269,29 @@ const StudentPage = () => {
                 <table className="w-full mt-2 text-center relative">
                   <thead className="text-main">
                     <tr className="bg-[#F8F9FF] py-2 w-full">
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2">
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-left w-1/4 rounded-l-2xl">
                         Full name
                       </th>
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2">
+                      <th className="md:py-2 md:text-base text-xs py-2 text-left">
                         Email
                       </th>
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2">
-                        Courses Completed
+                      <th className="md:py-2 md:text-base text-xs py-2 text-center">
+                        <p className="w-min mx-auto">Courses Completed</p>
                       </th>
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2">
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Phone Number
                       </th>
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2">
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Plan
                       </th>
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2 flex items-center gap-1">
-                        Date Joined{" "}
-                        <span className="">
-                          {ordering !== "" ? (
-                            <FaSortUp
-                              onClick={() => {
-                                setOrdering("");
-                              }}
-                              className="cursor-pointer"
-                            />
-                          ) : (
-                            <FaSortDown
-                              onClick={() => {
-                                setOrdering("-");
-                              }}
-                              className="cursor-pointer"
-                            />
-                          )}
-                        </span>
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
+                        Date
                       </th>
-                      <th className="md:py-4 md:text-base px-5 text-xs py-2">
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
+                        <td className="flex items-center gap-1">Time </td>
+                      </th>
+
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 rounded-r-2xl">
                         Access
                       </th>
                     </tr>
@@ -303,7 +299,7 @@ const StudentPage = () => {
                   <tbody className="">
                     {loading ? (
                       <tr>
-                        <td colSpan={7} className="py-4">
+                        <td colSpan={8} className="py-4">
                           <Skeleton />
                         </td>
                       </tr>
@@ -311,7 +307,7 @@ const StudentPage = () => {
                       renderStudents()
                     ) : (
                       <tr>
-                        <td colSpan={7} className="py-4">
+                        <td colSpan={8} className="py-4">
                           No data available.
                         </td>
                       </tr>
