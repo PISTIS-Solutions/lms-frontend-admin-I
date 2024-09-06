@@ -33,9 +33,7 @@ const PaginatedTable = () => {
 
   const renderStudents = () => {
     return students
-      ?.filter(
-        (person: any) => person?.is_student
-      )
+      ?.filter((person: any) => person?.is_student)
       .map((person: any) => (
         <tr
           onClick={() => readStudent(person.id)}
@@ -52,7 +50,7 @@ const PaginatedTable = () => {
             {person.location}
           </td>
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
-            {person.plan}
+            {person.status}
           </td>
         </tr>
       ));
