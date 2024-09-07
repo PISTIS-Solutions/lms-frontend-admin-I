@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const PaginatedTable = () => {
-  const { students, loading, fetchStudents, count } = useStudentsStore();
+  const { students, loading, fetchStudents, next, previous } =
+    useStudentsStore();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   useEffect(() => {
@@ -30,8 +31,8 @@ const PaginatedTable = () => {
   const readStudent = (id: any) => {
     router.push(`/students/${id}`);
   };
-
   const renderStudents = () => {
+    console.log(students);
     return students
       ?.filter((person: any) => person?.is_student)
       .map((person: any) => (
@@ -105,7 +106,8 @@ const PaginatedTable = () => {
         <Button
           className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
           onClick={prevPage}
-          disabled={currentPage === 1}
+          disabled={previous == null}
+          // disabled={currentPage === 1}
         >
           <ArrowLeft />
           Previous
@@ -113,7 +115,7 @@ const PaginatedTable = () => {
         <Button
           onClick={nextPage}
           className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-          disabled={students?.length < 10 || currentPage * 10 >= count}
+          disabled={next == null}
         >
           <ArrowRight />
           Next
