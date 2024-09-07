@@ -68,6 +68,8 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       set({
         students: response.data.results,
         count: response.data.count,
+        next: response.data.next,
+        previous: response.data.previous,
       });
       return response.data.results;
     } catch (error: any) {
