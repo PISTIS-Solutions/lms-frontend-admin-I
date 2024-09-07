@@ -25,7 +25,7 @@ const StudentPage = () => {
   const { students, loading, fetchStudents, previous, next } =
     useStudentsStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState({ value: "", page: 1 });
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [selectedValue, setSelectedValue] = useState("");
   const [ordering, setOrdering] = useState("");
@@ -37,17 +37,28 @@ const StudentPage = () => {
   // };
 
   useEffect(() => {
-    fetchStudents(currentPage, searchQuery, selectedValue, ordering);
+    searchQuery.value !== ""
+      ? fetchStudents(
+          searchQuery.page,
+          searchQuery.value,
+          selectedValue,
+          ordering
+        )
+      : fetchStudents(currentPage, searchQuery.value, selectedValue, ordering);
   }, [currentPage, searchQuery, selectedValue, ordering]);
 
   const nextPage = async () => {
-    const nextPageStudents = await fetchStudents(currentPage + 1);
-    if (nextPageStudents?.length > 0) {
+    // const nextPageStudents = await fetchStudents(currentPage + 1);
+    if (searchQuery.value !== "")
+      setSearchQuery({ ...searchQuery, page: searchQuery.page + 1 });
+    else if (next !== null) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
   const prevPage = () => {
-    if (currentPage > 1) {
+    if (searchQuery.value !== "")
+      setSearchQuery({ ...searchQuery, page: searchQuery.page - 1 });
+    else if (previous !== null) {
       setCurrentPage((prevPage) => prevPage - 1);
     }
   };
@@ -118,7 +129,8 @@ const StudentPage = () => {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery({ ...searchQuery, value: e.target.value });
   };
 
   //date and time format funct
@@ -227,7 +239,7 @@ const StudentPage = () => {
               type="text"
               placeholder="Search student name or email address"
               className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm italic rounded-[8px] border border-main"
-              value={searchQuery}
+              value={searchQuery.value}
               onChange={handleSearch}
               // onChange={(e) => setSearchQuery(e.target.value)}
             />
