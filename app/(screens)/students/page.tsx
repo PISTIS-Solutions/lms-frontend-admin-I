@@ -22,14 +22,15 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const StudentPage = () => {
-  const { students, loading, fetchStudents, count } = useStudentsStore();
+  const { students, loading, fetchStudents, previous, next } =
+    useStudentsStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [selectedValue, setSelectedValue] = useState("");
   const [ordering, setOrdering] = useState("");
   const router = useRouter();
-
+  console.log(students);
   // const handleChange = (value: string) => {
   //   setSelectedValue(value);
   //   console.log(`Selected Value: ${value}`); // Debugging
@@ -319,7 +320,7 @@ const StudentPage = () => {
                     <Button
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       onClick={prevPage}
-                      disabled={currentPage === 1}
+                      disabled={previous === null}
                     >
                       <ArrowLeft />
                       Previous
@@ -329,9 +330,7 @@ const StudentPage = () => {
                     <Button
                       onClick={nextPage}
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
-                      disabled={
-                        students?.length < 10 || currentPage * 10 >= count
-                      }
+                      disabled={next === null}
                     >
                       <ArrowRight />
                       Next

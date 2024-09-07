@@ -5,10 +5,31 @@ import { baseURL, urls } from "@/utils/config";
 import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 
+interface student {
+  id: string;
+  email: string;
+  full_name: string;
+  courses_completed: number;
+  status: string;
+  phone_number: string;
+  location: string;
+  is_student: boolean;
+  has_complete_onboarding: boolean;
+  profile_photo: string;
+  date_joined: string;
+  last_login: string;
+  time_left: {
+    time_left: string;
+    expiration_date: string;
+  };
+}
+
 interface StudentsStore {
-  students: any[];
+  students: student[];
   loading: boolean;
   count: number;
+  next: null | string;
+  previous: null | string;
   fetchStudents: (
     page: number,
     searchQuery?: string,
@@ -21,6 +42,8 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
   students: [],
   count: 0,
   loading: false,
+  next: null,
+  previous: null,
 
   fetchStudents: async (
     page,
@@ -43,7 +66,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
         }
       );
       set({
-        students: response.data,
+        students: response.data.results,
         count: response.data.count,
       });
       return response.data.results;
