@@ -3,7 +3,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import SideNav from "@/components/side-comp/side-nav";
-import { ArrowLeft, ChevronRight, Edit3, Loader2, Plus, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Edit3,
+  Loader2,
+  Plus,
+  X,
+} from "lucide-react";
 import TopNav from "@/components/side-comp/topNav";
 import useCourseRead from "@/store/course-read";
 import "react-toastify/dist/ReactToastify.css";
@@ -145,12 +153,15 @@ const Module = () => {
       <ToastContainer />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
-          <ArrowLeft
+          <span
+            className="md:flex items-center gap-x-1 hidden hover:cursor-pointer"
             onClick={() => {
               router.back();
             }}
-            className="cursor-pointer"
-          />
+          >
+            <ChevronLeft className="cursor-pointer" />
+            <span className="text-[#1A1A1A] text-xl">Back</span>
+          </span>
           <TopNav />
         </div>
         {loading ? (
