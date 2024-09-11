@@ -10,6 +10,7 @@ import {
   LucideLoader2,
   Plus,
   Search,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CoursesCard from "@/components/side-comp/courses-card";
@@ -271,9 +272,15 @@ const Courses = () => {
       return reorderedCourses;
     };
 
-    setDisplayedCourses((courses) => updateState(courses!));
-    setAllCourses((courses) => updateState(courses!));
-    console.log(displayedCourses);
+    setDisplayedCourses((courses) => {
+      if (courses == null) return null;
+
+      const oldIndex = courses.findIndex((course) => course.id === active.id);
+      const newIndex = courses.findIndex((course) => course.id === over?.id);
+      const reorderedCourses = arrayMove(courses, oldIndex, newIndex);
+
+      return reorderedCourses;
+    });
   }
 
   const handleUpdateCourses = async (displayedCourses: Course[]) => {
@@ -299,6 +306,7 @@ const Courses = () => {
       );
       setUpdating(false);
       setIsDragDropEnabled(false);
+      setAllCourses(displayedCourses);
       toast.success(response.data.detail, {
         position: "top-right",
         autoClose: 5000,
@@ -354,22 +362,6 @@ const Courses = () => {
     }
   };
 
-  const handleResetCourseOrder = (orderArray: string[]) => {
-    if (!allCourses) return;
-
-    const reorderedCourses = orderArray
-      .map((title) =>
-        allCourses.find((course) =>
-          course.title.toLowerCase().includes(title.toLowerCase())
-        )
-      )
-      .filter((course) => course !== undefined) as Course[];
-
-    setAllCourses(reorderedCourses);
-    setDisplayedCourses(reorderedCourses);
-    handleUpdateCourses(reorderedCourses);
-  };
-
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -381,7 +373,7 @@ const Courses = () => {
           <TopNav />
         </div>
         <ToastContainer />
-        <div className="py-2 px-7">
+        <div className="py-2 px-7 ">
           <div className="flex flex-wrap justify-between gap-[10px] mt-2">
             {!isDragDropEnabled ? (
               <>
@@ -391,7 +383,7 @@ const Courses = () => {
                   <input
                     type="text"
                     placeholder="Search for a course"
-                    className="placeholder:text-[#A2A2A2] text-black text-xs md:text-base focus:outline-none focus:ring-0 focus:border-none border-0 bg-transparent p-0 w-full"
+                    className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm focus:outline-none focus:ring-0 focus:border-none border-0 bg-transparent p-0 w-full"
                     value={searchQuery}
                     onChange={handleSearch}
                   />
@@ -399,13 +391,13 @@ const Courses = () => {
                 <div className="flex gap-[10px]">
                   <Button
                     onClick={() => setIsDragDropEnabled(true)}
-                    className="flex items-center md:text-base text-xs gap-x-2 cursor-pointer border-sub text-sub border bg-white p-[11px] px-4 hover:bg-sub/80 hover:text-white hover:border-white"
+                    className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer border-sub text-sub border bg-white p-[11px] px-4 hover:bg-sub/80 hover:text-white hover:border-white"
                   >
                     <Image src={organizeIcon} alt="organize icon" />
                     Organize Courses
                   </Button>
                   <Link href="/courses/add-course">
-                    <Button className="flex items-center md:text-base text-xs gap-x-2 cursor-pointer hover:text-white bg-sub px-5 py-[13px] hover:bg-sub/60">
+                    <Button className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer hover:border hover:border-sub bg-sub px-5 py-[13px] hover:bg-white hover:text-sub">
                       <Plus size={20} />
                       Create a new course
                     </Button>
@@ -415,14 +407,17 @@ const Courses = () => {
             ) : (
               <>
                 <Button
-                  className="p-[10px_16px] text-[#f00] flex gap-3 bg-transparent border-[#f00] border hover:bg-red-400 hover:border-none hover:text-white"
-                  onClick={() => handleResetCourseOrder(defaultOrder)}
+                  className="p-[10px_16px] text-[#f00] flex gap-x-1 bg-transparent border-[#f00] border hover:bg-[#f00] hover:border-none hover:text-white group"
+                  onClick={() => {
+                    setIsDragDropEnabled(false);
+                    setDisplayedCourses(allCourses);
+                  }}
                 >
-                  <Image src={resetIcon} alt="reset icon" />
-                  Reset
+                  <X className="text-[#F00] group-hover:text-white" size={18} />
+                  Cancel
                 </Button>
                 <Button
-                  className="p-[10px_16px] text-white bg-sub flex gap-3 hover:bg-sub/80 h-full"
+                  className="p-[10px_16px] text-white bg-sub flex gap-3 hover:bg-sub/80 h-full gap-x-1 text-sm"
                   onClick={() => handleUpdateCourses(displayedCourses!)}
                 >
                   {updating ? (
