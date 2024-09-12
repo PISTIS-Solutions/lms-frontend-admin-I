@@ -108,3 +108,6 @@ body::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
 
+.touch-action-none {
+  touch-action: none;
+}

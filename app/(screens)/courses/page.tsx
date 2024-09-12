@@ -4,7 +4,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { Loader2, Loader2Icon, Plus, Search } from "lucide-react";
+import {
+  Loader2,
+  Loader2Icon,
+  LucideLoader2,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CoursesCard from "@/components/side-comp/courses-card";
 import TopNav from "@/components/side-comp/topNav";
@@ -24,28 +31,75 @@ import { GrTarget } from "react-icons/gr";
 import useProjectCount from "@/store/projectCount";
 import EditCourse from "@/components/side-comp/modal/edit-course";
 import { Skeleton } from "@/components/ui/skeleton";
+import organizeIcon from "@/public/assets/svg/organize.svg";
+import resetIcon from "@/public/assets/svg/reset.svg";
+import saveIcon from "@/public/assets/svg/save.svg";
+
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { defaultOrder } from "@/utils/DefaultCourseOrderFormat";
+
+interface Course {
+  id: string;
+  title: string;
+  slug: string;
+  course_category: string;
+  course_image: string;
+  overview: string;
+  course_url: string;
+  course_duration: string;
+  course_image_url: string;
+  module_count: number;
+}
+
+interface updatedCourseOrderProps {
+  id: string;
+  order: number;
+}
 
 const Courses = () => {
   const router = useRouter();
-  const [courses, setCourses] = useState<any | null>(null);
+  const [allCourses, setAllCourses] = useState<Course[] | null>(null);
+  const [displayedCourses, setDisplayedCourses] = useState<Course[] | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [editModal, setEditModal] = useState(false);
   const [courseIds, setCourseIds] = useState([]);
+  const [isDragDropEnabled, setIsDragDropEnabled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   //fetch course
   const fetchCourses = async () => {
+    const adminAccessToken = Cookies.get("adminAccessToken");
     try {
       setLoading(true);
-      const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(urls.getCourses, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
       if (response.status === 200) {
-        setCourses(response.data);
+        setDisplayedCourses(response.data);
+        setAllCourses(response.data);
         const ids = response.data.map((course: { id: number }) => course.id);
         setCourseIds(ids);
         // console.log(response.data, "rd")
@@ -191,25 +245,199 @@ const Courses = () => {
     router.push(`/courses/${id}`);
   };
   // console.log(courses, "cl")
+
+  // add drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  function onDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (active.id === over?.id) {
+      return;
+    }
+
+    const updateState = (courses: Course[]) => {
+      if (courses == null) return null;
+
+      const oldIndex = courses.findIndex((course) => course.id === active.id);
+      const newIndex = courses.findIndex((course) => course.id === over?.id);
+      const reorderedCourses = arrayMove(courses, oldIndex, newIndex);
+
+      return reorderedCourses;
+    };
+
+    setDisplayedCourses((courses) => {
+      if (courses == null) return null;
+
+      const oldIndex = courses.findIndex((course) => course.id === active.id);
+      const newIndex = courses.findIndex((course) => course.id === over?.id);
+      const reorderedCourses = arrayMove(courses, oldIndex, newIndex);
+
+      return reorderedCourses;
+    });
+  }
+
+  const handleUpdateCourses = async (displayedCourses: Course[]) => {
+    setUpdating(true);
+    const adminAccessToken = Cookies.get("adminAccessToken");
+
+    const updatedCourseOrder =
+      displayedCourses &&
+      displayedCourses.map((course, idx) => ({
+        id: course.id,
+        order: idx + 1,
+      }));
+
+    try {
+      const response = await axios.post(
+        urls.UpdateCourses,
+        {
+          courses: updatedCourseOrder,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+      setUpdating(false);
+      setIsDragDropEnabled(false);
+      setAllCourses(displayedCourses);
+      toast.success(response.data.detail, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        theme: "dark",
+      });
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await handleUpdateCourses(displayedCourses);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    }
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchValue = event.target.value.toLowerCase();
+    setSearchQuery(searchValue);
+
+    if (allCourses) {
+      if (searchValue === "") {
+        setDisplayedCourses(allCourses);
+      } else {
+        const filteredCourses =
+          allCourses &&
+          allCourses.filter((course) =>
+            course.title.toLowerCase().includes(searchValue)
+          );
+        setDisplayedCourses(filteredCourses);
+      }
+    }
+  };
+
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
-        <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
+        <div className="md:h-[86px] h-[70px] flex md:justify-between justify-end px-3 items-center w-full md:px-7">
+          <h2 className="font-medium text-[32px] text-[#484848] hidden md:inline">
+            Courses
+          </h2>
           <TopNav />
         </div>
         <ToastContainer />
-        <div className="py-2 px-2 md:px-7">
-          <div className="flex justify-end">
-            <Link href="/courses/add-course">
-              <Button className="flex items-center md:text-base text-xs gap-x-2 cursor-pointer text-black hover:text-white bg-sub mt-2">
-                Create a new course
-                <Plus />
-              </Button>
-            </Link>
+        <div className="py-2 px-7 ">
+          <div className="flex flex-wrap justify-between gap-[10px] mt-2">
+            {!isDragDropEnabled ? (
+              <>
+                <div className="flex border border-[#9F9F9F] rounded-[6px] p-[10px_12px] items-center gap-x-4 w-full md:w-1/3 h-full">
+                  {/* Search input field */}
+                  <Search color="#9F9F9F" size={16} />
+                  <input
+                    type="text"
+                    placeholder="Search for a course"
+                    className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm focus:outline-none focus:ring-0 focus:border-none border-0 bg-transparent p-0 w-full"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                  />
+                </div>
+                <div className="flex gap-[10px]">
+                  <Button
+                    onClick={() => setIsDragDropEnabled(true)}
+                    className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer border-sub text-sub border bg-white p-[11px] px-4 hover:bg-sub/80 hover:text-white hover:border-white"
+                  >
+                    <Image src={organizeIcon} alt="organize icon" />
+                    Organize Courses
+                  </Button>
+                  <Link href="/courses/add-course">
+                    <Button className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer hover:border hover:border-sub bg-sub px-5 py-[13px] hover:bg-white hover:text-sub">
+                      <Plus size={20} />
+                      Create a new course
+                    </Button>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="p-[10px_16px] text-[#f00] flex gap-x-1 bg-transparent border-[#f00] border hover:bg-[#f00] hover:border-none hover:text-white group"
+                  onClick={() => {
+                    setIsDragDropEnabled(false);
+                    setDisplayedCourses(allCourses);
+                  }}
+                >
+                  <X className="text-[#F00] group-hover:text-white" size={18} />
+                  Cancel
+                </Button>
+                <Button
+                  className="p-[10px_16px] text-white bg-sub flex gap-3 hover:bg-sub/80 h-full gap-x-1 text-sm"
+                  onClick={() => handleUpdateCourses(displayedCourses!)}
+                >
+                  {updating ? (
+                    <>
+                      <LucideLoader2 className="animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      <Image src={saveIcon} alt="reset icon" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+              </>
+            )}
           </div>
-          <div className="my-5 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5">
-            {loading ? (
+          {loading ? (
+            <div className="my-5 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5">
               <div className="flex flex-col justify-center items-center">
                 <div className="flex flex-col space-y-3 shadow-md p-4 w-full">
                   <Skeleton className="h-[125px]  rounded-xl" />
@@ -220,26 +448,40 @@ const Courses = () => {
                 </div>
                 <p className="text-xl text-main font-bold my-4">Loading...</p>
               </div>
-            ) : courses && courses?.length > 0 ? (
-              courses?.map((course: any) => (
-                <>
-                  <div key={course.id}>
-                    <CoursesCard
-                      image={course?.course_image_url}
-                      id={course?.id}
-                      title={course?.title}
-                      duration={course?.course_duration}
-                      handleCardClick={handleCardClick}
-                      handleOpen={() => handleOpen(course?.id)}
-                      openEditModal={() => openEditModal(course)}
-                    />
-                  </div>
-                </>
-              ))
-            ) : (
-              <p className="text-center">No courses available.</p>
-            )}
-          </div>
+            </div>
+          ) : displayedCourses && displayedCourses?.length > 0 ? (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={onDragEnd}
+            >
+              <SortableContext
+                items={displayedCourses}
+                strategy={rectSortingStrategy}
+                disabled={!isDragDropEnabled}
+              >
+                <div className="my-5 flex flex-wrap justify-center gap-5">
+                  {displayedCourses?.map((course: any) => (
+                    <>
+                      <CoursesCard
+                        image={course?.course_image_url}
+                        id={course?.id}
+                        title={course?.title}
+                        duration={course?.course_duration}
+                        handleCardClick={handleCardClick}
+                        handleOpen={() => handleOpen(course?.id)}
+                        openEditModal={() => openEditModal(course)}
+                        key={course.id}
+                        isDraggable={isDragDropEnabled}
+                      />
+                    </>
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          ) : (
+            <p className="text-center">No courses available.</p>
+          )}
         </div>
         {modal && (
           <section className="absolute top-0 flex justify-center items-center left-0  bg h-screen w-full backdrop-blur-[5px] bg-white/30">
