@@ -87,10 +87,9 @@ const Courses = () => {
   const [isDragDropEnabled, setIsDragDropEnabled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const adminAccessToken = Cookies.get("adminAccessToken");
-
   //fetch course
   const fetchCourses = async () => {
+    const adminAccessToken = Cookies.get("adminAccessToken");
     try {
       setLoading(true);
       const response = await axios.get(urls.getCourses, {
@@ -285,6 +284,8 @@ const Courses = () => {
 
   const handleUpdateCourses = async (displayedCourses: Course[]) => {
     setUpdating(true);
+    const adminAccessToken = Cookies.get("adminAccessToken");
+
     const updatedCourseOrder =
       displayedCourses &&
       displayedCourses.map((course, idx) => ({

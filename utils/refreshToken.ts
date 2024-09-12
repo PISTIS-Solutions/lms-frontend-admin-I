@@ -8,10 +8,7 @@ const refreshAdminToken = async (): Promise<void> => {
       refresh: Cookies.get("adminRefreshToken"),
       access: Cookies.get("adminAccessToken"),
     };
-    const refreshResponse = await axios.post(
-      urls.adminRefresh,
-      adminTokens
-    );
+    const refreshResponse = await axios.post(urls.adminRefresh, adminTokens);
     Cookies.set("adminAccessToken", refreshResponse.data.access, {
       sameSite: "None",
       secure: true,
@@ -19,6 +16,7 @@ const refreshAdminToken = async (): Promise<void> => {
   } catch (refreshError: any) {
     console.error("Error refreshing token:", refreshError.message);
     Cookies.remove("adminAccessToken");
+    window.location.href = "/";
     throw refreshError;
   }
 };
