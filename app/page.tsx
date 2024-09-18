@@ -23,6 +23,8 @@ const SignIn = () => {
   const onsubmitLogin = async (e: any) => {
     e.preventDefault();
     // console.log("clicked")
+    const fiveMinutesFromNow = new Date(new Date().getTime() + 5 * 60 * 1000);
+
     try {
       setLoading(true);
       if (!containsSpecialCharacters(formStore.password)) {
@@ -49,14 +51,17 @@ const SignIn = () => {
         Cookies.set("adminAccessToken", response.data.access, {
           sameSite: "None",
           secure: true,
+          expires: fiveMinutesFromNow,
         });
         Cookies.set("adminRefreshToken", response.data.refresh, {
           sameSite: "None",
           secure: true,
+          expires: fiveMinutesFromNow,
         });
         Cookies.set("fullName", response.data.user.full_name, {
           sameSite: "None",
           secure: true,
+          expires: fiveMinutesFromNow,
         });
         route.replace("/dashboard");
         setLoading(false);
