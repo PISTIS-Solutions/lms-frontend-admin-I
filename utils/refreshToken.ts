@@ -3,6 +3,8 @@ import Cookies from "js-cookie";
 import { urls } from "./config";
 
 const refreshAdminToken = async (): Promise<void> => {
+  const thirtyMinuteFromNow = new Date(new Date().getTime() + 30 * 60 * 1000);
+
   try {
     const adminTokens = {
       refresh: Cookies.get("adminRefreshToken"),
@@ -12,6 +14,7 @@ const refreshAdminToken = async (): Promise<void> => {
     Cookies.set("adminAccessToken", refreshResponse.data.access, {
       sameSite: "None",
       secure: true,
+      expires: thirtyMinuteFromNow,
     });
   } catch (refreshError: any) {
     console.error("Error refreshing token:", refreshError.message);

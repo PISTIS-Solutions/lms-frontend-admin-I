@@ -23,7 +23,8 @@ const SignIn = () => {
   const onsubmitLogin = async (e: any) => {
     e.preventDefault();
     // console.log("clicked")
-    const fiveMinutesFromNow = new Date(new Date().getTime() + 5 * 60 * 1000);
+    const anHourFromNow = new Date(new Date().getTime() + 60 * 60 * 1000);
+    const thirtyMinuteFromNow = new Date(new Date().getTime() + 30 * 60 * 1000);
 
     try {
       setLoading(true);
@@ -51,17 +52,17 @@ const SignIn = () => {
         Cookies.set("adminAccessToken", response.data.access, {
           sameSite: "None",
           secure: true,
-          expires: fiveMinutesFromNow,
+          expires: thirtyMinuteFromNow,
         });
         Cookies.set("adminRefreshToken", response.data.refresh, {
           sameSite: "None",
           secure: true,
-          expires: fiveMinutesFromNow,
+          expires: anHourFromNow,
         });
         Cookies.set("fullName", response.data.user.full_name, {
           sameSite: "None",
           secure: true,
-          expires: fiveMinutesFromNow,
+          expires: anHourFromNow,
         });
         route.replace("/dashboard");
         setLoading(false);
