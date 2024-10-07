@@ -30,7 +30,7 @@ const StudentPage = () => {
   const [selectedValue, setSelectedValue] = useState("");
   const [ordering, setOrdering] = useState("");
   const router = useRouter();
-  console.log(students);
+  // console.log(students);
   // const handleChange = (value: string) => {
   //   setSelectedValue(value);
   //   console.log(`Selected Value: ${value}`); // Debugging
@@ -139,7 +139,7 @@ const StudentPage = () => {
         time: `${hours}:${minutes}`,
       };
     }
-    console.log(students);
+    // console.log(students);
 
     return students.map((person) => (
       <React.Fragment key={person?.id}>

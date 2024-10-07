@@ -3,49 +3,53 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
-import logo from "@/public/assets/full-logo.png";
-import {
-  Award,
-  BookOpenText,
-  GraduationCap,
-  LayoutDashboard,
-  ListTodo,
-  LogOut,
-  Settings,
-} from "lucide-react";
+import logo from "@/public/assets/sideLogo.png";
+
+import { MdDashboard } from "react-icons/md";
+import { ImBooks } from "react-icons/im";
+import { RiGraduationCapFill } from "react-icons/ri";
+import { CgNotes } from "react-icons/cg";
+import { FaChalkboardUser } from "react-icons/fa6";
+import { IoMdSettings } from "react-icons/io";
+import { IoHelpCircle } from "react-icons/io5";
+import { IoIosLogOut } from "react-icons/io";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import MobileNav from "./mobile-nav";
 
 const SideNav = () => {
   const navTexts = [
     {
-      icon: <LayoutDashboard />,
+      icon: <MdDashboard />,
       title: "Dashboard",
       link: "dashboard",
     },
     {
-      icon: <BookOpenText />,
+      icon: <ImBooks />,
       title: "Course Content",
       link: "courses",
       // otherLink: "courses/add-course/add-modules"
     },
     {
-      icon: <GraduationCap />,
+      icon: <RiGraduationCapFill />,
       title: "Students",
       link: "students",
     },
     {
-      icon: <ListTodo />,
+      icon: <CgNotes />,
       title: "Projects",
       link: "project",
     },
-    // {
-    //   icon: <Award />,
-    //   title: "Grading",
-    //   link: "grading",
-    // },
+    {
+      icon: <FaChalkboardUser />,
+      title: "Mentors",
+      link: "mentors",
+    },
+    {
+      icon: <IoMdSettings />,
+      title: "Settings",
+      link: "settings",
+    },
   ];
 
   const pathname = usePathname();
@@ -53,8 +57,8 @@ const SideNav = () => {
   return (
     <div>
       <nav className="w-64 hidden lg:block bg-main h-screen absolute top-0">
-        <Image className=" m-auto py-5 px-5" src={logo} priority alt="logo" />
-        <div className="flex justify-between flex-col h-[88%]">
+        <Image className="py-14 px-5" src={logo} priority alt="logo" />
+        <div className="flex justify-between flex-col h-[80%]">
           <div>
             {navTexts.map((nav, index) => {
               return (
@@ -62,12 +66,12 @@ const SideNav = () => {
                   <div
                     className={`link ${
                       pathname === `/${nav.link}`
-                        ? "bg-sub text-black border-r-[#6E6EF7] border-r-2"
-                        : "text-white"
-                    } flex items-center pl-5 gap-3  text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-3`}
+                        ? " text-white border-l-white border-l-4"
+                        : "text-[#5E5E9F]"
+                    } flex items-center pl-5 gap-3 text-center hover:text-white hover:border-l-4 hover:border-l-white duration-150 ease-in-out cursor-pointer my-1 py-3`}
                   >
-                    <span> {nav.icon} </span>
-                    <span className="text-lg">{nav.title}</span>
+                    <span>{nav.icon}</span>
+                    <span className=" text-base font-medium">{nav.title}</span>
                   </div>
                 </Link>
               );
@@ -75,33 +79,34 @@ const SideNav = () => {
           </div>
           <div>
             <div className="">
-              <Link href={"/settings"} className="">
+              <Link href={"/help"} className="">
                 <div
                   className={`link ${
-                    pathname === "/settings"
-                      ? "bg-sub text-black border-r-[#6E6EF7] border-r-2"
-                      : "text-white"
-                  } flex items-center pl-5 gap-3  text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-2`}
+                    pathname === "/help"
+                      ? " text-white border-l-white border-l-4"
+                      : "text-[#5E5E9F]"
+                  } flex items-center pl-5 gap-3 text-center hover:text-white hover:border-l-4 hover:border-l-white duration-150 ease-in-out cursor-pointer my-1 py-3`}
                 >
                   {" "}
-                  <Settings />
-                  <span className="text-lg">Settings</span>
+                  <IoHelpCircle />
+                  <span className="text-lg">Help & Information</span>
                 </div>
               </Link>
             </div>
-            <Link href={"/log-out"} className="">
-              <div
-                className={`link ${
-                  pathname === "/log-out"
-                    ? "bg-sub text-black border-r-[#6E6EF7] border-r-2"
-                    : "text-white"
-                } flex items-center pl-5 gap-3  text-center hover:bg-sub hover:border-r-2 hover:border-r-[#6E6EF7] duration-150 ease-in-out cursor-pointer my-1 py-2`}
-              >
-                {" "}
-                <LogOut />
-                <span className="text-lg">Log Out</span>
-              </div>
-            </Link>
+            <div>
+              <Link href={"/log-out"} className="">
+                <div
+                  className={`link ${
+                    pathname === "/log-out"
+                      ? " text-[#FF0000] border-l-white border-l-4"
+                      : "text-[#FF0000]"
+                  } flex items-center pl-5 gap-3 text-center hover:text-white hover:border-l-4 hover:border-l-white duration-150 ease-in-out cursor-pointer my-1 py-3`}
+                >
+                  <IoIosLogOut />
+                  <span className=" text-base font-medium">Log out</span>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
