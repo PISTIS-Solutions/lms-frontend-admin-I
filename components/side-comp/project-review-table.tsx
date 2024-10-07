@@ -108,7 +108,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                   <Loader2Icon className="animate-spin" />
                   <p>Loading</p>
                 </span> */}
-                <Skeleton/>
+                <Skeleton />
               </td>
             </tr>
           ) : currentData && currentData.length > 0 ? (
@@ -131,7 +131,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                       : formatDate(person.date_submitted)}
                   </td>
                   <td
-                    className={`md:py-4 md:text-base text-left text-xs py-1 capitalize ${
+                    className={`md:py-4 md:text-base text-left text-xs py-1 capitalize flex gap-x-2 items-center md:whitespace-nowrap ${
                       !person.status
                         ? "text-gray-600"
                         : person.status === "Submitted"
@@ -143,12 +143,26 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
                         : "text-gray-600"
                     }`}
                   >
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        !person.status
+                          ? "bg-gray-600"
+                          : person.status === "Submitted"
+                          ? "bg-orange-500"
+                          : person.status === "Reviewed"
+                          ? "bg-green-500"
+                          : person.status === "Rejected"
+                          ? "bg-red-500"
+                          : "bg-gray-600"
+                      }`}
+                    ></div>
                     {!person.status ? "No Submission" : person.status}
                   </td>
-                  <td className="md:py-4 md:text-base px-2 text-xs py-1 text-main">
+                  <td className="md:py-4 md:text-base px-2 text-xs py-1 text-main text-center">
                     {!person.status ? (
                       "-"
-                    ) : person.status === "Submitted" || person.status === "Rejected" ? (
+                    ) : person.status === "Submitted" ||
+                      person.status === "Rejected" ? (
                       <p
                         onClick={() => handleModal(person)}
                         className="bg-[#F8F9FF] rounded-[24px]  text-center p-1 w-[107px] cursor-pointer"
