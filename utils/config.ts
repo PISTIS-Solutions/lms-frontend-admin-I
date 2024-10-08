@@ -23,5 +23,9 @@ export const urls = {
   projectReview: `${baseURL}/users/admin/project-review/`,
   manageStudentStatus: `${baseURL}/users/admin/manage-subscriptions/`,
   UpdateCourses: `${baseURL}/courses/update-order/`,
+  mentorList: `${baseURL}/users/mentors/`,
+  manageRole: `${baseURL}/users/roles/manage_role/`,
+  inviteMentor: `${baseURL}/users/mentors/invite/`,
+  exportMentor: `${baseURL}/users/mentors/export_pdf/`
   // rejectProjectSubmission: `${baseURL}/reject-submission/`
 };
