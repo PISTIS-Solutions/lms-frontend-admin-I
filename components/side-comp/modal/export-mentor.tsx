@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 import { CgClose } from "react-icons/cg";
 import { BsDownload } from "react-icons/bs";
@@ -14,60 +12,32 @@ import { urls } from "@/utils/config";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import useMentorsList from "@/store/mentors-list";
 
 const ExportMentorModal = ({ handleExportMentor }: any) => {
+  const { mentors, loadMentors, fetchMentors, previous, next, count } =
+    useMentorsList();
+
   const [loading, setLoading] = useState(false);
-  const [mentors, setMentors] = useState([]);
   const [page, setPage] = useState(1);
   const [role, setRole] = useState("");
 
-  //   const exportMentorList = async (page: number, role = "") => {
-  //     try {
-  //       setLoading(true);
-  //       const adminAccessToken = Cookies.get("adminAccessToken");
-  //       const response = await axios.get(
-  //         `${urls.exportMentor}?page=${page}&role=${role}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${adminAccessToken}`,
-  //           },
-  //         }
-  //       );
-  //       if (response.status === 200) {
-  //         setLoading(false);
-  //         setMentors(response.data.results);
-  //         console.log(response, "res")
-  //       }
-  //     } catch (error: any) {
-  //       if (error.response && error.response.status === 401) {
-  //         await refreshAdminToken();
-  //         await exportMentorList(page, role);
-  //       } else if (error.message === "Network Error") {
-  //         toast.error("Check your network!", {
-  //           position: "top-right",
-  //           autoClose: 5000,
-  //           hideProgressBar: true,
-  //           closeOnClick: true,
-  //           pauseOnHover: false,
-  //           draggable: false,
-  //           theme: "dark",
-  //         });
-  //       } else {
-  //         toast.error(error.response?.data?.detail, {
-  //           position: "top-right",
-  //           autoClose: 5000,
-  //           hideProgressBar: true,
-  //           closeOnClick: true,
-  //           pauseOnHover: false,
-  //           draggable: false,
-  //           theme: "dark",
-  //         });
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    fetchMentors(page, role);
+  }, [page, role]);
+
+  const nextPage = async () => {
+    if (next !== null) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (previous !== null && page > 1) {
+      setPage((prevPage) => prevPage - 1);
+    }
+  };
 
   const exportMentorList = async (page: number, role = "") => {
     try {
@@ -86,6 +56,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
       );
 
       if (response.status === 200) {
+        console.log(response, "res");
         // Create a Blob from the response data
         const fileBlob = new Blob([response.data], {
           type: response.data.type,
@@ -136,28 +107,6 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
     }
   };
 
-  //   useEffect(() => {
-  //     exportMentorList(page, role);
-  //   }, [page, role]);
-
-  //   const componentRef = useRef<HTMLDivElement | null>(null);
-
-  //   const handleDownloadPdf = async () => {
-  //     const element = componentRef.current;
-  //     if (!element) return; // Ensure element exists
-
-  //     const canvas = await html2canvas(element);
-  //     const data = canvas.toDataURL("image/png");
-
-  //     const pdf = new jsPDF();
-  //     const imgProps = pdf.getImageProperties(data);
-  //     const pdfWidth = pdf.internal.pageSize.getWidth() + 200;
-  //     const pdfHeight = pdf.internal.pageSize.getHeight() + 100;
-
-  //     pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-  //     pdf.save("mentors.pdf");
-  //   };
-
   return (
     <div className=" sm:max-w-4/6 max-w-none max-h-[868px] mx-3 p-4 sm:p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
       <div className="flex items-center justify-between">
@@ -166,7 +115,10 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
         </h1>
         <CgClose
           className="text-[#666666] w-[14px] h-[14px] cursor-pointer"
-          onClick={() => handleExportMentor()}
+          onClick={() => {
+            handleExportMentor();
+            fetchMentors(1, "", "");
+          }}
         />
       </div>
       <div>
@@ -180,36 +132,48 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
                 <label htmlFor="all">All</label>
                 <input
                   type="checkbox"
-                  name="all"
+                  name="export-filter"
                   id="all"
                   className="rounded-[2px]"
+                  checked={role === ""}
+                  value=""
+                  onChange={(e) => setRole(e.target.value)}
                 />
               </div>
               <div className="text-[#666666] font-normal text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
-                <label htmlFor="admin">Admin</label>
+                <label htmlFor="admin">Super Admin</label>
                 <input
                   type="checkbox"
-                  name="admin"
+                  name="export-filter"
                   id="admin"
                   className="rounded-[2px]"
+                  checked={role === "super_admin"}
+                  value="super_admin"
+                  onChange={(e) => setRole(e.target.value)}
                 />
               </div>
               <div className="text-[#666666] font-normal text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
                 <label htmlFor="advance">Advance</label>
                 <input
                   type="checkbox"
-                  name="advance"
+                  name="export-filter"
                   id="advance"
                   className="rounded-[2px]"
+                  checked={role === "advanced"}
+                  value="advanced"
+                  onChange={(e) => setRole(e.target.value)}
                 />
               </div>
               <div className="text-[#666666] font-normal text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
                 <label htmlFor="basic">Basic</label>
                 <input
                   type="checkbox"
-                  name="basic"
+                  name="export-filter"
                   id="basic"
                   className="rounded-[2px]"
+                  checked={role === "basic"}
+                  value="basic"
+                  onChange={(e) => setRole(e.target.value)}
                 />
               </div>
             </div>
@@ -218,7 +182,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
             Result: 400 Mentors
           </p>
         </div>
-        {/* <div className="overflow-y-scroll py-4 ">
+        <div className="overflow-y-scroll py-4 ">
           <table className="table-auto">
             <thead className="bg-[#FAFAFA]">
               <tr className="border border-[#dadada]">
@@ -234,10 +198,8 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
                 <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] border border-[#DADADA]">
                   Level
                 </th>
-                <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] border-l border-l-[#DADADA]">
-                  Position
-                </th>
-                <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] ">{``}</th>
+
+                {/* <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] ">{``}</th> */}
               </tr>
             </thead>
             <tbody className="relative">
@@ -255,7 +217,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
                       {person.phone_number}
                     </td>
                     <td
-                      className={`p-[8px_12px] text-[#FF1053] font-normal border border-[#DADADA] text-xs ${
+                      className={`p-[8px_12px]  capitalize font-normal border border-[#DADADA] text-xs ${
                         person?.role?.toLowerCase() === "basic"
                           ? "text-[#02A1FF]"
                           : person?.role?.toLowerCase() === "super_admin"
@@ -275,7 +237,27 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
               ))}
             </tbody>
           </table>
-        </div> */}
+          <div className="flex items-center justify-end gap-2 mt-2">
+            <div>
+              <button
+                className=" text-white disabled:text-white disabled:cursor-not-allowed cursor-pointer text-[14px] gap-1 hover:bg-transparent hover:text-main disabled:bg-[#D0D0D0] w-8 h-8 rounded-[4px] flex justify-center items-center"
+                onClick={prevPage}
+                disabled={previous === null}
+              >
+                <ChevronLeft />
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={nextPage}
+                className="text-white disabled:text-white disabled:cursor-not-allowed cursor-pointer text-[14px] gap-1 hover:bg-transparent hover:text-main disabled:bg-[#D0D0D0] w-8 h-8 rounded-[4px] flex justify-center items-center"
+                disabled={next === null}
+              >
+                <ChevronRight />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <button
         disabled={loading}

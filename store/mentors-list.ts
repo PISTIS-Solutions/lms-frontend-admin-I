@@ -21,7 +21,7 @@ interface MentorsStore {
   count: number;
   next: null | string;
   previous: null | string;
-  fetchMentors: (page: number, searchQuery?: string) => Promise<any>;
+  fetchMentors: (page: number, searchQuery?: string, role?:string) => Promise<any>;
 }
 
 const useMentorsList = create<MentorsStore>((set, get) => ({
@@ -31,7 +31,7 @@ const useMentorsList = create<MentorsStore>((set, get) => ({
   next: null,
   previous: null,
 
-  fetchMentors: async (page, searchQuery = "") => {
+  fetchMentors: async (page, searchQuery = "", role = "") => {
     try {
       set({ loadMentors: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
@@ -39,7 +39,7 @@ const useMentorsList = create<MentorsStore>((set, get) => ({
       const trimmedQuery = searchQuery.trim();
 
       const response = await axios.get(
-        `${urls.mentorList}?page=${page}&search=${trimmedQuery}`,
+        `${urls.mentorList}?page=${page}&search=${trimmedQuery}&role=${role}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
@@ -57,7 +57,7 @@ const useMentorsList = create<MentorsStore>((set, get) => ({
       console.error("Error fetching students:", error.message);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchMentors(page, searchQuery);
+        await get().fetchMentors(page, searchQuery, role);
       } else if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",

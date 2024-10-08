@@ -167,25 +167,25 @@ const MentorsProfile = ({ handleInfoModal, selectedMentor }: any) => {
         </div>
         <div
           className={`border ${
-            access === "super_admin" ? "border-[#FF1053]" : "border-[#DADADA]"
+            access === "advanced" ? "border-[#2FBC8D]" : "border-[#DADADA]"
           }  rounded-[10px] p-4`}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-[#FF1053]">
+            <div className="flex items-center gap-1 text-[#2FBC8D]">
               <FaAward />
-              <p className=" text-lg font-medium">Admin Mentors</p>
+              <p className=" text-lg font-medium">Advanced Mentors</p>
             </div>
             <input
               type="radio"
               name="access"
-              id="admin-access"
+              id="advanced"
               onChange={(e) => setAccess(e.target.value)}
-              value="super_admin"
+              value="advanced"
             />
           </div>
           <p className="text-[#666666] font-normal text-xs py-2">
-            These mentors have the highest level of access and can perform all
-            platform-related actions.
+            These mentors have some administrative responsibilities related to
+            course and project management.
           </p>
           <ol className=" text-xs list-disc list-inside text-[#828282]">
             <li>
@@ -210,25 +210,25 @@ const MentorsProfile = ({ handleInfoModal, selectedMentor }: any) => {
         </div>
         <div
           className={`border ${
-            access === "advanced" ? "border-[#2FBC8D]" : "border-[#DADADA]"
+            access === "super_admin" ? "border-[#FF1053]" : "border-[#DADADA]"
           }  rounded-[10px] p-4`}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-[#2FBC8D]">
+            <div className="flex items-center gap-1 text-[#FF1053]">
               <FaAward />
-              <p className=" text-lg font-medium">Advanced Mentors</p>
+              <p className=" text-lg font-medium">Super Admin Mentors</p>
             </div>
             <input
               type="radio"
               name="access"
-              id="advanced"
+              id="admin-access"
               onChange={(e) => setAccess(e.target.value)}
-              value="advanced"
+              value="super_admin"
             />
           </div>
           <p className="text-[#666666] font-normal text-xs py-2">
-            These mentors have some administrative responsibilities related to
-            course and project management.
+            These mentors have the highest level of access and can perform all
+            platform-related actions.
           </p>
           <ol className=" text-xs list-disc list-inside text-[#828282]">
             <li>
