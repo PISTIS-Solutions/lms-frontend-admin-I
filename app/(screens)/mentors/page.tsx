@@ -185,10 +185,10 @@ const Mentors = () => {
             <p className="text-[#484848] font-medium text-base md:text-lg">
               Mentor's List
             </p>
-            <span className="flex items-center text-[#9F9F9F] cursor-pointer">
+            {/* <span className="flex items-center text-[#9F9F9F] cursor-pointer">
               <p className=" text-xs md:text-sm font-normal">View all</p>
               <LuChevronsRight className=" w-5 h-5 " />
-            </span>
+            </span> */}
           </div>
           <div className="w-full overflow-x-scroll">
             <table className="min-w-full  table-auto">
@@ -224,10 +224,10 @@ const Mentors = () => {
                     {mentors.map((person: any) => (
                       <>
                         <tr key={person.id}>
-                          <td className="p-[6px_12px] capitalize md:p-[10px_16px] flex items-center text-[#666666] font-medium text-xs md:text-base">
+                          <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                             {/* {person.first_name + person.last_name} */}
                             {person.first_name} {person.last_name}
-                            <TiStarburst className=" text-sm -mt-3 text-[#2FBC8D]" />
+                            
                           </td>
                           <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                             {person.email}

@@ -179,7 +179,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
             </div>
           </div>
           <p className="text-[#666666] font-medium text-xs sm:text-sm">
-            Result: 400 Mentors
+            Result: {count} Mentors
           </p>
         </div>
         <div className="overflow-y-scroll py-4 ">
@@ -208,7 +208,6 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
                   <tr key={person.id} className="border border-[#dadada]">
                     <td className="p-[8px_12px]  text-[#666666] font-normal border border-[#DADADA] text-xs">
                       {person.first_name} {person.last_name}
-                      <TiStarburst className="w-[10px] h-[10px] -mt-3 text-[#2FBC8D] inline-block" />
                     </td>
                     <td className="p-[8px_12px] text-[#666666] font-normal border border-[#DADADA] text-xs">
                       {person.email}
