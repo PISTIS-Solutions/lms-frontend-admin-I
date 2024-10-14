@@ -65,7 +65,7 @@ const SideNav = () => {
                 <Link href={`/${nav.link}`} key={index} className="">
                   <div
                     className={`link ${
-                      pathname === `/${nav.link}`
+                      pathname.includes(`/${nav.link}`)
                         ? " text-white border-l-white border-l-4"
                         : "text-[#5E5E9F]"
                     } flex items-center pl-5 gap-3 text-center hover:text-white hover:border-l-4 hover:border-l-white duration-150 ease-in-out cursor-pointer my-1 py-3`}
@@ -97,7 +97,7 @@ const SideNav = () => {
               <Link href={"/log-out"} className="">
                 <div
                   className={`link ${
-                    pathname === "/log-out"
+                    pathname.includes("/log-out")
                       ? " text-[#FF0000] border-l-white border-l-4"
                       : "text-[#FF0000]"
                   } flex items-center pl-5 gap-3 text-center hover:text-white hover:border-l-4 hover:border-l-white duration-150 ease-in-out cursor-pointer my-1 py-3`}

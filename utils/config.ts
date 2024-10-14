@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 
-export const baseURL = process.env.NEXT_PUBLIC_API_URL;
-// export const baseURL = "https://backend.dev.pististechub.io/api/v1/auth";
+// export const baseURL = process.env.NEXT_PUBLIC_API_URL;
+export const baseURL = "https://backend.dev.pististechub.io/api/v1/auth";
 const courseID = Cookies.get("courseId");
 
 export const urls = {
@@ -26,6 +26,6 @@ export const urls = {
   mentorList: `${baseURL}/users/mentors/`,
   manageRole: `${baseURL}/users/roles/manage_role/`,
   inviteMentor: `${baseURL}/users/mentors/invite/`,
-  exportMentor: `${baseURL}/users/mentors/export_pdf/`
-  // rejectProjectSubmission: `${baseURL}/reject-submission/`
+  exportMentor: `${baseURL}/users/mentors/export_pdf/`,
+  uploadMentor: `${baseURL}/users/mentors/activate/`,
 };
