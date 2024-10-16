@@ -108,7 +108,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
   };
 
   return (
-    <div className=" sm:max-w-4/6 max-w-none max-h-[868px] mx-3 p-4 sm:p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
+    <div className=" sm:max-w-4/6 overflow-scroll max-w-none max-h-[868px] mx-3 p-4 sm:p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
       <div className="flex items-center justify-between">
         <h1 className="text-[#2E2E2E] text-[xl] sm:text-2xl font-medium">
           Export Mentor List as PDF
@@ -183,19 +183,19 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
           </p>
         </div>
         <div className="overflow-y-scroll py-4 ">
-          <table className="table-auto">
+          <table className="table-auto w-full">
             <thead className="bg-[#FAFAFA]">
               <tr className="border border-[#dadada]">
-                <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] border border-[#DADADA]">
+                <th className="text-[#666666] font-medium text-xs sm:text-sm text-left p-[6px_8px] sm:p-[8px_12px] border border-[#DADADA]">
                   Name
                 </th>
-                <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] border border-[#DADADA]">
+                <th className="text-[#666666] font-medium text-xs sm:text-sm text-left p-[6px_8px] sm:p-[8px_12px] border border-[#DADADA]">
                   Email Address
                 </th>
-                <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] border border-[#DADADA]">
+                <th className="text-[#666666] font-medium text-xs sm:text-sm text-left p-[6px_8px] sm:p-[8px_12px] border border-[#DADADA]">
                   Phone Number
                 </th>
-                <th className="text-[#666666] font-medium text-sm text-left p-[8px_12px] border border-[#DADADA]">
+                <th className="text-[#666666] font-medium text-xs sm:text-sm text-left p-[6px_8px] sm:p-[8px_12px] border border-[#DADADA]">
                   Level
                 </th>
 
@@ -206,17 +206,17 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
               {mentors?.map((person: any) => (
                 <>
                   <tr key={person.id} className="border border-[#dadada]">
-                    <td className="p-[8px_12px]  text-[#666666] font-normal border border-[#DADADA] text-xs">
+                    <td className="p-[6px_8px] sm:p-[8px_12px]  text-[#666666] font-normal border border-[#DADADA] text-xs">
                       {person.first_name} {person.last_name}
                     </td>
-                    <td className="p-[8px_12px] text-[#666666] font-normal border border-[#DADADA] text-xs">
+                    <td className="p-[6px_8px] sm:p-[8px_12px] text-[#666666] font-normal border border-[#DADADA] text-xs">
                       {person.email}
                     </td>
-                    <td className="p-[8px_12px] text-[#666666] font-normal border border-[#DADADA] text-xs">
+                    <td className="p-[6px_8px] sm:p-[8px_12px] text-[#666666] font-normal border border-[#DADADA] text-xs">
                       {person.phone_number}
                     </td>
                     <td
-                      className={`p-[8px_12px]  capitalize font-normal border border-[#DADADA] text-xs ${
+                      className={`p-[6px_8px] sm:p-[8px_12px]  capitalize font-normal border border-[#DADADA] text-xs ${
                         person?.role?.toLowerCase() === "basic"
                           ? "text-[#02A1FF]"
                           : person?.role?.toLowerCase() === "super_admin"

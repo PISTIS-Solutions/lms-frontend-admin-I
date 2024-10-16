@@ -26,6 +26,6 @@ export const urls = {
   mentorList: `${baseURL}/users/mentors/`,
   manageRole: `${baseURL}/users/roles/manage_role/`,
   inviteMentor: `${baseURL}/users/mentors/invite/`,
-  exportMentor: `${baseURL}/users/mentors/export_pdf/`
-  // rejectProjectSubmission: `${baseURL}/reject-submission/`
+  exportMentor: `${baseURL}/users/mentors/export_pdf/`,
+  uploadMentor: `${baseURL}/users/mentors/activate/`,
 };
