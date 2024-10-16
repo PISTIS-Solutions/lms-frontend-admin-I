@@ -394,9 +394,10 @@ const MentorInformation = () => {
             >
               Select your Position
             </option>
-            {roles.map((role: any) => {
+            {roles.map((role, index) => {
               return (
                 <option
+                  key={index}
                   className="text-[#9F9F9F] capitalize text-xs sm:text-sm md:text-base font-normal"
                   value={role}
                 >
