@@ -48,8 +48,17 @@ const MentorInformation = () => {
   const [selectedCode, setSelectedCode] = useState("+234");
 
   //select roles option
-  const [selectRole, setSelectRole] = useState("");
-  const roles = ["frontend", "backend", "devops"];
+
+  const roles = [
+    "Mentor",
+    "Backend Engineer",
+    "Frontend Engineer",
+    "Operation manager",
+    "Faculty lead",
+    "PR Manager",
+    "UI/UX",
+    "Business Manager",
+  ];
 
   //password
   const [showPassword, setShowPassword] = useState(false);
@@ -69,91 +78,129 @@ const MentorInformation = () => {
 
   //upload mentor information
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  function containsSpecialCharacters(str: string): boolean {
+    const specialCharacters = /[!@#$%^&*()_+[\]{};':"\\|,.<>/?]/;
+    return specialCharacters.test(str);
+  }
   const uploadMentorInfo = async () => {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("uid", uid);
-      formData.append("token", token);
-      formData.append("first_name", mentorData.first_name);
-      formData.append("last_name", mentorData.last_name);
-      formData.append(
-        "phone_number",
-        `(${selectedCode})${mentorData.phone_number}`
-      );
-      formData.append("password", mentorData.password);
-      formData.append("confirm_password", mentorData.confirm_password);
-
-      if (selectedFile) {
-        formData.append("profile_photo", selectedFile);
-      }
-      const response = await axios.post(urls.uploadMentor, formData, {});
-
-      if (response.status === 200) {
-        setLoading(false);
-        toast.success("Mentor account activated successfully!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-        // router.replace("/");
-      } else if (response.status === 404) {
-        toast.error("Mentor not found!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      } else if (response.status === 500) {
-        toast.error("Error activating account!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await uploadMentorInfo();
-      } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+    if (mentorData.password === mentorData.confirm_password) {
+      if (!containsSpecialCharacters(mentorData.password)) {
+        setError("Password does not have special characters!");
       } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        if (
+          mentorData.first_name ||
+          mentorData.last_name ||
+          mentorData.phone_number ||
+          mentorData.role ||
+          mentorData.bio ||
+          mentorData.password ||
+          mentorData.confirm_password ||
+          selectedFile
+        ) {
+          try {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append("uid", uid);
+            formData.append("token", token);
+            formData.append("first_name", mentorData.first_name);
+            formData.append("bio", mentorData.bio);
+            formData.append("role", mentorData.role);
+            formData.append("last_name", mentorData.last_name);
+            formData.append(
+              "phone_number",
+              `(${selectedCode})${mentorData.phone_number}`
+            );
+            formData.append("password", mentorData.password);
+            formData.append("confirm_password", mentorData.confirm_password);
+
+            if (selectedFile) {
+              formData.append("profile_photo", selectedFile);
+            }
+            const response = await axios.post(urls.uploadMentor, formData, {});
+
+            if (response.status === 200) {
+              setLoading(false);
+              toast.success("Mentor account activated successfully!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "dark",
+              });
+              router.replace("/");
+            }
+          } catch (error: any) {
+            if (error.response && error.response.status === 401) {
+              await refreshAdminToken();
+              await uploadMentorInfo();
+            } else if (error?.message === "Network Error") {
+              toast.error("Check your network!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "dark",
+              });
+            } else if (error?.response?.status === 404) {
+              toast.error("Mentor not found!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "dark",
+              });
+            } else if (error?.response?.status === 500) {
+              toast.error("Error activating account!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "dark",
+              });
+            } else {
+              toast.error(error?.response?.data?.detail, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "dark",
+              });
+            }
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          toast.error("Check form fields properly, some fields are missing!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          });
+        }
       }
-    } finally {
-      setLoading(false);
+    } else {
+      setError("Password and confirm password do not match!");
     }
   };
 
   return (
-    <div className="flex justify-around gap-4">
+    <div className="flex justify-around gap-0 sm:gap-4">
+      <ToastContainer />
       <div className="w-1/2 sm:block hidden relative h-screen">
         <Image
           src={mentorImg}
@@ -179,7 +226,11 @@ const MentorInformation = () => {
           <h1 className="text-center text-[#000066] font-semibold text-2xl md:text-3xl">
             Welcome, Mentor! <br /> Let’s Get You Set Up.
           </h1>
-          <Image src={pLogo} alt="pistis-logo" className="absolute w-16 h-16 block sm:hidden top-0 right-0" />
+          <Image
+            src={pLogo}
+            alt="pistis-logo"
+            className="absolute w-16 h-16 block sm:hidden top-0 right-0"
+          />
           <p className="text-[#828282] font-normal text-xs sm:text-sm md:text-base text-center py-2">
             You're just a step away from empowering the next generation of
             DevOps professionals. Complete your profile to begin mentoring.
@@ -446,10 +497,21 @@ const MentorInformation = () => {
                 />
               )}
             </span>
-            <p className="flex items-center gap-1 text-[10px] sm:text-xs py-1 text-[#9F9F9F]">
+            <p
+              className={`flex items-center gap-1 text-[10px] sm:text-xs py-1 ${
+                error === "Password does not have special characters!"
+                  ? "text-red-500"
+                  : "text-[#9F9F9F]"
+              }`}
+            >
               <PiWarningCircle />
               Password must contain special character
             </p>
+            {error === "Password and confirm password do not match!" && (
+              <p className="text-[10px] sm:text-xs py-1 text-red-500">
+                Password and confirm password do not match!
+              </p>
+            )}
           </div>
         </div>
         <button
