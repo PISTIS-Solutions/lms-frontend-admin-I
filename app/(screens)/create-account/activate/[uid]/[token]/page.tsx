@@ -50,14 +50,38 @@ const MentorInformation = () => {
   //select roles option
 
   const roles = [
-    "Mentor",
-    "Backend Engineer",
-    "Frontend Engineer",
-    "Operation manager",
-    "Faculty lead",
-    "PR Manager",
-    "UI/UX",
-    "Business Manager",
+    {
+      fe: "Executive",
+      be: "executive"
+    },
+    {
+      fe: "Faculty Lead",
+      be: "faculty_lead"
+    },
+    {
+      fe: "Mentor",
+      be: "mentor"
+    },
+    {
+      fe: "Frontend Developer",
+      be: "frontend_dev"
+    },
+    {
+      fe: "Backend Developer",
+      be: "backend_dev"
+    },
+      {
+      fe: "PR",
+      be: "pr"
+    },
+      {
+      fe: "Designer",
+      be: "designer"
+    },
+      {
+      fe: "Copywriter",
+      be: "copywriter"
+    },
   ];
 
   //password
@@ -399,9 +423,9 @@ const MentorInformation = () => {
                 <option
                   key={index}
                   className="text-[#9F9F9F] capitalize text-xs sm:text-sm md:text-base font-normal"
-                  value={role}
+                  value={role.be}
                 >
-                  {role}
+                  {role.fe}
                 </option>
               );
             })}
