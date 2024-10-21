@@ -12,6 +12,8 @@ import { FaRegEyeSlash } from "react-icons/fa";
 
 import pLogo from "@/public/assets/pistis_logo.png";
 import countryCodes from "@/utils/countryCode";
+import pat from "@/public/assets/patric.png";
+
 import axios from "axios";
 import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
@@ -223,7 +225,7 @@ const MentorInformation = () => {
   };
 
   return (
-    <div className="flex justify-around gap-0 sm:gap-4">
+    <div className="flex p-0 sm:p-4 justify-around gap-0 sm:gap-4">
       <ToastContainer />
       <div className="w-1/2 sm:block hidden relative h-screen">
         <Image
@@ -232,17 +234,26 @@ const MentorInformation = () => {
           className="object-cover h-screen"
         />
 
-        <div className="text-white border-l-2 border-white absolute bottom-6 left-0 w-5/6 px-6 mx-4">
-          <h2 className=" font-semibold text-2xl md:text-3xl pb-3">
+        <div className="text-white absolute bottom-4 border border-white rounded-[20px] backdrop-blur-lg bg-[#66666633] p-6 left-0 w-5/6 mx-2">
+          {/* <h2 className=" font-semibold text-2xl md:text-3xl pb-3">
             Ipsum list layout align italic component project thumb
-          </h2>
+          </h2> */}
           <p className=" font-normal text-xs sm:text-sm md:text-base">
-            Outline share italic underline clip. Frame invite export vertical
-            select device. Underline ellipse outline figma follower. Undo
-            selection select arrow share prototype component list. Arrow undo
-            scale prototype boolean.Outline share italic underline clip. Frame
-            invite export vertical select device.{" "}
+            You don’t need to be an expert to start with DevOps. The key is a
+            willingness to learn, collaborate, and emDevOps is a journey, not a
+            destination. The focus should always be on learning, experimenting,
+            and improving with every iteration, no matter where you start.brace
+            automation. Every small step you take towards improving your
+            processes brings you closer to success.
           </p>
+          <div className="flex items-center gap-4 mt-4">
+            <Image
+              className=" w-12 h-12 rounded-full"
+              alt="patrick"
+              src={pat}
+            />
+            <p className="text-white font-semibold text-2xl">Patrick Debois</p>
+          </div>
         </div>
       </div>
       <div className="sm:w-1/2 relative w-full mx-2 overflow-y-scroll h-[100vh] pt-10 sm:pt-16">
@@ -262,7 +273,7 @@ const MentorInformation = () => {
         </div>
         <div className="flex flex-col items-center">
           <div
-            className="flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full h-44 w-44 sm:w-60  sm:h-60 my-5 bg-white cursor-pointer"
+            className="flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full h-44 w-44 sm:w-50 sm:h-50 my-5 bg-white cursor-pointer"
             onClick={handleClick}
           >
             {selectedImage ? (

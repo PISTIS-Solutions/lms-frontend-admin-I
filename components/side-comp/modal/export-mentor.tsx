@@ -109,6 +109,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
 
   return (
     <div className=" sm:max-w-4/6 overflow-scroll max-w-none max-h-[868px] mx-3 p-4 sm:p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
+      <ToastContainer />
       <div className="flex items-center justify-between">
         <h1 className="text-[#2E2E2E] text-[xl] sm:text-2xl font-medium">
           Export Mentor List as PDF
