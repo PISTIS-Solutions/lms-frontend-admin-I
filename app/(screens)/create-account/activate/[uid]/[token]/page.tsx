@@ -106,7 +106,7 @@ const MentorInformation = () => {
             formData.append("token", token);
             formData.append("first_name", mentorData.first_name);
             formData.append("bio", mentorData.bio);
-            formData.append("role", mentorData.role);
+            formData.append("position", mentorData.role);
             formData.append("last_name", mentorData.last_name);
             formData.append(
               "phone_number",
