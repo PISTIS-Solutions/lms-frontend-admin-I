@@ -7,6 +7,7 @@ import mentorImg from "@/public/assets/avatar.png";
 import { GoDotFill } from "react-icons/go";
 import { Loader2 } from "lucide-react";
 import { mentorAccess } from "@/utils/useMentorsAccess";
+import { ToastContainer } from "react-toastify";
 
 const RejectMentorModal = ({ handleRejectModal, selectedMentor }: any) => {
   const [confirmReject, setConfirmReject] = useState(false);
@@ -38,6 +39,7 @@ const RejectMentorModal = ({ handleRejectModal, selectedMentor }: any) => {
 
   return (
     <div className="p-3">
+      <ToastContainer/>
       {confirmReject ? (
         <div className="w-[1/3] max-w-[600px] flex flex-col items-center justify-between h-[345px] p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
           <h1 className="text-[#2E2E2E] sm:text-left text-center font-medium text-xl sm:text-2xl">
@@ -62,7 +64,7 @@ const RejectMentorModal = ({ handleRejectModal, selectedMentor }: any) => {
           </button>
         </div>
       ) : (
-        <div className="w-[1/3] max-w-[600px] flex flex-col justify-between h-[424px] p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
+        <div className="w-[1/3] max-w-[600px] flex flex-col justify-between h-[430px] p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
           <h1 className="text-[#2E2E2E] font-medium text-xl sm:text-2xl text-center leading-6">
             Are you sure you want to revoke this mentors access?
           </h1>

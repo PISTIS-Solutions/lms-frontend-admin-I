@@ -11,6 +11,7 @@ import { TiStarburst } from "react-icons/ti";
 import { FaAward } from "react-icons/fa6";
 import { mentorAccess } from "@/utils/useMentorsAccess";
 import { Loader2 } from "lucide-react";
+import { ToastContainer } from "react-toastify";
 
 const MentorsProfile = ({ handleInfoModal, selectedMentor }: any) => {
   const [loading, setLoading] = useState(false);
@@ -48,6 +49,7 @@ const MentorsProfile = ({ handleInfoModal, selectedMentor }: any) => {
 
   return (
     <div className="max-w-[768px] relative mx-auto h-[90vh] max-h-[830px] overflow-y-scroll bg-white shadow-[0_0_40px_0_rgba(0,0,0,0.3)] rounded-2xl p-6">
+      <ToastContainer/>
       <div className="sm:grid mx-auto block grid-cols-10 gap-2 items-center">
         <div className="relative w-40 mx-auto col-span-3">
           <div className=" w-4 h-4 bg-[#2FBC8D] border border-white rounded-full absolute top-8 right-0 " />
@@ -84,15 +86,18 @@ const MentorsProfile = ({ handleInfoModal, selectedMentor }: any) => {
             />
           </div>
           <div className="rounded-[30px] flex justify-center bg-[#C2E8FF] py-2 px-3 my-3 sm:inline-block">
-            <p className="text-[#014873] text-xs font-medium">
-              Backend Engineer
+            <p className="text-[#014873] capitalize text-xs font-medium">
+              {selectedMentor?.position === "frontend_dev"
+                ? "Frontend Developer"
+                : selectedMentor?.position === "backend_dev"
+                ? "Backend Developer"
+                : selectedMentor?.position === "faculty_lead"
+                ? "Faculty Lead"
+                : selectedMentor?.position}
             </p>
           </div>
-          <p className="text-[#666666] font-normal text-center sm:text-left text-sm leading-5">
-            Arrow shadow thumbnail list flatten edit vertical figjam. Share mask
-            vector style reesizing create background underline variant. Auto pen
-            pen boolean frame. Rotate horizontalackground underline variant.
-            Auto pen pen boolean frame. Rotate horizontal p
+          <p className="text-[#666666] first-letter:capitalize font-normal text-center sm:text-left text-sm leading-5">
+            {selectedMentor?.bio}
           </p>
         </div>
       </div>

@@ -35,7 +35,7 @@ const SignIn = () => {
         email: formStore.email,
         password: formStore.password,
       });
-      console.log(response, "res");
+      // console.log(response, "res");
       if (response.status === 200) {
         toast.success("Successfully Logged in!", {
           position: "top-right",

@@ -32,6 +32,7 @@ import {
   ChevronRight,
   Loader2,
 } from "lucide-react";
+import { ToastContainer } from "react-toastify";
 
 const Mentors = () => {
   const { studentData, loading, fetchStudentData } = useStudentStore();
@@ -99,12 +100,12 @@ const Mentors = () => {
   const [exportMentor, setExportMentor] = useState(false);
   const handleExportMentor = () => {
     setExportMentor((prev) => !prev);
-    
   };
 
   return (
     <main>
       <SideNav />
+      <ToastContainer/>
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-[100vh] sm:h-screen p-4 bg-slate-50">
         <div>
           <div className="flex items-center justify-between">
@@ -121,7 +122,7 @@ const Mentors = () => {
               </span>
             </h1>
             <div className="flex items-center gap-6">
-              <GoBellFill className="text-main w-6 h-6" />
+              {/* <GoBellFill className="text-main w-6 h-6" /> */}
               <div className="flex items-center gap-2">
                 <Avatar>
                   <AvatarImage
@@ -145,7 +146,7 @@ const Mentors = () => {
                     </div>
                   )}
                 </div>
-                <FiChevronDown className="w-4 h-4 text-[#666666] cursor-pointer" />
+                {/* <FiChevronDown className="w-4 h-4 text-[#666666] cursor-pointer" /> */}
               </div>
             </div>
           </div>
@@ -227,7 +228,6 @@ const Mentors = () => {
                           <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                             {/* {person.first_name + person.last_name} */}
                             {person.first_name} {person.last_name}
-                            
                           </td>
                           <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                             {person.email}
@@ -251,9 +251,15 @@ const Mentors = () => {
                               ? "super admin"
                               : person.role}
                           </td>
-                          {/* <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                        {person.position}
-                      </td> */}
+                          <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
+                            {person?.position === "frontend_dev"
+                              ? "Frontend Developer"
+                              : person?.position === "backend_dev"
+                              ? "Backend Developer"
+                              : person?.position === "faculty_lead"
+                              ? "Faculty Lead"
+                              : person?.position}
+                          </td>
                           <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] w-6 h-6">
                             <IoEllipsisHorizontal
                               onClick={() => {
