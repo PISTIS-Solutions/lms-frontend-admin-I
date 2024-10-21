@@ -157,6 +157,9 @@ const StudentPage = () => {
           <td className="py-2 md:py-4 text-center">{person?.phone_number}</td>
           <td className="py-2 md:py-4">{person?.status}</td>
           <td className="py-2 md:py-4">
+            {person?.has_complete_onboarding ? "Completed" : "Pending"}
+          </td>
+          <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).date}
           </td>
           <td className="py-2 md:py-4">
@@ -286,6 +289,9 @@ const StudentPage = () => {
                       </th>
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Plan
+                      </th>
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
+                        Onboarding Status
                       </th>
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Date
