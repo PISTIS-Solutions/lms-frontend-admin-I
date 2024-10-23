@@ -28,6 +28,7 @@ interface cardProps {
   openEditModal: any;
   key: any;
   isDraggable?: boolean;
+  role?: string | null;
 }
 
 const CoursesCard = ({
@@ -40,6 +41,7 @@ const CoursesCard = ({
   openEditModal,
   key,
   isDraggable = false,
+  role,
 }: cardProps) => {
   // const [loading, setLoading] = useState(false);
   const { fetchCourseRead } = useCourseRead();
@@ -169,12 +171,14 @@ const CoursesCard = ({
           </div>
         </div>
       </div>
-      <button
-        onClick={openOptionsFunct}
-        className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center absolute top-4 right-4 duration-150 ease-in-out"
-      >
-        <FaEllipsisVertical className="text-primary" />
-      </button>
+      {(role === "advanced" || role === "super_admin") && (
+        <button
+          onClick={openOptionsFunct}
+          className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center absolute top-4 right-4 duration-150 ease-in-out"
+        >
+          <FaEllipsisVertical className="text-primary" />
+        </button>
+      )}
       {openOptions && (
         <div
           className="bg-white rounded-[8px] p-4 h-auto absolute top-4 right-4 w-[140px]"

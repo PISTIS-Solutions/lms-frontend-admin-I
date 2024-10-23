@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import logo from "@/public/assets/sideLogo.png";
 
@@ -18,7 +18,14 @@ import { usePathname } from "next/navigation";
 import MobileNav from "./mobile-nav";
 
 const SideNav = () => {
-  const navTexts = [
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("admin_role");
+    setRole(userRole);
+  }, []);
+
+  const navTexts: any[] = [
     {
       icon: <MdDashboard />,
       title: "Dashboard",
@@ -40,7 +47,7 @@ const SideNav = () => {
       title: "Projects",
       link: "project",
     },
-    {
+    role === "super_admin" && {
       icon: <FaChalkboardUser />,
       title: "Mentors",
       link: "mentors",
@@ -50,7 +57,7 @@ const SideNav = () => {
       title: "Settings",
       link: "settings",
     },
-  ];
+  ].filter(Boolean);
 
   const pathname = usePathname();
 

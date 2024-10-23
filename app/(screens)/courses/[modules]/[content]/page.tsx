@@ -266,7 +266,7 @@ const Content = () => {
     }
   };
 
-  console.log(moduleData, "md")
+  // console.log(moduleData, "md")
 
   return (
     <main className="relative h-screen bg-[#F8F9FF]">

@@ -32,7 +32,7 @@ const PaginatedTable = () => {
     router.push(`/students/${id}`);
   };
   const renderStudents = () => {
-    console.log(students);
+    // console.log(students);
     return students
       ?.filter((person: any) => person?.is_student)
       .map((person: any) => (

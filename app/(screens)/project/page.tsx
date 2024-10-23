@@ -138,6 +138,13 @@ const Project = () => {
     router.push(`/project/${id}`);
   };
 
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("admin_role");
+    setRole(userRole);
+  }, []);
+
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -148,13 +155,15 @@ const Project = () => {
         <div className="py-2 px-2 md:px-7">
           <div className="flex justify-end">
             {/* <Link href="/courses/add-course"> */}
-            <Button
-              onClick={handleProjectModal}
-              className="flex items-center md:text-base text-xs gap-x-2 cursor-pointer text-black hover:text-white bg-sub"
-            >
-              New Project
-              <Plus />
-            </Button>
+            {(role === "advanced" || role === "super_admin") && (
+              <Button
+                onClick={handleProjectModal}
+                className="flex items-center md:text-base text-xs gap-x-2 cursor-pointer text-black hover:text-white bg-sub"
+              >
+                New Project
+                <Plus />
+              </Button>
+            )}
             {/* </Link> */}
           </div>
           <div className="my-5 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5">

@@ -349,6 +349,13 @@ const SideProject = () => {
     setOpenOptions(false);
   };
 
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("admin_role");
+    setRole(userRole);
+  }, []);
+
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -382,12 +389,14 @@ const SideProject = () => {
             </h3>
           </div>
           <div>
-            <button
-              onClick={openOptionsFunct}
-              className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center duration-150 ease-in-out"
-            >
-              <FaEllipsisVertical className="text-primary" />
-            </button>
+            {(role === "advanced" || role === "super_admin") && (
+              <button
+                onClick={openOptionsFunct}
+                className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center duration-150 ease-in-out"
+              >
+                <FaEllipsisVertical className="text-primary" />
+              </button>
+            )}
             {openOptions && (
               <div
                 className="bg-white rounded-[8px] z-10 shadow-md p-4 h-auto absolute top-4 right-2 w-[140px]"
@@ -473,6 +482,7 @@ const SideProject = () => {
               bool={true}
               selectedProjectId={selectedProjectId}
               handleModal={handleModal}
+              role={role}
             />
           </div>
         )}

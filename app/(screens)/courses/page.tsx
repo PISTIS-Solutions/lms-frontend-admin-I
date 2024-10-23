@@ -363,6 +363,13 @@ const Courses = () => {
     }
   };
 
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("admin_role");
+    setRole(userRole);
+  }, []);
+
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -397,12 +404,14 @@ const Courses = () => {
                     <Image src={organizeIcon} alt="organize icon" />
                     Organize Courses
                   </Button>
-                  <Link href="/courses/add-course">
-                    <Button className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer hover:border hover:border-sub bg-sub px-5 py-[13px] hover:bg-white hover:text-sub">
-                      <Plus size={20} />
-                      Create a new course
-                    </Button>
-                  </Link>
+                  {(role === "advanced" || role === "super_admin") && (
+                    <Link href="/courses/add-course">
+                      <Button className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer hover:border hover:border-sub bg-sub px-5 py-[13px] hover:bg-white hover:text-sub">
+                        <Plus size={20} />
+                        Create a new course
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </>
             ) : (
@@ -473,6 +482,7 @@ const Courses = () => {
                         openEditModal={() => openEditModal(course)}
                         key={course.id}
                         isDraggable={isDragDropEnabled}
+                        role={role}
                       />
                     </>
                   ))}
