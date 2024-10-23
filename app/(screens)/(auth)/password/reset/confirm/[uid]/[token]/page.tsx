@@ -82,6 +82,7 @@ const NewPassword = () => {
       setLoading(false);
     }
   };
+  
   function containsSpecialCharacters(str: string): boolean {
     const specialCharacters = /[!@#$%^&*()_+[\]{};':"\\|,.<>/?]/;
     return specialCharacters.test(str);

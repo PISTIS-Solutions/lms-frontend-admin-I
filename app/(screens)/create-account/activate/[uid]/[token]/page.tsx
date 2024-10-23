@@ -203,11 +203,11 @@ const MentorInformation = () => {
   return (
     <div className="flex p-0 sm:p-4 justify-around gap-0 sm:gap-4">
       <ToastContainer />
-      <div className="w-1/2 sm:block hidden relative h-screen">
+      <div className="w-1/2  sm:block hidden relative h-screen">
         <Image
           src={mentorImg}
           alt="mentor-img"
-          className="object-cover h-screen"
+          className="object-cover w-full h-screen"
         />
 
         <div className="text-white absolute bottom-4 border border-white rounded-[20px] backdrop-blur-lg bg-[#66666633] p-6 left-0 w-5/6 mx-2">
