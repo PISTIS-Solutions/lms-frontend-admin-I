@@ -122,13 +122,20 @@ const StudentPage = () => {
     setCurrentPage(1);
   };
 
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("admin_role");
+    setRole(userRole);
+  }, []);
+
   //date and time format funct
   const renderStudents = () => {
     function formatDateTime(dateTimeString: any) {
       const date = new Date(dateTimeString);
 
       const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+      const month = String(date.getMonth() + 1).padStart(2, "0");
       const year = date.getFullYear();
 
       const hours = String(date.getHours()).padStart(2, "0");
@@ -162,12 +169,14 @@ const StudentPage = () => {
           <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).time}
           </td>
-          <td
-            onClick={() => toggleStudentOptions(person?.id)}
-            className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
-          >
-            Manage
-          </td>
+          {(role === "advanced" || role === "super_admin") && (
+            <td
+              onClick={() => toggleStudentOptions(person?.id)}
+              className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
+            >
+              Manage
+            </td>
+          )}
         </tr>
         {expandedStudent === person.id && (
           <div
@@ -291,7 +300,7 @@ const StudentPage = () => {
                         Date
                       </th>
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
-                        <td className="flex items-center gap-1">Time </td>
+                        Time
                       </th>
 
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 rounded-r-2xl">

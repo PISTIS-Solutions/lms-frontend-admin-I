@@ -35,7 +35,7 @@ const SignIn = () => {
         email: formStore.email,
         password: formStore.password,
       });
-      // console.log(response, "res");
+      // console.log(response.data.user.role, "res");
       if (response.status === 200) {
         toast.success("Successfully Logged in!", {
           position: "top-right",
@@ -46,6 +46,7 @@ const SignIn = () => {
           draggable: false,
           theme: "dark",
         });
+        localStorage.setItem("admin_role", response.data.user.role);
         Cookies.set("adminAccessToken", response.data.access, {
           sameSite: "None",
           secure: true,

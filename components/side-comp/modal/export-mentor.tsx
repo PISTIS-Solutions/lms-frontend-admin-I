@@ -56,7 +56,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
       );
 
       if (response.status === 200) {
-        console.log(response, "res");
+        // console.log(response, "res");
         // Create a Blob from the response data
         const fileBlob = new Blob([response.data], {
           type: response.data.type,

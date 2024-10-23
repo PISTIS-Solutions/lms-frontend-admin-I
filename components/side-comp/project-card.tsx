@@ -21,6 +21,7 @@ interface cardProps {
   duration: number;
   handleCardClick: any;
   handleOpen: () => void;
+  
 }
 
 const ProjectCard = ({

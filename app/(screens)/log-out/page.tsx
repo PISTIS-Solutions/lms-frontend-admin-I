@@ -15,6 +15,7 @@ const LogOut = () => {
   const router = useRouter();
   const onlogOut = () => {
     Cookies.remove("adminAccessToken");
+    localStorage.removeItem("admin_role");
     router.replace("/");
   };
 

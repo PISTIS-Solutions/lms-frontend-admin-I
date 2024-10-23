@@ -26,6 +26,7 @@ const refreshAdminToken = async (): Promise<void> => {
     console.error("Error refreshing token:", refreshError.message);
     Cookies.remove("adminAccessToken");
     Cookies.remove("adminRefreshToken");
+    localStorage.removeItem("admin_role");
     window.location.href = "/";
     throw refreshError;
   }
