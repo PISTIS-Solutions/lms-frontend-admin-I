@@ -45,6 +45,7 @@ const AddMentorModal = ({ handleAddMentor }: any) => {
         setLoading(false);
       }
     } catch (error: any) {
+      // console.log(error.response?.data?.message);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await inviteMentorFunction();
@@ -58,8 +59,13 @@ const AddMentorModal = ({ handleAddMentor }: any) => {
           draggable: false,
           theme: "dark",
         });
-      } else {
-        toast.error(error.response?.data?.detail, {
+      } else if (
+        error.response?.data?.message &&
+        error.response.data.message.includes(
+          'duplicate key value violates unique constraint "users_user_email_key"'
+        )
+      ) {
+        toast.error("This email is already a mentor", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -68,6 +74,19 @@ const AddMentorModal = ({ handleAddMentor }: any) => {
           draggable: false,
           theme: "dark",
         });
+      } else {
+        toast.error(
+          error.response?.data?.detail || "An unexpected error occurred",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "dark",
+          }
+        );
       }
     } finally {
       setLoading(false);
@@ -86,7 +105,10 @@ const AddMentorModal = ({ handleAddMentor }: any) => {
         />
       </div>
       <div className="py-3">
-        <label htmlFor="" className="text-[#666666] font-normal text-sm sm:text-base">
+        <label
+          htmlFor=""
+          className="text-[#666666] font-normal text-sm sm:text-base"
+        >
           Email Address
         </label>{" "}
         <br />

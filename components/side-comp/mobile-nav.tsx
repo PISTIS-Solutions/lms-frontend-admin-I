@@ -20,7 +20,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useOutsideClick } from "@/utils/outsideClick";
 
-const MobileNav = () => {
+const MobileNav = ({ role }: any) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const pathname = usePathname();
@@ -33,7 +33,7 @@ const MobileNav = () => {
 
   useOutsideClick(sideNavRef, () => setSidebarOpen(false));
 
-  const navTexts = [
+  const navTexts: any[] = [
     {
       icon: <MdDashboard />,
       title: "Dashboard",
@@ -55,7 +55,7 @@ const MobileNav = () => {
       title: "Projects",
       link: "project",
     },
-    {
+    role === "super_admin" && {
       icon: <FaChalkboardUser />,
       title: "Mentors",
       link: "mentors",
@@ -65,7 +65,7 @@ const MobileNav = () => {
       title: "Settings",
       link: "settings",
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <div className="relative sm:w-1/3 w-1/2 z-[98]">
@@ -93,7 +93,7 @@ const MobileNav = () => {
                 <Link href={`/${nav.link}`} key={index} className="">
                   <div
                     className={`link ${
-                      pathname === `/${nav.link}`
+                      pathname.includes(`/${nav.link}`)
                         ? " text-white border-l-white border-l-4"
                         : "text-[#5E5E9F]"
                     } flex items-center pl-4 gap-2 text-center duration-150 ease-in-out cursor-pointer my-1 py-3 sm:py-6`}

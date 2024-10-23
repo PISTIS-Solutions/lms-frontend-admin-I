@@ -118,7 +118,7 @@ const SideNav = () => {
         </div>
       </nav>
       <div className="lg:hidden block">
-        <MobileNav />
+        <MobileNav role={role} />
       </div>
     </div>
   );
