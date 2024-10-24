@@ -15,6 +15,7 @@ interface student {
   location: string;
   is_student: boolean;
   has_complete_onboarding: boolean;
+  is_active: boolean;
   profile_photo: string;
   date_joined: string;
   last_login: string;
