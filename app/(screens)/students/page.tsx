@@ -157,7 +157,7 @@ const StudentPage = () => {
           <td className="py-2 md:py-4 text-center">{person?.phone_number}</td>
           <td className="py-2 md:py-4">{person?.status}</td>
           <td className="py-2 md:py-4">
-            {person?.has_complete_onboarding ? "Completed" : "Pending"}
+            {person?.is_active ? "Completed" : "Pending"}
           </td>
           <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).date}
