@@ -35,7 +35,8 @@ interface StudentsStore {
     page: number,
     searchQuery?: string,
     selectedValue?: string,
-    ordering?: string
+    ordering?: string,
+    isActive?: string
   ) => Promise<any>;
 }
 
@@ -50,7 +51,8 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
     page,
     searchQuery = "",
     selectedValue = "",
-    ordering = ""
+    ordering = "",
+    isActive = ""
   ) => {
     try {
       set({ loading: true });
@@ -59,7 +61,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       const trimmedQuery = searchQuery.trim();
 
       const response = await axios.get(
-        `${baseURL}/users/student/?page=${page}&search=${trimmedQuery}&status=${selectedValue}&ordering=${ordering}date_joined`,
+        `${baseURL}/users/student/?page=${page}&search=${trimmedQuery}&status=${selectedValue}&ordering=${ordering}&is_active=${isActive}&date_joined`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,

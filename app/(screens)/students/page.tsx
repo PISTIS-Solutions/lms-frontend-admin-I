@@ -28,6 +28,7 @@ const StudentPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [selectedValue, setSelectedValue] = useState("");
+  const [selectedOnboardingValue, setSelectedOnboardingValue] = useState("");
   const [ordering, setOrdering] = useState("");
   const router = useRouter();
   // console.log(students);
@@ -37,8 +38,20 @@ const StudentPage = () => {
   // };
 
   useEffect(() => {
-    fetchStudents(currentPage, searchQuery, selectedValue, ordering);
-  }, [currentPage, searchQuery, selectedValue, ordering]);
+    fetchStudents(
+      currentPage,
+      searchQuery,
+      selectedValue,
+      ordering,
+      selectedOnboardingValue
+    );
+  }, [
+    currentPage,
+    searchQuery,
+    selectedValue,
+    ordering,
+    selectedOnboardingValue,
+  ]);
 
   const nextPage = async () => {
     if (next !== null) {
@@ -251,31 +264,58 @@ const StudentPage = () => {
               <h1 className="md:text-2xl text-base font-medium">
                 Students Database
               </h1>
-              <div>
-                <p className="text-gray-600 text-xs">Filter by plan</p>
-                <select
-                  name="plan-filter"
-                  className="rounded-[8px] md:text-base text-xs"
-                  id="filter"
-                  value={selectedValue}
-                  onChange={(e: any) => {
-                    setSelectedValue(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option className="md:text-base text-xs" value="">
-                    Select plan
-                  </option>
-                  <option className="md:text-base text-xs" value="free">
-                    Free
-                  </option>
-                  <option className="md:text-base text-xs" value="paid">
-                    Paid
-                  </option>
-                  <option className="md:text-base text-xs" value="blocked">
-                    Blocked
-                  </option>
-                </select>
+              <div className="flex gap-x-3 items-center">
+                <div className="h-fit">
+                  <p className="text-gray-600 text-xs">
+                    Filter by onboarding status
+                  </p>
+                  <select
+                    name="onboarding-filter"
+                    className="rounded-[8px] md:text-base text-xs"
+                    id="onboarding-filter"
+                    value={selectedOnboardingValue}
+                    onChange={(e: any) => {
+                      setSelectedOnboardingValue(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option className="md:text-base text-xs" value="">
+                      Select status
+                    </option>
+                    <option className="md:text-base text-xs" value="false">
+                      Pending
+                    </option>
+                    <option className="md:text-base text-xs" value="true">
+                      Completed
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-xs">Filter by plan</p>
+                  <select
+                    name="plan-filter"
+                    className="rounded-[8px] md:text-base text-xs"
+                    id="filter"
+                    value={selectedValue}
+                    onChange={(e: any) => {
+                      setSelectedValue(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option className="md:text-base text-xs" value="">
+                      Select plan
+                    </option>
+                    <option className="md:text-base text-xs" value="free">
+                      Free
+                    </option>
+                    <option className="md:text-base text-xs" value="paid">
+                      Paid
+                    </option>
+                    <option className="md:text-base text-xs" value="blocked">
+                      Blocked
+                    </option>
+                  </select>
+                </div>
               </div>
             </div>
             <div>
