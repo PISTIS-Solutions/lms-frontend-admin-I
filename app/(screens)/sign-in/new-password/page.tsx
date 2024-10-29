@@ -21,6 +21,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
 import Fulllogo from "@/public/assets/full-logo.png";
+import AuthImageContainer from "@/components/side-comp/auth-image-container";
+import coverImage from "@/public/assets/auth-image/sigin-in.webp";
+import avatarImg from "@/public/assets/auth-image/gene.webp";
 
 const formSchema = z.object({
   Password: z.string().min(6, {
@@ -73,8 +76,14 @@ const NewPassowrd = () => {
   };
 
   return (
-    <main className="md:bg-form-back bg-white h-screen w-full bg-no-repeat bg-cover relative">
-      <div className="bg-white w-full md:w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] absolute right-0 block md:flex flex-col justify-around px-0 md:px-10">
+    <main className="bg-white h-screen w-full flex relative">
+      <AuthImageContainer
+        avatarImage={avatarImg}
+        bgImg={coverImage}
+        quote="“The most powerful thing about DevOps is the way it encourages cross-team collaboration and learning. It breaks down silos and enables everyone to contribute to the entire lifecycle of software, from idea to production, fostering a culture of continuous improvement and innovation.”"
+        avatarName="Gene Kim"
+      />
+      <div className="bg-white w-full md:w-[50%] h-screen rounded-tl-[40px] rounded-bl-[40px] block md:flex flex-col justify-around px-0 md:px-10 xl:px-16">
         <div className="h-auto block md:hidden w-full bg-main p-2">
           <Image src={Fulllogo} alt="logo" />
         </div>

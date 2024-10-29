@@ -23,6 +23,9 @@ import axios from "axios";
 import { urls } from "@/utils/config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthImageContainer from "@/components/side-comp/auth-image-container";
+import coverImage from "@/public/assets/auth-image/create-account.webp";
+import avatarImg from "@/public/assets/auth-image/kelsey.webp";
 
 const formSchema = z.object({
   Email: z.string().min(2, {
@@ -82,9 +85,15 @@ const ForgotPassword = () => {
   };
 
   return (
-    <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
+    <main className="h-screen w-full relative flex">
       <ToastContainer />
-      <div className="bg-white w-[100%] lg:w-[50%] h-screen rounded-none lg:rounded-tl-[40px] lg:rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-5  md:px-6 lg:px-10">
+      <AuthImageContainer
+        avatarImage={avatarImg}
+        bgImg={coverImage}
+        avatarName="Kelsey Hightower"
+        quote="“You don’t need to be an expert to start with DevOps. The key is a willingness to learn, collaborate, and embrace automation. Every small step you take towards improving your processes brings you closer to success.”"
+      />
+      <div className="bg-white w-[100%] lg:w-[50%] h-screen rounded-none lg:rounded-tl-[40px] lg:rounded-bl-[40px] flex flex-col justify-around px-5  md:px-6 lg:px-10 xl:px-16">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
         </div>

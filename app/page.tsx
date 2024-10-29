@@ -14,6 +14,9 @@ import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import NextNProgress from "nextjs-progressbar";
+import AuthImageContainer from "@/components/side-comp/auth-image-container";
+import coverImage from "@/public/assets/auth-image/sigin-in.webp";
+import avatarImg from "@/public/assets/auth-image/gene.webp";
 
 const SignIn = () => {
   const formStore = useLoginFormStore();
@@ -108,9 +111,15 @@ const SignIn = () => {
   }
 
   return (
-    <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
+    <main className="h-screen w-full flex relative">
       {/* <NextNProgress /> */}
-      <div className="bg-white w-[100%] lg:w-[50%] h-screen rounded-none lg:rounded-tl-[40px] lg:rounded-bl-[40px] absolute right-0 flex flex-col justify-around px-5  md:px-6 lg:px-10">
+      <AuthImageContainer
+        avatarImage={avatarImg}
+        bgImg={coverImage}
+        quote="“The most powerful thing about DevOps is the way it encourages cross-team collaboration and learning. It breaks down silos and enables everyone to contribute to the entire lifecycle of software, from idea to production, fostering a culture of continuous improvement and innovation.”"
+        avatarName="Gene Kim"
+      />
+      <div className="bg-white w-[100%] lg:w-[50%] h-screen rounded-none lg:rounded-tl-[40px] lg:rounded-bl-[40px] flex flex-col justify-around px-5  md:px-6 lg:px-10 xl:px-16">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
         </div>
