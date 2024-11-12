@@ -85,20 +85,20 @@ const SideNav = () => {
             })}
           </div>
           <div>
-            <div className="">
-              <Link href={"/help"} className="">
-                <div
-                  className={`link ${
-                    pathname === "/help"
-                      ? " text-white border-l-white border-l-4"
-                      : "text-[#5E5E9F]"
-                  } flex items-center pl-5 gap-3 text-center hover:text-white hover:border-l-4 hover:border-l-white duration-150 ease-in-out cursor-pointer my-1 py-3`}
-                >
-                  {" "}
-                  <IoHelpCircle />
-                  <span className="text-lg">Help & Information</span>
-                </div>
-              </Link>
+            <div>
+              {/* <Link href={"/help"} > */}
+              <div
+                className={`link ${
+                  pathname === "/help"
+                    ? " text-white border-l-white border-l-4"
+                    : "text-[#5E5E9F]"
+                } flex items-center pl-5 gap-3 text-center hover:text-white hover:border-l-4 hover:border-l-white duration-150 ease-in-out cursor-pointer my-1 py-3`}
+              >
+                {" "}
+                <IoHelpCircle />
+                <span className="text-lg">Help & Information</span>
+              </div>
+              {/* </Link> */}
             </div>
             <div>
               <Link href={"/log-out"} className="">
