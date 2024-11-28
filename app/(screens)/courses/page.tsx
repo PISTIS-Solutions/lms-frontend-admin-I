@@ -481,7 +481,7 @@ const Courses = () => {
           )}
         </div>
         {modal && (
-          <section className="absolute top-0 flex justify-center items-center left-0  bg h-screen w-full backdrop-blur-[5px] bg-white/30">
+          <section className="absolute top-0 flex z-[99] justify-center items-center left-0  bg h-screen w-full backdrop-blur-[5px] bg-white/30">
             <div className="bg-white h-[368px] rounded-[8px] w-[90%] md:w-[608px] shadow-lg md:p-6 px-3">
               <div className="bg-[#FF0000] w-[72px] mx-auto h-[72px] p-2 rounded-full flex items-center justify-center shadow-md">
                 <IoTrash className=" text-3xl text-white" />
@@ -543,7 +543,7 @@ const Courses = () => {
           </section>
         )}
         {editModal && selectedCourse && (
-          <section className="absolute top-0 flex justify-center items-center left-0 bg h-screen w-full backdrop-blur-[5px] bg-white/30">
+          <section className="absolute z-[99] top-0 flex justify-center items-center left-0 bg h-screen w-full backdrop-blur-[5px] bg-white/30">
             <EditCourse
               image={selectedCourse?.course_image_url}
               id={selectedCourse?.id}

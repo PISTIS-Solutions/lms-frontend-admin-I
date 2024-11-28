@@ -107,19 +107,19 @@ const MobileNav = ({ role }: any) => {
           </div>
           <div>
             <div className="text-white text-center duration-150 ease-in-out cursor-pointer my-1 py-1">
-              <Link href={"/help"} className="">
-                <div
-                  className={`link ${
-                    pathname === "/help"
-                      ? " text-white border-l-white border-l-4"
-                      : "text-[#5E5E9F]"
-                  } flex items-center pl-4 gap-2 text-center duration-150 ease-in-out cursor-pointer my-1 py-3`}
-                >
-                  {" "}
-                  <IoHelpCircle />
-                  <span className="text-sm">Help & Information</span>
-                </div>
-              </Link>
+              {/* <Link href={"/help"} > */}
+              <div
+                className={`link ${
+                  pathname === "/help"
+                    ? " text-white border-l-white border-l-4"
+                    : "text-[#5E5E9F]"
+                } flex items-center pl-4 gap-2 text-center duration-150 ease-in-out cursor-pointer my-1 py-3`}
+              >
+                {" "}
+                <IoHelpCircle />
+                <span className="text-sm">Help & Information</span>
+              </div>
+              {/* </Link> */}
             </div>
             <Link href={"/log-out"} className="">
               <div

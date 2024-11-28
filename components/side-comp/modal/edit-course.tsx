@@ -88,17 +88,11 @@ const EditCourse = ({
   const [loading, setLoading] = useState(false);
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // console.log(selectedFile, "sf");
-    if (
-      courseTitle &&
-      hours &&
-      minutes &&
-      courseLink &&
-      // description &&
-      selectedFile
-    ) {
+
+    if (courseTitle && hours && minutes && courseLink && selectedFile) {
       try {
         setLoading(true);
+
         const convertToISO8601 = (
           hours: number,
           minutes: number,
@@ -115,7 +109,11 @@ const EditCourse = ({
           "course_duration",
           convertToISO8601(hours, minutes, seconds)
         );
-        formData.append("course_image", selectedFile);
+
+        // Check if `selectedFile` is a string or a File object
+        if (typeof selectedFile !== "string") {
+          formData.append("course_image", selectedFile);
+        }
 
         const adminAccessToken = Cookies.get("adminAccessToken");
         const response = await axios.patch(
@@ -127,9 +125,9 @@ const EditCourse = ({
             },
           }
         );
+
         if (response.status === 200) {
           setLoading(true);
-          // console.log(selectedFile, "funct")
           toast.success(`${courseTitle} has been modified successfully!`, {
             position: "top-right",
             autoClose: 5000,
@@ -227,7 +225,11 @@ const EditCourse = ({
                   />
                 </div> */}
                 <div className="flex items-center ml-2">
-                  {selectedFile ? (
+                  {typeof selectedFile === "string" ? (
+                    <p className="italic text-[#919BA7] text-sm">
+                      {selectedFile || image}
+                    </p>
+                  ) : selectedFile ? (
                     <p className="text-black text-sm">{selectedFile.name}</p>
                   ) : (
                     <p className="italic text-[#919BA7] text-sm">{image}</p>
