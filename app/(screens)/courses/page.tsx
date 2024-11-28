@@ -1,6 +1,5 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
@@ -50,9 +49,7 @@ import {
   arrayMove,
   rectSortingStrategy,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { defaultOrder } from "@/utils/DefaultCourseOrderFormat";
 
 interface Course {
   id: string;
@@ -65,11 +62,6 @@ interface Course {
   course_duration: string;
   course_image_url: string;
   module_count: number;
-}
-
-interface updatedCourseOrderProps {
-  id: string;
-  order: number;
 }
 
 const Courses = () => {
@@ -102,7 +94,6 @@ const Courses = () => {
         setAllCourses(response.data);
         const ids = response.data.map((course: { id: number }) => course.id);
         setCourseIds(ids);
-        // console.log(response.data, "rd")
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -162,13 +153,10 @@ const Courses = () => {
           draggable: false,
           theme: "dark",
         });
-        // window.location.reload();
         fetchCourses();
       } else {
-        // console.error("Failed to delete course.");
       }
     } catch (error: any) {
-      // console.error("Error deleting course:", error.response.data.detail);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await deleteCourse(courseId);
@@ -244,7 +232,6 @@ const Courses = () => {
   const handleCardClick = (id: any) => {
     router.push(`/courses/${id}`);
   };
-  // console.log(courses, "cl")
 
   // add drag and drop sensors
   const sensors = useSensors(

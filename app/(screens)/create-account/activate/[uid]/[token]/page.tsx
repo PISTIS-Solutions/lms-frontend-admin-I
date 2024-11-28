@@ -2,21 +2,16 @@
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-
 import mentorImg from "@/public/assets/mentorImg.png";
-
 import { PiWarningCircle } from "react-icons/pi";
 import { IoKeyOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-
 import pLogo from "@/public/assets/pistis_logo.png";
 import countryCodes from "@/utils/countryCode";
 import pat from "@/public/assets/patric.png";
-
 import axios from "axios";
 import { urls } from "@/utils/config";
-import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
@@ -27,8 +22,6 @@ const MentorInformation = () => {
   const uid = params.uid;
   const token = params.token;
   const router = useRouter();
-
-  //add mentor image
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const handleImageUpload = (event: any) => {
@@ -45,12 +38,7 @@ const MentorInformation = () => {
       fileInput.click();
     }
   };
-
-  //country codes
   const [selectedCode, setSelectedCode] = useState("+234");
-
-  //select roles option
-
   const roles = [
     {
       fe: "Executive",
@@ -85,23 +73,18 @@ const MentorInformation = () => {
       be: "copywriter"
     },
   ];
-
-  //password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   //firstname, lastname, phonenumber
   const [mentorData, setMentorData] = useState({
     first_name: "",
     last_name: "",
     phone_number: "",
-    // email: "",
     role: "",
     bio: "",
     password: "",
     confirm_password: "",
   });
-
   //upload mentor information
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -140,7 +123,6 @@ const MentorInformation = () => {
             );
             formData.append("password", mentorData.password);
             formData.append("confirm_password", mentorData.confirm_password);
-
             if (selectedFile) {
               formData.append("profile_photo", selectedFile);
             }
@@ -233,11 +215,7 @@ const MentorInformation = () => {
           alt="mentor-img"
           className="object-cover w-full h-screen"
         />
-
         <div className="text-white absolute bottom-4 border border-white rounded-[20px] backdrop-blur-lg bg-[#66666633] p-6 left-0 w-5/6 mx-2">
-          {/* <h2 className=" font-semibold text-2xl md:text-3xl pb-3">
-            Ipsum list layout align italic component project thumb
-          </h2> */}
           <p className=" font-normal text-xs sm:text-sm md:text-base">
             You don’t need to be an expert to start with DevOps. The key is a
             willingness to learn, collaborate, and emDevOps is a journey, not a
@@ -301,8 +279,6 @@ const MentorInformation = () => {
               </>
             )}
           </div>
-
-          {/* Hidden File Input */}
           <input
             id="fileInput"
             type="file"
@@ -347,28 +323,6 @@ const MentorInformation = () => {
             />
           </div>
         </div>
-        {/* <div className="flex flex-col gap-1 w-full my-2">
-          <label
-            className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-            htmlFor="email"
-          >
-            Email Address
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              className="bg-[#FAFAFA] indent-8 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              placeholder="example@gmail.com"
-              value={mentorData.email}
-              onChange={(e) =>
-                setMentorData({ ...mentorData, email: e.target.value })
-              }
-            />
-            <span className="border-r border-r-[#666666]  absolute left-3 mt-2 top-0">
-              <CiMail className="text-[#666666] h-6 w-6 mr-1" />
-            </span>
-          </div>
-        </div> */}
         <div className="flex flex-col gap-1 w-full my-2">
           <label
             className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
@@ -386,7 +340,6 @@ const MentorInformation = () => {
                 setMentorData({ ...mentorData, phone_number: e.target.value })
               }
             />
-
             <select
               value={selectedCode}
               onChange={(e) => setSelectedCode(e.target.value)}

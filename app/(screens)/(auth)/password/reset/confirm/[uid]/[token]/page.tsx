@@ -1,11 +1,9 @@
 "use client";
-
 import Image from "next/image";
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-
 import logo from "@/public/assets/pistis_logo.png";
-import { Mail, KeyRound, Eye, EyeOff, Loader2 } from "lucide-react";
+import {  KeyRound, Eye, EyeOff, Loader2 } from "lucide-react";
 import useForgotPassStore from "@/store/forgot-password";
 import { urls } from "@/utils/config";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,12 +13,9 @@ const NewPassword = () => {
   const passwordStore = useForgotPassStore();
   const params = useParams<{ uid: any; token: any }>();
   const router = useRouter();
-
   const [specialCharacterErr, setSpecialCharacterErr] = useState();
   const [loading, setLoading] = useState<boolean>();
-  const [modal, setModal] = useState<boolean>(false);
 
-  //submit function
   const onSubmitChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -52,7 +47,6 @@ const NewPassword = () => {
             theme: "dark",
           });
           router.push("/");
-          // router.push("/create-account/activate/[uid]");
         }
       }
     } catch (error: any) {
@@ -121,7 +115,6 @@ const NewPassword = () => {
                   className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
                 />
               )}
-
               <input
                 type={passwordStore.showPassword ? "text" : "password"}
                 className="py-4 bg-[#FAFAFA] text-xs md:text-base  placeholder:text-[#4F5B67] rounded-[6px] indent-9 w-full"
@@ -132,7 +125,6 @@ const NewPassword = () => {
                 }
               />
             </div>
-
             <p className="text-xl font-semibold">Confirm password</p>
             <div className="relative">
               <KeyRound className="mr-2 absolute md:top-5 top-4 text-[#4F5B67] left-3 h-5 w-5" />
@@ -183,7 +175,6 @@ const NewPassword = () => {
             </button>
           </form>
         </div>
-        <div></div>
       </div>
     </main>
   );

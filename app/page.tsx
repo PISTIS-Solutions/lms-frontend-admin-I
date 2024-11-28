@@ -1,8 +1,6 @@
 "use client";
-
 import React, { useState } from "react";
 import Image from "next/image";
-
 import logo from "@/public/assets/pistis_logo.png";
 import { Eye, EyeOff, KeyRound, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +11,6 @@ import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import NextNProgress from "nextjs-progressbar";
 import coverImage from "@/public/assets/auth-image/sigin-in.webp";
 import avatarImg from "@/public/assets/auth-image/gene.webp";
 
@@ -24,20 +21,16 @@ const SignIn = () => {
 
   const onsubmitLogin = async (e: any) => {
     e.preventDefault();
-    // console.log("clicked")
     try {
       setLoading(true);
       if (!containsSpecialCharacters(formStore.password)) {
         throw new Error("Password must contain special characters");
       }
       const url = urls.signin;
-
-      // Make the API request
       const response = await axios.post(url, {
         email: formStore.email,
         password: formStore.password,
       });
-      // console.log(response.data.user.role, "res");
       if (response.status === 200) {
         toast.success("Successfully Logged in!", {
           position: "top-right",
@@ -111,8 +104,7 @@ const SignIn = () => {
 
   return (
     <main className="h-screen w-full flex relative">
-      {/* <NextNProgress /> */}
-
+      {/* <NextNProgress />  */}
       <div className=" w-[100%] lg:w-[50%] p-10  sticky top-0  pr-0 hidden lg:block">
         <div className="relative h-full">
           <Image
@@ -120,7 +112,6 @@ const SignIn = () => {
             alt="auth image"
             className="w-full h-full object-fill "
           />
-
           <div className="absolute bottom-0 left-0 right-0 overflow-hidden rounded-[20px]  text-white w-[78.8%] ml-[24px] mb-[24px] ">
             <div className="auth-border_gradient ">
               <blockquote className="mb-4 leading-relaxed font-sfProDisplay ">
@@ -130,7 +121,6 @@ const SignIn = () => {
                 software, from idea to production, fostering a culture of
                 continuous improvement and innovation.”
               </blockquote>
-
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <Image
@@ -139,14 +129,12 @@ const SignIn = () => {
                     className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm"
                   />
                 </div>
-
                 <p className="font-semibold text-2xl">Gene Kim</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <div className="bg-white w-[100%] lg:w-[50%] h-screen rounded-none lg:rounded-tl-[40px] lg:rounded-bl-[40px] flex flex-col justify-around px-5  md:px-6 lg:px-10 xl:px-16">
         <div className="flex justify-end">
           <Image src={logo} alt="pistis_logo" className="" priority />
@@ -226,14 +214,6 @@ const SignIn = () => {
             </button>
           </form>
         </div>
-        {/* <div>
-      <p className="text-center text-base md:text-lg font-normal ">
-        Don't have an account?{" "}
-        <Link className="text-main font-semibold" href="/create-account">
-          Create Account
-        </Link>
-      </p>
-    </div> */}
       </div>
     </main>
   );

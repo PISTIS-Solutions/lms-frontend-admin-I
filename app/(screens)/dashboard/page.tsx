@@ -1,10 +1,8 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 import {
   BookOpenText,
   GraduationCap,
@@ -13,10 +11,8 @@ import {
   Loader2Icon,
 } from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
-// import { LineChart } from "@/components/side-comp/line-chart";
 import axios from "axios";
 import { urls } from "@/utils/config";
-import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import TopNav from "@/components/side-comp/topNav";
 import { ToastContainer, toast } from "react-toastify";
@@ -47,15 +43,11 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [studentPerMonth, setStudentPerMonth] = useState<StudentPerMonth[]>([]);
 
-  const router = useRouter();
-
   const getMonthName = (dateString: string): string => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = { month: "long" };
     return date.toLocaleDateString("en-US", options);
   };
-
-  // Function to update the studentPerMonth array with formatted month names
   const updateMonthNames = (data: StudentPerMonth[]): StudentPerMonth[] => {
     return data.map((student) => ({
       ...student,
@@ -241,39 +233,6 @@ const Dashboard = () => {
                     Enrollment activity{" "}
                   </h1>
                 </div>
-                {/* <div className="h-auto md:h-[350px] w-full"> */}
-                {/* <LineChart chartDetails={chartDetails} /> */}
-                {/* </div> */}
-                {/* <ChartContainer config={chartConfig}>
-                  <LineChart
-                    accessibilityLayer
-                    data={chartData}
-                    margin={{
-                      left: 12,
-                      right: 12,
-                    }}
-                  >
-                    <CartesianGrid vertical={false} />
-                    <XAxis
-                      dataKey="month"
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                      tickFormatter={(value) => value.slice(0, 3)}
-                    />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent hideLabel />}
-                    />
-                    <Line
-                      dataKey="desktop"
-                      type="linear"
-                      stroke="var(--color-desktop)"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  </LineChart>
-                </ChartContainer> */}
                 <ChartContainer
                   className="max-h-[450px] w-full"
                   config={chartConfig}
@@ -372,17 +331,6 @@ const Dashboard = () => {
           </div>
           <div className="p-4">
             <PaginatedTable />
-            {/* {table === "students" ? (
-              <PaginatedTable
-                handleStudent={changeTableStudents}
-                handleMentors={changeTableMentors}
-              />
-            ) : (
-              <PaginatedTableMentor
-                handleStudent={changeTableStudents}
-                handleMentors={changeTableMentors}
-              />
-            )} */}
           </div>
         </div>
       </div>

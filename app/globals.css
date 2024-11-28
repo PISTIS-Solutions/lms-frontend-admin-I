@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -65,15 +64,12 @@
     --ring: 212.7 26.8% 83.9%;
   }
 }
-
 .alternating-row-bg tr:nth-child(even) {
   background-color: white;
 }
-
 .alternating-row-bg tr:nth-child(odd) {
-  background-color: #f8f9ff; /* Replace with the desired background color for odd rows */
+  background-color: #f8f9ff;
 }
-
 @layer base {
   * {
     @apply border-border;
@@ -82,36 +78,28 @@
     @apply bg-background text-foreground;
   }
 }
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 input[type="number"] {
   -moz-appearance: textfield;
 }
-
-/* Hide scrollbar for all browsers */
 body {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
   overflow: -moz-scrollbars-none;
 }
-
 body::-webkit-scrollbar {
   width: 0.5rem;
 }
-
 body::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
-
 .touch-action-none {
   touch-action: none;
 }
-
 .custom-border-gradient {
   border: 2px solid;
   border-image-source: linear-gradient(
@@ -121,7 +109,6 @@ body::-webkit-scrollbar-thumb {
   );
   border-image-slice: 1;
 }
-
 .auth-border_gradient {
   display: flow-root;
   position: relative;
@@ -129,7 +116,6 @@ body::-webkit-scrollbar-thumb {
   background: #66666633;
   backdrop-filter: blur(6px);
 }
-
 .auth-border_gradient::before {
   content: "";
   position: absolute;
