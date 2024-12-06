@@ -199,7 +199,7 @@ const Content = () => {
 
       setDeleting(true);
       const response = await axios.delete(
-        `${urls.deleteCourse}/${courseID}/modules/${moduleData?.id}`,
+        `${urls.deleteCourse}/${courseID}/modules/${moduleData?.id}/`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,

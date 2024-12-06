@@ -136,7 +136,7 @@ const Courses = () => {
       const adminAccessToken = Cookies.get("adminAccessToken");
 
       setDeleting(true);
-      const response = await axios.delete(`${urls.deleteCourse}/${courseId}`, {
+      const response = await axios.delete(`${urls.deleteCourse}/${courseId}/`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
