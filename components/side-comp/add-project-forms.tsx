@@ -72,7 +72,9 @@ const AddProjectForms = () => {
   };
 
   const router = useRouter();
+
   const [loading, setLoading] = useState(false);
+
   const uploadProject = async (): Promise<void> => {
     if (
       courseTitle !== "" &&
@@ -233,18 +235,18 @@ const AddProjectForms = () => {
       );
     });
 
-    if (!areFieldsValid) {
-      toast.error("Check form fields!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
-      return;
-    }
+    // if (!areFieldsValid) {
+    //   toast.error("Check form fields!", {
+    //     position: "top-right",
+    //     autoClose: 5000,
+    //     hideProgressBar: true,
+    //     closeOnClick: true,
+    //     pauseOnHover: false,
+    //     draggable: false,
+    //     theme: "dark",
+    //   });
+    //   return;
+    // }
 
     const filteredProjectData = sections.map((section) => {
       const projectTitleInput = document.getElementById(
