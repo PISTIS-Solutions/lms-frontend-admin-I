@@ -2,8 +2,6 @@
 import React from "react";
 
 import SideNav from "@/components/side-comp/side-nav";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import AddCourseForms from "@/components/side-comp/add-course-forms";
 import AddModuleForms from "@/components/side-comp/add-module-forms";
 import TopNav from "@/components/side-comp/topNav";
 import { useRouter } from "next/navigation";

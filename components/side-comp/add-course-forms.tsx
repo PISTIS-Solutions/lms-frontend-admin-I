@@ -1,19 +1,15 @@
 "use client";
 import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Form, FormItem, FormLabel } from "@/components/ui/form";
+import { FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useCourseFormStore from "@/store/course-module-project";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 
-// import ReactQuill from "react-quill";
-import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-import { toolbarOptions } from "./toolbar";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import { showToast } from "@/lib/showToast";
 
 const AddCourseForms = () => {
   const {
@@ -61,26 +57,10 @@ const AddCourseForms = () => {
       // description &&
       selectedFile
     ) {
-      toast.success("Course Created", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
+      showToast("Course Created", "success");
       router.push("/courses/add-course/add-modules");
     } else {
-      toast.error("Form Details incomplete", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
+      showToast("Form Details incomplete", "error");
     }
   };
 
@@ -130,17 +110,6 @@ const AddCourseForms = () => {
                 </div>
               </div>
             </FormItem>
-            {/* <FormItem className="py-2">
-              <label className="py-2">Description</label>
-              <ReactQuill
-                modules={{ toolbar: toolbarOptions }}
-                theme="snow"
-                placeholder="Input Course Description"
-                value={description}
-                onChange={setDescription}
-                className="w-full"
-              />
-            </FormItem> */}
             <FormItem className="py-2">
               <label className="py-2">Course Link</label>
               <Input

@@ -13,6 +13,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import coverImage from "@/public/assets/auth-image/sigin-in.webp";
 import avatarImg from "@/public/assets/auth-image/gene.webp";
+import InputField from "@/components/side-comp/sign-in/inputField";
 
 const SignIn = () => {
   const formStore = useLoginFormStore();
@@ -150,49 +151,29 @@ const SignIn = () => {
         <ToastContainer />
         <div>
           <form onSubmit={onsubmitLogin} className="space-y-2">
-            <div>
-              <label className="text-[#3E3E3E] md:text-xl sm:text-base text-sm">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="mr-2 absolute md:top-5 top-4 text-[#4F5B67] left-3 h-5 w-5" />
-                <input
-                  type="email"
-                  className="py-4 bg-[#FAFAFA] w-full text-xs md:text-base placeholder:text-[#4F5B67] rounded-[6px] indent-9"
-                  placeholder="example@gmail.com"
-                  value={formStore.email}
-                  onChange={(e) => formStore.setField("email", e.target.value)}
-                />
-              </div>
-            </div>
-            <div>
-              <label className="text-[#3E3E3E] md:text-xl text-base sm:text-sm">
-                Password
-              </label>
-              <div className="relative">
-                <KeyRound className="mr-2 absolute md:top-5 top-4 text-[#4F5B67] left-3 h-5 w-5" />
-                {formStore.showPassword ? (
-                  <Eye
-                    onClick={formStore.togglePassword}
-                    className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-                  />
-                ) : (
-                  <EyeOff
-                    onClick={formStore.togglePassword}
-                    className="ml-2 absolute cursor-pointer top-4 text-[#4F5B67] right-3 h-5 w-5"
-                  />
-                )}
-                <input
-                  type={formStore.showPassword ? "text" : "password"}
-                  className="py-4 bg-[#FAFAFA] text-xs md:text-base  placeholder:text-[#4F5B67] rounded-[6px] indent-9 w-full"
-                  placeholder="Password"
-                  value={formStore.password}
-                  onChange={(e) =>
-                    formStore.setField("password", e.target.value)
-                  }
-                />
-              </div>
-            </div>
+            <InputField
+              label="Email Address"
+              type="email"
+              icon={Mail}
+              placeholder="example@gmail.com"
+              value={formStore.email}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                formStore.setField("email", e.target.value)
+              }
+            />
+            <InputField
+              label="Password"
+              type={formStore.showPassword ? "text" : "password"}
+              icon={KeyRound}
+              placeholder="Password"
+              value={formStore.password}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                formStore.setField("password", e.target.value)
+              }
+              toggleIcon={formStore.showPassword ? Eye : EyeOff}
+              onToggle={formStore.togglePassword}
+            />
+
             <p className="text-[#3E3E3E] text-xs md:text-sm lg:text-base text-right">
               <Link href="/sign-in/forgot-password">Forgot Password?</Link>
             </p>

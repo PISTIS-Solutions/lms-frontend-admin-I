@@ -26,6 +26,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { showToast } from "@/lib/showToast";
+import DashCards from "@/components/side-comp/dashboard/dashCards";
+import EnrollmentActivity from "@/components/side-comp/dashboard/enrollmentActivity";
+import PendingGrading from "@/components/side-comp/dashboard/pendingGrading";
 
 interface AdminData {
   total_courses: number;
@@ -75,25 +79,9 @@ const Dashboard = () => {
         await refreshAdminToken();
         await fetchAdminData();
       } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast("Check your network!", "error");
       } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast(error?.response?.data?.detail, "error");
       }
     } finally {
       setLoading(false);
@@ -117,25 +105,9 @@ const Dashboard = () => {
         await refreshAdminToken();
         await fetchProjectOverview();
       } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast("Check your network!", "error");
       } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast(error?.response?.data?.detail, "error");
       }
     } finally {
       setOverviewLoad(false);
@@ -168,166 +140,16 @@ const Dashboard = () => {
         <div className="">
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
             <div className=" col-span-1 lg:col-span-7">
-              <div className="flex gap-x-4 overflow-x-scroll justify-between pr-4">
-                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
-                  <div>
-                    {loading ? (
-                      <Loader2 className="animate-spin text-xl" />
-                    ) : (
-                      adminData && (
-                        <h1 className="sm:text-2xl text-sm md:text-lg text-[#5D5B5B] font-medium">
-                          {adminData.total_courses}
-                        </h1>
-                      )
-                    )}
-                    <p className="md:text-base text-xs text-[#00173A]">
-                      Total Courses
-                    </p>
-                  </div>
-                  <span className="bg-[#F8F9FF] rounded-full p-3">
-                    <BookOpenText className="text-main" />
-                  </span>
-                </div>
-                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
-                  <div>
-                    {loading ? (
-                      <Loader2 className="animate-spin text-xl" />
-                    ) : (
-                      adminData && (
-                        <h1 className="sm:text-2xl text-sm md:text-lg text-[#5D5B5B] font-medium">
-                          {adminData.total_students}
-                        </h1>
-                      )
-                    )}
-                    <p className="md:text-base text-xs text-[#00173A]">
-                      Total Students
-                    </p>
-                  </div>
-                  <span className="bg-[#F8F9FF] rounded-full p-3">
-                    <GraduationCap className="text-main" />
-                  </span>
-                </div>
-                <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
-                  <div>
-                    {loading ? (
-                      <Loader2 className="animate-spin text-xl" />
-                    ) : (
-                      adminData && (
-                        <h1 className="sm:text-2xl text-sm md:text-lg text-[#5D5B5B] font-medium">
-                          {adminData.total_mentors}
-                        </h1>
-                      )
-                    )}
-                    <p className="md:text-base text-xs text-[#00173A]">
-                      Total Mentors
-                    </p>
-                  </div>
-                  <span className="bg-[#F8F9FF] rounded-full p-3">
-                    <ListChecks className="text-main" />
-                  </span>
-                </div>
-              </div>
-              <div className="p-2">
-                <div className="flex justify-between items-center">
-                  <h1 className="pl-4 text-xs md:text-xl font-semibold">
-                    Enrollment activity{" "}
-                  </h1>
-                </div>
-                <ChartContainer
-                  className="max-h-[450px] w-full"
-                  config={chartConfig}
-                >
-                  <LineChart
-                    accessibilityLayer
-                    data={studentPerMonth}
-                    margin={{
-                      top: 20,
-                      left: 15,
-                      right: 10,
-                    }}
-                  >
-                    <CartesianGrid vertical={false} />
-                    <XAxis
-                      dataKey="month"
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                      tickFormatter={(value) => value.slice(0, 3)}
-                    />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="line" />}
-                    />
-                    <Line
-                      dataKey="count"
-                      type="natural"
-                      stroke="var(--color-desktop)"
-                      strokeWidth={2}
-                      dot={{
-                        fill: "var(--color-desktop)",
-                      }}
-                      activeDot={{
-                        r: 6,
-                      }}
-                    >
-                      <LabelList
-                        position="top"
-                        offset={12}
-                        className="fill-foreground"
-                        fontSize={12}
-                      />
-                    </Line>
-                  </LineChart>
-                </ChartContainer>
-              </div>
+              <DashCards loading={loading} adminData={adminData} />
+              <EnrollmentActivity
+                chartConfig={chartConfig}
+                studentPerMonth={studentPerMonth}
+              />
             </div>
-            <div className="bg-white h-[370px] md:h-[650px] rounded-[8px] p-2 shadow-sm col-span-3">
-              <h1 className="md:text-2xl text-lg font-medium mb-4">
-                Pending Grading
-              </h1>
-              <div>
-                <ScrollArea className="w-full h-[300px] md:h-[400px] rounded-md">
-                  <div>
-                    {overviewLoad ? (
-                      <span className="flex text-center justify-center items-center">
-                        <Loader2Icon className="animate-spin" />
-                        Loading...
-                      </span>
-                    ) : projectOverview && projectOverview.length > 0 ? (
-                      projectOverview.map((project: any, index: any) => {
-                        const userName = project?.student?.full_name;
-                        const initials = userName
-                          ? userName.charAt(0).toUpperCase()
-                          : "";
-                        return (
-                          <Link
-                            key={index}
-                            href={`/students/${project?.student?.student_id}`}
-                          >
-                            <div className="flex items-center gap-3 md:gap-4 py-2 md:py-3 px-1 md:px-2 cursor-pointer hover:bg-main hover:text-white duration-150 ease-in-out bg-[#FBFBFB] my-2 rounded-[8px]">
-                              <Avatar className="md:w-[55px] w-[40px] md:h-[55px] h-[40px] hover:bg-transparent hover:text-current">
-                                <AvatarImage
-                                  src={project?.student?.profile_photo}
-                                />
-                                <AvatarFallback className="bg-white hover:bg-transparent hover:text-current">
-                                  {initials}
-                                </AvatarFallback>
-                              </Avatar>
-                              <p className="md:text-lg text-sm">
-                                Project {project?.project?.title} submitted by{" "}
-                                {project?.student?.full_name}
-                              </p>
-                            </div>
-                          </Link>
-                        );
-                      })
-                    ) : (
-                      <p className="text-center">No Pending Grading.</p>
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-            </div>
+            <PendingGrading
+              overviewLoad={overviewLoad}
+              projectOverview={projectOverview}
+            />
           </div>
           <div className="p-4">
             <PaginatedTable />

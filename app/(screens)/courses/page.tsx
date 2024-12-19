@@ -1,37 +1,21 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-
-import {
-  Loader2,
-  Loader2Icon,
-  LucideLoader2,
-  Plus,
-  Search,
-  X,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
 import CoursesCard from "@/components/side-comp/courses-card";
 import TopNav from "@/components/side-comp/topNav";
 
 import modGray from "@/public/assets/modGray.svg";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 import useModuleCount from "@/store/module-count";
-import { IoTrash } from "react-icons/io5";
-import { GrTarget } from "react-icons/gr";
 import useProjectCount from "@/store/projectCount";
 import EditCourse from "@/components/side-comp/modal/edit-course";
 import { Skeleton } from "@/components/ui/skeleton";
 import organizeIcon from "@/public/assets/svg/organize.svg";
-import resetIcon from "@/public/assets/svg/reset.svg";
 import saveIcon from "@/public/assets/svg/save.svg";
 
 import {
@@ -50,6 +34,9 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
+import { showToast } from "@/lib/showToast";
+import OrganiseComp from "@/components/side-comp/courses/organiseComp";
+import DeleteModal from "@/components/side-comp/courses/deleteModal";
 
 interface Course {
   id: string;
@@ -100,25 +87,9 @@ const Courses = () => {
         await refreshAdminToken();
         await fetchCourses();
       } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast("Check your network!", "error");
       } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast(error?.response?.data?.detail, "error");
       }
     } finally {
       setLoading(false);
@@ -144,52 +115,19 @@ const Courses = () => {
 
       if (response.status === 204) {
         setDeleting(false);
-        toast.error(`Course deleted successfully.`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast("Course deleted successfully.", "success");
         fetchCourses();
-      } else {
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await deleteCourse(courseId);
       } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast("Check your network!", "error");
       } else if (error.response.data.detail === "Not found.") {
-        toast.error("Course already deleted!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast("Course already deleted!", "error");
       } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast(error?.response?.data?.detail, "error");
       }
     } finally {
       setModal(false);
@@ -295,39 +233,15 @@ const Courses = () => {
       setUpdating(false);
       setIsDragDropEnabled(false);
       setAllCourses(displayedCourses);
-      toast.success(response.data.detail, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
+      showToast(response.data.detail, "success");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
         await handleUpdateCourses(displayedCourses);
       } else if (error?.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast("Check your network!", "error");
       } else {
-        toast.error(error?.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        showToast(error?.response?.data?.detail, "error");
       }
     }
   };
@@ -369,69 +283,20 @@ const Courses = () => {
         </div>
         <ToastContainer />
         <div className="py-2 px-7 ">
-          <div className="flex flex-wrap justify-between gap-[10px] mt-2">
-            {!isDragDropEnabled ? (
-              <>
-                <div className="flex border border-[#9F9F9F] rounded-[6px] p-[10px_12px] items-center gap-x-4 w-full md:w-1/3 h-full">
-                  {/* Search input field */}
-                  <Search color="#9F9F9F" size={16} />
-                  <input
-                    type="text"
-                    placeholder="Search for a course"
-                    className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm focus:outline-none focus:ring-0 focus:border-none border-0 bg-transparent p-0 w-full"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                  />
-                </div>
-                <div className="flex gap-[10px]">
-                  <Button
-                    onClick={() => setIsDragDropEnabled(true)}
-                    className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer border-sub text-sub border bg-white p-[11px] px-4 hover:bg-sub/80 hover:text-white hover:border-white"
-                  >
-                    <Image src={organizeIcon} alt="organize icon" />
-                    Organize Courses
-                  </Button>
-                  {(role === "advanced" || role === "super_admin") && (
-                    <Link href="/courses/add-course">
-                      <Button className="flex items-center md:text-sm text-xs gap-x-1 cursor-pointer hover:border hover:border-sub bg-sub px-5 py-[13px] hover:bg-white hover:text-sub">
-                        <Plus size={20} />
-                        Create a new course
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <Button
-                  className="p-[10px_16px] text-[#f00] flex gap-x-1 bg-transparent border-[#f00] border hover:bg-[#f00] hover:border-none hover:text-white group"
-                  onClick={() => {
-                    setIsDragDropEnabled(false);
-                    setDisplayedCourses(allCourses);
-                  }}
-                >
-                  <X className="text-[#F00] group-hover:text-white" size={18} />
-                  Cancel
-                </Button>
-                <Button
-                  className="p-[10px_16px] text-white bg-sub flex gap-3 hover:bg-sub/80 h-full gap-x-1 text-sm"
-                  onClick={() => handleUpdateCourses(displayedCourses!)}
-                >
-                  {updating ? (
-                    <>
-                      <LucideLoader2 className="animate-spin" />
-                      Updating...
-                    </>
-                  ) : (
-                    <>
-                      <Image src={saveIcon} alt="reset icon" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </>
-            )}
-          </div>
+          <OrganiseComp
+            isDragDropEnabled={isDragDropEnabled}
+            searchQuery={searchQuery}
+            handleSearch={handleSearch}
+            role={role}
+            setIsDragDropEnabled={setIsDragDropEnabled}
+            organizeIcon={organizeIcon}
+            saveIcon={saveIcon}
+            updating={updating}
+            allCourses={allCourses}
+            displayedCourses={displayedCourses}
+            setDisplayedCourses={setDisplayedCourses}
+            handleUpdateCourses={handleUpdateCourses}
+          />
           {loading ? (
             <div className="my-5 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5">
               <div className="flex flex-col justify-center items-center">
@@ -481,66 +346,17 @@ const Courses = () => {
           )}
         </div>
         {modal && (
-          <section className="absolute top-0 flex z-[99] justify-center items-center left-0  bg h-screen w-full backdrop-blur-[5px] bg-white/30">
-            <div className="bg-white h-[368px] rounded-[8px] w-[90%] md:w-[608px] shadow-lg md:p-6 px-3">
-              <div className="bg-[#FF0000] w-[72px] mx-auto h-[72px] p-2 rounded-full flex items-center justify-center shadow-md">
-                <IoTrash className=" text-3xl text-white" />
-              </div>
-              <h1 className="md:text-2xl text-lg font-semibold text-center py-2">
-                Are you sure you want to <br /> delete this course?
-              </h1>
-              <p className="md:text-base text-center text-sm text-[#3E3E3E] font-normal">
-                You’ll permanently lose:
-              </p>
-              <div className="flex items-center gap-3 justify-center py-8">
-                <div className="flex items-center gap-x-2">
-                  <Image src={modGray} alt="" className="w-[24px] h-[24px]" />
-                  <p className="md:text-base text-center flex items-center text-sm text-[#3E3E3E] font-normal">
-                    {selectedCourse ? (
-                      moduleCounts[selectedCourse] || (
-                        <Loader2 className="animate-spin" />
-                      )
-                    ) : (
-                      <Loader2 className="animate-spin" />
-                    )}{" "}
-                    Module(s)
-                  </p>
-                </div>
-                <div className="flex items-center gap-x-2">
-                  <GrTarget className="w-[24px] h-[24px] text-[#3E3E3E]" />
-                  <p className="md:text-base text-center flex items-center text-sm text-[#3E3E3E] font-normal">
-                    {selectedCourse ? (
-                      projectCounts[selectedCourse] || (
-                        <Loader2 className="animate-spin" />
-                      )
-                    ) : (
-                      <Loader2 className="animate-spin" />
-                    )}{" "}
-                    Project(s)
-                  </p>
-                </div>
-              </div>
-              <div className="flex md:gap-x-2 gap-x-1 justify-between my-2 md:my-0 md:justify-end items-center">
-                <p
-                  className="cursor-pointer w-full py-4 rounded-[8px] text-center border border-[#3e3e3e] text-sm md:text-lg hover:bg-[#3e3e3e] hover:text-white font-medium"
-                  onClick={() => setModal(false)}
-                >
-                  Cancel
-                </p>
-                <button
-                  disabled={deleting}
-                  onClick={() => deleteCourse(selectedCourse!)}
-                  className="bg-[#FF0000] w-full py-4 flex justify-center items-center hover:text-[#ff0000] hover:bg-white hover:border hover:border-[#ff0000] text-white text-sm md:text-lg rounded-[8px] font-medium"
-                >
-                  {deleting ? (
-                    <Loader2Icon className="animate-spin" />
-                  ) : (
-                    <p>Delete Course</p>
-                  )}
-                </button>
-              </div>
-            </div>
-          </section>
+          <>
+            <DeleteModal
+              modGray={modGray}
+              selectedCourse={selectedCourse}
+              moduleCounts={moduleCounts}
+              projectCounts={projectCounts}
+              deleting={deleting}
+              setModal={setModal}
+              deleteCourse={deleteCourse}
+            />
+          </>
         )}
         {editModal && selectedCourse && (
           <section className="absolute z-[99] top-0 flex justify-center items-center left-0 bg h-screen w-full backdrop-blur-[5px] bg-white/30">
