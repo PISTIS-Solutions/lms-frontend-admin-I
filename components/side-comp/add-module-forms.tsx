@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
 import { useRouter } from "next/navigation";
+import { showToast } from "@/lib/showToast";
 
 const AddModuleForms = () => {
   const [sections, setSections] = useState([{ id: 1 }]);
@@ -17,28 +18,12 @@ const AddModuleForms = () => {
   const addSection = () => {
     const newId = sections.length + 1;
     setSections([...sections, { id: newId }]);
-    toast.success("Section Added", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      theme: "dark",
-    });
+    showToast("Section Added", "success");
   };
 
   const deleteSection = (id: number) => {
     setSections(sections.filter((section) => section.id !== id));
-    toast.error("Section Deleted", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      theme: "dark",
-    });
+    showToast("Section Deleted", "error");
   };
 
   interface ModuleFormData {
@@ -93,41 +78,18 @@ const AddModuleForms = () => {
     if (areFieldsValid) {
       setFilteredModuleData(filteredModuleData);
       setLoading(false);
-      toast.success("Modules added!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
+      showToast("Modules added!", "success");
       router.push("add-modules/add-project");
     } else {
-      toast.error("Check form fields!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
+      showToast("Check form fields!", "error");
+
       setLoading(false);
     }
   };
 
   useEffect(() => {
     if (!courseTitle || !courseLink) {
-      toast.error("Error! Add Course again!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: "dark",
-      });
+      showToast("Error! Add Course again!", "error")
       setLoading(false);
       router.replace("/courses/add-course");
       return;

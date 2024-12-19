@@ -2,7 +2,6 @@
 import React, { useState, MouseEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "../ui/textarea";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Loader2Icon, MinusCircle, PlusCircle, X } from "lucide-react";
@@ -17,7 +16,6 @@ import PublishBtn from "./publishBtn";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
-import Image from "next/image";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -274,10 +272,6 @@ const AddProjectForms = () => {
           data.project_description.trim() !== ""
       )
     );
-
-    // console.log(filteredProjectData, "fp");
-    // Call uploadProject
-    // await uploadProject(e);
   };
 
   const test = () => {
@@ -287,7 +281,6 @@ const AddProjectForms = () => {
   useEffect(() => {
     if (
       !courseTitle ||
-      // !description ||
       !courseLink ||
       !filteredModuleDataStore.length
     ) {
@@ -306,10 +299,6 @@ const AddProjectForms = () => {
     }
   }, []);
 
-  // const [openPreview, setOpenPreview] = useState(false);
-  // const handlepreview = () => {
-  //   setOpenPreview((prev) => !prev);
-  // };
   return (
     <div className="pt-5">
       <ToastContainer />
@@ -336,7 +325,6 @@ const AddProjectForms = () => {
                 <span className="text-sm font-normal">Add Section</span>
               </Button>
             )}
-            {/* <div className="flex items-center justify-betwee mt-4"></div> */}
           </div>
 
           <form className="my-4">
@@ -441,12 +429,6 @@ const AddProjectForms = () => {
                       </span>{" "}
                       <br /> {module.module_title}
                     </ol>
-                    {/* <ol className="py-1">
-                      <span className="font-semibold text-main">
-                        Module SubTitle:
-                      </span>{" "}
-                      <br /> {module.module_sub_title}
-                    </ol> */}
                     <ol className="py-1">
                       <span className="font-semibold text-main">
                         Module Description:
@@ -470,26 +452,10 @@ const AddProjectForms = () => {
                 );
               })}
             </div>
-            {/* <div>
-              <h1>Projects</h1>
-              {filteredProjectDataStore.map((project: any) => {
-                return (
-                  <ul>
-                    <ol>Project Title: {project.project_title}</ol>
-                    <ol>Project Description: {project.project_description}</ol>
-                    <ol>Project Link: {project.project_url}</ol>
-                  </ul>
-                );
-              })}
-            </div> */}
           </ul>
         </div>
       </div>
-      {/* {openPreview && (
-        <div className="absolute top-0 flex items-center justify-center right-0 w-full h-screen bg-black/25">
-         
-        </div>
-      )} */}
+    
     </div>
   );
 };

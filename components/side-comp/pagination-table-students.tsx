@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { ArrowLeft, ArrowRight, Loader2Icon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2Icon } from "lucide-react";
 import useStudentsStore from "@/store/fetch-students";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -41,16 +41,16 @@ const PaginatedTable = () => {
           key={person.id}
           className="cursor-pointer"
         >
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
             {person.full_name}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
             {person.email}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
             {person.location}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-4">
+          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
             {person.status}
           </td>
         </tr>
@@ -58,7 +58,7 @@ const PaginatedTable = () => {
   };
 
   return (
-    <div className="bg-white overflow-x-scroll p-2 h-auto rounded-[8px] shadow-md">
+    <div className="bg-white overflow-x-scroll p-3 h-auto rounded-[8px] shadow-md">
       <div className="flex w-full justify-between items-center">
         <h1 className="font-medium text-base md:text-xl">Students Database</h1>
         <Link href="/students">
@@ -66,19 +66,19 @@ const PaginatedTable = () => {
         </Link>
       </div>
 
-      <table className="w-full mt-2 text-center">
-        <thead className="text-main">
+      <table className="w-full mt-2 ">
+        <thead className="text-main text-left">
           <tr className="bg-[#F8F9FF] py-2 w-full">
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
+            <th className="md:py-3 md:text-base text-sm px-2 md:px-0 py-2">
               Name
             </th>
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
+            <th className="md:py-3 md:text-base text-sm px-2 md:px-0 py-2">
               Email
             </th>
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
+            <th className="md:py-3 md:text-base text-sm px-2 md:px-0 py-2">
               Location
             </th>
-            <th className="md:py-4 md:text-base text-sm px-2 md:px-0 py-2">
+            <th className="md:py-3 md:text-base text-sm px-2 md:px-0 py-2">
               Plan
             </th>
           </tr>
@@ -109,7 +109,7 @@ const PaginatedTable = () => {
           disabled={previous == null}
           // disabled={currentPage === 1}
         >
-          <ArrowLeft />
+          <ChevronLeft />
           Previous
         </Button>
         <Button
@@ -117,7 +117,7 @@ const PaginatedTable = () => {
           className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
           disabled={next == null}
         >
-          <ArrowRight />
+          <ChevronRight />
           Next
         </Button>
       </div>
