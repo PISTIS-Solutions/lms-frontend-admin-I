@@ -9,19 +9,22 @@ const SideProjects = ({
   bool,
   selectedProjectId,
   handleModal,
+  role,
 }: any) => {
   return (
     <div className="lg:col-span-3 md:mb-0 mb-4 col-span-10 ">
       <div className="bg-white shadow-md rounded-[8px]">
         <div className="text-main p-4 text-lg md:text-2xl font-medium flex justify-between items-center py-2">
           <h3>Projects</h3>
-          <span
-            onClick={handleModal}
-            className="flex items-center gap-1 bg-sub py-3 hover:bg-white hover:border hover:border-sub hover:text-sub cursor-pointer px-3 text-white rounded-[8px] font-medium"
-          >
-            <Plus />
-            <p className="hidden text-base md:block">Add a new project</p>
-          </span>
+          {(role === "advanced" || role === "super_admin") && (
+            <span
+              onClick={handleModal}
+              className="flex items-center gap-1 bg-sub py-3 hover:bg-white hover:border hover:border-sub hover:text-sub cursor-pointer px-3 text-white rounded-[8px] font-medium"
+            >
+              <Plus />
+              <p className="hidden text-base md:block">Add a new project</p>
+            </span>
+          )}
         </div>
         <div className="">
           {project?.map((head: any, index: number) => {

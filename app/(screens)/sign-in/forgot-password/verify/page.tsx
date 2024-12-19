@@ -1,9 +1,7 @@
 import React from "react";
 import Image from "next/image";
-
 import logo from "@/public/assets/pistis_logo.png";
 import enve from "@/public/assets/enve.png";
-
 import Fulllogo from "@/public/assets/full-logo.png";
 
 const verify_ForgotPassword = () => {

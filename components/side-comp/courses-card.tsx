@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { LucideLoader2 } from "lucide-react";
+import { LucideLoader2, Menu } from "lucide-react";
 import { FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -15,6 +15,9 @@ import { BiEdit } from "react-icons/bi";
 import { useOutsideClick } from "@/utils/outsideClick";
 import useModuleCount from "@/store/module-count";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 interface cardProps {
   id: number;
   title: string;
@@ -23,6 +26,9 @@ interface cardProps {
   handleOpen: any;
   image: any;
   openEditModal: any;
+  key: any;
+  isDraggable?: boolean;
+  role?: string | null;
 }
 
 const CoursesCard = ({
@@ -33,6 +39,9 @@ const CoursesCard = ({
   handleCardClick,
   handleOpen,
   openEditModal,
+  key,
+  isDraggable = false,
+  role,
 }: cardProps) => {
   // const [loading, setLoading] = useState(false);
   const { fetchCourseRead } = useCourseRead();
@@ -92,30 +101,56 @@ const CoursesCard = ({
 
   useOutsideClick(optionsRef, () => setOpenOptions(false));
 
+  //
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: id });
+
+  const dragAndDropStyle = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   return (
-    <div className="relative">
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={dragAndDropStyle}
+      className="relative touch-action-none max-w-[300px] min-[1440px]:max-w-[347px]"
+      key={key}
+    >
       <div
         key={id}
         onClick={() => {
           fetchCourseRead(id);
           handleCardClick(id);
         }}
-        className=" w-full cursor-pointer h-[374px] shadow-md rounded-[8px] bg-[#fff] p-2"
+        className=" w-full cursor-pointer h-[374px shadow-md rounded-[8px] bg-[#fff] p-2 h-full flex flex-col"
       >
-        <Image
-          src={image}
-          width={100}
-          height={100}
-          alt={title}
-          className="rounded-tr-[4px] h-[191px] object-cover w-full rounded-tl-[4px]"
-        />
-        <div className="p-2">
-          <div className="md:mb-14 mb-5">
-            <h1 className="md:text-xl text-base capitalize font-medium">
+        <div className="relative">
+          <Image
+            src={image}
+            width={100}
+            height={100}
+            alt={title}
+            className="rounded-tr-[4px] h-[191px] object-cover w-full rounded-tl-[4px] bg-cover rounded-t-lg"
+          />
+
+          {isDraggable && (
+            <div className="absolute inset-0 bg-black/20 flex justify-center items-center rounded-t-lg">
+              <div className="bg-white p-5 rounded-lg border border-black/20">
+                <Menu />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="p-2 flex justify-between h-[inherit] self-stretch flex-col">
+          <div className="md:mb-5 mb-5">
+            <h1 className="md:text-xl text-lg capitalize font-medium text-[#2E2E2E]">
               {title}
             </h1>
           </div>
-          <div className="flex items-center gap-x-4 absolute bottom-3">
+          <div className="flex items-center gap-x-4 z-10">
             <div className="flex md:text-base text-xs items-center gap-x-1">
               {/* <BookText className="text-main" /> */}
               <Image src={modIcon} alt="" />
@@ -136,12 +171,14 @@ const CoursesCard = ({
           </div>
         </div>
       </div>
-      <button
-        onClick={openOptionsFunct}
-        className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center absolute top-4 right-4 duration-150 ease-in-out"
-      >
-        <FaEllipsisVertical className="text-primary" />
-      </button>
+      {(role === "advanced" || role === "super_admin") && (
+        <button
+          onClick={openOptionsFunct}
+          className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center absolute top-4 right-4 duration-150 ease-in-out"
+        >
+          <FaEllipsisVertical className="text-primary" />
+        </button>
+      )}
       {openOptions && (
         <div
           className="bg-white rounded-[8px] p-4 h-auto absolute top-4 right-4 w-[140px]"

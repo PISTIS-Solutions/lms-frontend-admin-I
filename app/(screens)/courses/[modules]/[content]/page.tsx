@@ -199,7 +199,7 @@ const Content = () => {
 
       setDeleting(true);
       const response = await axios.delete(
-        `${urls.deleteCourse}/${courseID}/modules/${moduleData?.id}`,
+        `${urls.deleteCourse}/${courseID}/modules/${moduleData?.id}/`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
@@ -266,7 +266,13 @@ const Content = () => {
     }
   };
 
-  console.log(moduleData, "md")
+  // console.log(moduleData, "md")
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("admin_role");
+    setRole(userRole);
+  }, []);
 
   return (
     <main className="relative h-screen bg-[#F8F9FF]">
@@ -305,12 +311,14 @@ const Content = () => {
                 <h1 className=" px-4 text-[#1A1A1A] text-lg md:text-2xl my-4 font-medium">
                   {courseRead?.title}
                 </h1>
-                <button
-                  onClick={openOptionsFunct}
-                  className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center duration-150 ease-in-out"
-                >
-                  <FaEllipsisVertical className="text-primary" />
-                </button>
+                {(role === "advanced" || role === "super_admin") && (
+                  <button
+                    onClick={openOptionsFunct}
+                    className=" p-[6px] shadow-md bg-white cursor-pointer rounded-[4px] w-[24px] h-[24px] flex justify-center items-center duration-150 ease-in-out"
+                  >
+                    <FaEllipsisVertical className="text-primary" />
+                  </button>
+                )}
                 {openOptions && (
                   <div
                     className="bg-white rounded-[8px] z-10 p-4 h-auto absolute top-7 right-2 w-[140px] shadow-md"

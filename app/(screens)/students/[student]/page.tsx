@@ -16,20 +16,24 @@ import usePendingGradeStore from "@/store/project-review";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
+const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
+
 const Student = () => {
   const { studentData, loading, fetchStudentInfo } = useStudentInfoStore();
   const { projectReview, reviewLoad, fetchProjectReview } =
     usePendingGradeStore();
   const params = useParams<{ student: string }>();
+  const [selectedValue, setSelectedValue] = useState("");
 
   const id = params.student;
 
   useEffect(() => {
     fetchStudentInfo(id);
-    fetchProjectReview(id);
-  }, []);
+  }, [id]);
 
-  // console.log(studentData, "sd");
+  useEffect(() => {
+    fetchProjectReview(id, selectedValue);
+  }, [id, selectedValue]);
 
   return (
     <main className="relative">
@@ -112,7 +116,35 @@ const Student = () => {
             </div>
             <div>
               <div className="bg-white rounded-[8px] mx-2 md:mx-4 my-4 p-2">
-                <h1 className="text-2xl font-medium my-4">Project Review</h1>
+                <div className="flex justify-between items-center">
+                  <h1 className="text-lg md:text-2xl font-medium my-4">
+                    Project Review
+                  </h1>
+
+                  <div>
+                    <p className="text-gray-600 text-xs">Filter by status</p>
+                    <select
+                      name="plan-filter"
+                      className="rounded-[8px] md:text-base text-xs"
+                      id="filter"
+                      value={selectedValue}
+                      onChange={(e: any) => setSelectedValue(e.target.value)}
+                    >
+                      <option className="md:text-base text-xs" value="">
+                        Select status
+                      </option>
+                      {filterData.map((itm) => (
+                        <option
+                          className="md:text-base text-xs"
+                          value={itm}
+                          key={itm}
+                        >
+                          {itm}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
                 <ProjectReview
                   reviewLoad={reviewLoad}
                   projectReview={projectReview}

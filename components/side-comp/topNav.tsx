@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import useStudentStore from "@/store/fetch-student";
 import { Loader } from "lucide-react";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 const TopNav = () => {
   const { studentData, loading, fetchStudentData } = useStudentStore();
@@ -16,8 +17,6 @@ const TopNav = () => {
   const userName = studentData?.full_name;
   const initials = userName ? userName.charAt(0).toUpperCase() : "";
 
-  
-
   return (
     <Link href="/settings">
       <div className="flex items-center gap-1 md:gap-2">
@@ -28,6 +27,7 @@ const TopNav = () => {
         <div>
           {loading ? (
             <Loader className="animate-spin" />
+            // <Skeleton/>
           ) : (
             <h1 className="md:text-base text-sm font-medium">{userName}</h1>
           )}

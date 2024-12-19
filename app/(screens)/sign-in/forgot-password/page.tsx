@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-
 import logo from "../../../../public/assets/pistis_logo.png";
 import {
   Form,
@@ -14,22 +13,19 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, KeyRound, Loader, Mail } from "lucide-react";
+import { Loader, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { urls } from "@/utils/config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 const formSchema = z.object({
   Email: z.string().min(2, {
     message: "Input correct email address",
   }),
 });
-
 const ForgotPassword = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,11 +33,8 @@ const ForgotPassword = () => {
       Email: "",
     },
   });
-
   const [Unsuccess, setUnsuccess] = useState(false);
-
   const router = useRouter();
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setUnsuccess(true);
@@ -80,7 +73,6 @@ const ForgotPassword = () => {
       setUnsuccess(false);
     }
   };
-
   return (
     <main className="bg-form-back h-screen w-full bg-no-repeat bg-cover relative">
       <ToastContainer />

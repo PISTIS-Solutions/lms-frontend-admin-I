@@ -1,12 +1,10 @@
 "use client";
-
 import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
 import logo from "../../../../public/assets/pistis_logo.png";
-import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
+import { KeyRound, Eye, EyeOff } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -19,9 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import Link from "next/link";
 import Fulllogo from "@/public/assets/full-logo.png";
-
 const formSchema = z.object({
   Password: z.string().min(6, {
     message: "Password must contain a minimum of 6 characters",
@@ -30,9 +26,7 @@ const formSchema = z.object({
     message: "Password must be the same as the one above",
   }),
 });
-
 const NewPassowrd = () => {
-  //submit function
   const router = useRouter();
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -40,8 +34,6 @@ const NewPassowrd = () => {
         if (!containsSpecialCharacters(values.Password)) {
           throw new Error("Password must contain special characters");
         }
-        // console.log(values);
-        // router.push("/create-account/verify");
       } else {
         throw new Error("Password and Confirm do not match");
       }
@@ -53,7 +45,6 @@ const NewPassowrd = () => {
     const specialCharacters = /[!@#$%^&*()_+[\]{};':"\\|,.<>/?]/;
     return specialCharacters.test(str);
   }
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,8 +52,6 @@ const NewPassowrd = () => {
       Confirm: "",
     },
   });
-
-  //toggle password
   const [showPassword, setShowPassword] = useState(true);
   const togglePassword = () => {
     setShowPassword((prev) => !prev);
@@ -166,7 +155,6 @@ const NewPassowrd = () => {
                   </FormItem>
                 )}
               />
-
               <Button
                 type="submit"
                 className="w-full bg-[#33CC99] py-6 font-medium text-lg md:text-2xl text-black hover:text-white"
@@ -176,7 +164,6 @@ const NewPassowrd = () => {
             </form>
           </Form>
         </div>
-        <div></div>
       </div>
     </main>
   );

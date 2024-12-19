@@ -1,0 +1,17 @@
+export const defaultOrder = [
+  "Onboarding-New",
+  "Operating System Fundamentals",
+  "Software Development Life Cycle",
+  "System Installations for Pistis DevOps Mentorship",
+  "Source Code Management (SCM) Fundamentals",
+  "Virtualization and Vagrant Mastery",
+  "Linux Administration",
+  "Networking",
+  "Introduction to Cloud Computing with AWS and GCP",
+  "Continuous Integration & Continuous Delivery (CI/CD)",
+  "Configuration Management",
+  "Infrastructure as Code IAC",
+  "DevOps Fundamentals",
+  "Containers & Containerization (Docker)",
+  "Containers & Orchestration (Kubernetes)",
+];

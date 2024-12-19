@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-
+import { Suspense } from "react";
+import Loading from "./loading";
 export const metadata: Metadata = {
   title: "Dashboard",
 };
-
 export default function RootLayout({
   children,
 }: {
@@ -11,7 +11,9 @@ export default function RootLayout({
 }) {
   return (
     <div>
-      <main>{children}</main>
+      <Suspense fallback={<Loading />}>
+        <main>{children}</main>
+      </Suspense>
     </div>
   );
 }

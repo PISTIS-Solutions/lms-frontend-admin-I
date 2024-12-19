@@ -22,31 +22,44 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const StudentPage = () => {
-  const { students, loading, fetchStudents, count } = useStudentsStore();
+  const { students, loading, fetchStudents, previous, next } =
+    useStudentsStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [selectedValue, setSelectedValue] = useState("");
+  const [selectedOnboardingValue, setSelectedOnboardingValue] = useState("");
   const [ordering, setOrdering] = useState("");
   const router = useRouter();
-
+  // console.log(students);
   // const handleChange = (value: string) => {
   //   setSelectedValue(value);
   //   console.log(`Selected Value: ${value}`); // Debugging
   // };
 
   useEffect(() => {
-    fetchStudents(currentPage, searchQuery, selectedValue, ordering);
-  }, [currentPage, searchQuery, selectedValue, ordering]);
+    fetchStudents(
+      currentPage,
+      searchQuery,
+      selectedValue,
+      ordering,
+      selectedOnboardingValue
+    );
+  }, [
+    currentPage,
+    searchQuery,
+    selectedValue,
+    ordering,
+    selectedOnboardingValue,
+  ]);
 
   const nextPage = async () => {
-    const nextPageStudents = await fetchStudents(currentPage + 1);
-    if (nextPageStudents?.length > 0) {
+    if (next !== null) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
   const prevPage = () => {
-    if (currentPage > 1) {
+    if (previous !== null) {
       setCurrentPage((prevPage) => prevPage - 1);
     }
   };
@@ -117,8 +130,17 @@ const StudentPage = () => {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
     setSearchQuery(e.target.value);
+    setCurrentPage(1);
   };
+
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("admin_role");
+    setRole(userRole);
+  }, []);
 
   //date and time format funct
   const renderStudents = () => {
@@ -126,7 +148,7 @@ const StudentPage = () => {
       const date = new Date(dateTimeString);
 
       const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+      const month = String(date.getMonth() + 1).padStart(2, "0");
       const year = date.getFullYear();
 
       const hours = String(date.getHours()).padStart(2, "0");
@@ -137,7 +159,7 @@ const StudentPage = () => {
         time: `${hours}:${minutes}`,
       };
     }
-    console.log(students);
+    // console.log(students);
 
     return students.map((person) => (
       <React.Fragment key={person?.id}>
@@ -155,17 +177,22 @@ const StudentPage = () => {
           <td className="py-2 md:py-4 text-center">{person?.phone_number}</td>
           <td className="py-2 md:py-4">{person?.status}</td>
           <td className="py-2 md:py-4">
+            {person?.is_active ? "Completed" : "Pending"}
+          </td>
+          <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).date}
           </td>
           <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).time}
           </td>
-          <td
-            onClick={() => toggleStudentOptions(person?.id)}
-            className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
-          >
-            Manage
-          </td>
+          {(role === "advanced" || role === "super_admin") && (
+            <td
+              onClick={() => toggleStudentOptions(person?.id)}
+              className="md:py-4 md:text-base text-xs px-3 md:px-0 py-2 cursor-pointer text-[#00173A] underline"
+            >
+              Manage
+            </td>
+          )}
         </tr>
         {expandedStudent === person.id && (
           <div
@@ -237,30 +264,58 @@ const StudentPage = () => {
               <h1 className="md:text-2xl text-base font-medium">
                 Students Database
               </h1>
-              <div>
-                <p className="text-gray-600 text-xs">Filter by plan</p>
-                <select
-                  name="plan-filter"
-                  className="rounded-[8px] md:text-base text-xs"
-                  id="filter"
-                  value={selectedValue}
-                  onChange={(e: any) => {
-                    setSelectedValue(e.target.value);
-                  }}
-                >
-                  <option className="md:text-base text-xs" value="">
-                    Select plan
-                  </option>
-                  <option className="md:text-base text-xs" value="free">
-                    Free
-                  </option>
-                  <option className="md:text-base text-xs" value="paid">
-                    Paid
-                  </option>
-                  <option className="md:text-base text-xs" value="blocked">
-                    Blocked
-                  </option>
-                </select>
+              <div className="flex gap-x-3 items-center">
+                <div className="h-fit">
+                  <p className="text-gray-600 text-xs">
+                    Filter by onboarding status
+                  </p>
+                  <select
+                    name="onboarding-filter"
+                    className="rounded-[8px] md:text-base text-xs"
+                    id="onboarding-filter"
+                    value={selectedOnboardingValue}
+                    onChange={(e: any) => {
+                      setSelectedOnboardingValue(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option className="md:text-base text-xs" value="">
+                      Select status
+                    </option>
+                    <option className="md:text-base text-xs" value="false">
+                      Pending
+                    </option>
+                    <option className="md:text-base text-xs" value="true">
+                      Completed
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-xs">Filter by plan</p>
+                  <select
+                    name="plan-filter"
+                    className="rounded-[8px] md:text-base text-xs"
+                    id="filter"
+                    value={selectedValue}
+                    onChange={(e: any) => {
+                      setSelectedValue(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option className="md:text-base text-xs" value="">
+                      Select plan
+                    </option>
+                    <option className="md:text-base text-xs" value="free">
+                      Free
+                    </option>
+                    <option className="md:text-base text-xs" value="paid">
+                      Paid
+                    </option>
+                    <option className="md:text-base text-xs" value="blocked">
+                      Blocked
+                    </option>
+                  </select>
+                </div>
               </div>
             </div>
             <div>
@@ -285,10 +340,13 @@ const StudentPage = () => {
                         Plan
                       </th>
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
+                        Onboarding Status
+                      </th>
+                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Date
                       </th>
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
-                        <td className="flex items-center gap-1">Time </td>
+                        Time
                       </th>
 
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 rounded-r-2xl">
@@ -319,7 +377,7 @@ const StudentPage = () => {
                     <Button
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       onClick={prevPage}
-                      disabled={currentPage === 1}
+                      disabled={previous === null}
                     >
                       <ArrowLeft />
                       Previous
@@ -329,9 +387,7 @@ const StudentPage = () => {
                     <Button
                       onClick={nextPage}
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
-                      disabled={
-                        students?.length < 10 || currentPage * 10 >= count
-                      }
+                      disabled={next === null}
                     >
                       <ArrowRight />
                       Next

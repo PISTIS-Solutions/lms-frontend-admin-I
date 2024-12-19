@@ -9,7 +9,9 @@ import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const AddProject = () => {
+
   const router = useRouter();
+
   return (
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
