@@ -29,4 +29,5 @@ export const urls = {
   inviteMentor: `${baseURL}/users/mentors/invite/`,
   exportMentor: `${baseURL}/users/mentors/export_pdf/`,
   uploadMentor: `${baseURL}/users/mentors/activate/`,
+  // resubmit: `${baseURL}/users/courses`,
 };
