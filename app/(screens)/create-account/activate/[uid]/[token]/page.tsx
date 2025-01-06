@@ -42,35 +42,35 @@ const MentorInformation = () => {
   const roles = [
     {
       fe: "Executive",
-      be: "executive"
+      be: "executive",
     },
     {
       fe: "Faculty Lead",
-      be: "faculty_lead"
+      be: "faculty_lead",
     },
     {
       fe: "Mentor",
-      be: "mentor"
+      be: "mentor",
     },
     {
       fe: "Frontend Developer",
-      be: "frontend_dev"
+      be: "frontend_dev",
     },
     {
       fe: "Backend Developer",
-      be: "backend_dev"
+      be: "backend_dev",
     },
-      {
+    {
       fe: "PR",
-      be: "pr"
+      be: "pr",
     },
-      {
+    {
       fe: "Designer",
-      be: "designer"
+      be: "designer",
     },
-      {
+    {
       fe: "Copywriter",
-      be: "copywriter"
+      be: "copywriter",
     },
   ];
   const [showPassword, setShowPassword] = useState(false);
@@ -330,17 +330,17 @@ const MentorInformation = () => {
           >
             Phone Number
           </label>
-          <div className="relative">
+          <div className="">
             <input
               type="number"
               className="bg-[#FAFAFA] pl-20 indent-2 sm:indent-5 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              placeholder="123 456 7890"
+              placeholder="070 1234 5678"
               value={mentorData.phone_number}
               onChange={(e) =>
                 setMentorData({ ...mentorData, phone_number: e.target.value })
               }
             />
-            <select
+            {/* <select
               value={selectedCode}
               onChange={(e) => setSelectedCode(e.target.value)}
               className=" border border-[#DADADA] rounded-tl-[6px] rounded-bl-[6px] text-xs sm:text-sm md:text-base bg-[#FAFAFA] absolute left-0"
@@ -350,7 +350,7 @@ const MentorInformation = () => {
                   {country.code}
                 </option>
               ))}
-            </select>
+            </select> */}
             <p className="flex items-center gap-1 text-[10px] sm:text-xs py-1 text-[#9F9F9F]">
               <PiWarningCircle />
               This number should be active on WhatsApp
