@@ -340,7 +340,7 @@ const MentorInformation = () => {
                 setMentorData({ ...mentorData, phone_number: e.target.value })
               }
             />
-            {/* <select
+            <select
               value={selectedCode}
               onChange={(e) => setSelectedCode(e.target.value)}
               className=" border border-[#DADADA] rounded-tl-[6px] rounded-bl-[6px] text-xs sm:text-sm md:text-base bg-[#FAFAFA] absolute left-0"
@@ -350,7 +350,7 @@ const MentorInformation = () => {
                   {country.code}
                 </option>
               ))}
-            </select> */}
+            </select>
             <p className="flex items-center gap-1 text-[10px] sm:text-xs py-1 text-[#9F9F9F]">
               <PiWarningCircle />
               This number should be active on WhatsApp
