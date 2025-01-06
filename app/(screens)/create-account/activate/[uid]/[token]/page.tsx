@@ -119,7 +119,7 @@ const MentorInformation = () => {
             formData.append("last_name", mentorData.last_name);
             formData.append(
               "phone_number",
-              `(+${selectedCode})${mentorData.phone_number}`
+              `+${selectedCode}${mentorData.phone_number}`
             );
             formData.append("password", mentorData.password);
             formData.append("confirm_password", mentorData.confirm_password);
