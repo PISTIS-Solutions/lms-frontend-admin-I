@@ -16,12 +16,58 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import { Loader2 } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectItem,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const formSchema = z
+  .object({
+    firstName: z.string().min(2, {
+      message: "Input first name",
+    }),
+    lastName: z.string().min(2, {
+      message: "Input last name",
+    }),
+    phone: z.string().regex(/^[0-9]+$/, "Phone number must be numeric"),
+    bio: z.string().min(2, {
+      message: "Please include a bio",
+    }),
+    role: z.string({
+      message: "Please select a your position.",
+    }),
+    password: z.string().min(2, "Input password"),
+    confirmPassword: z.string().min(2, "Input confirm password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 const MentorInformation = () => {
+  //fetch uid and token from url
   const params = useParams<{ uid: string; token: string }>();
   const uid = params.uid;
   const token = params.token;
+
   const router = useRouter();
+  //select image
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const handleImageUpload = (event: any) => {
@@ -38,7 +84,9 @@ const MentorInformation = () => {
       fileInput.click();
     }
   };
+  // select country code
   const [selectedCode, setSelectedCode] = useState("+234");
+  //select roles
   const roles = [
     {
       fe: "Executive",
@@ -73,136 +121,99 @@ const MentorInformation = () => {
       be: "copywriter",
     },
   ];
+  //show and hide password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   //firstname, lastname, phonenumber
-  const [mentorData, setMentorData] = useState({
-    first_name: "",
-    last_name: "",
-    phone_number: "",
-    role: "",
-    bio: "",
-    password: "",
-    confirm_password: "",
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      bio: "",
+      role: "",
+    },
   });
-  //upload mentor information
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  function containsSpecialCharacters(str: string): boolean {
-    const specialCharacters = /[!@#$%^&*()_+[\]{};':"\\|,.<>/?]/;
-    return specialCharacters.test(str);
-  }
-  const uploadMentorInfo = async () => {
-    if (mentorData.password === mentorData.confirm_password) {
-      if (!containsSpecialCharacters(mentorData.password)) {
-        setError("Password does not have special characters!");
-      } else {
-        if (
-          mentorData.first_name ||
-          mentorData.last_name ||
-          mentorData.phone_number ||
-          mentorData.role ||
-          mentorData.bio ||
-          mentorData.password ||
-          mentorData.confirm_password ||
-          selectedFile
-        ) {
-          try {
-            setLoading(true);
-            const formData = new FormData();
-            formData.append("uid", uid);
-            formData.append("token", token);
-            formData.append("first_name", mentorData.first_name);
-            formData.append("bio", mentorData.bio);
-            formData.append("position", mentorData.role);
-            formData.append("last_name", mentorData.last_name);
-            formData.append(
-              "phone_number",
-              `${selectedCode}${mentorData.phone_number}`
-            );
-            formData.append("password", mentorData.password);
-            formData.append("confirm_password", mentorData.confirm_password);
-            if (selectedFile) {
-              formData.append("profile_photo", selectedFile);
-            }
-            const response = await axios.post(urls.uploadMentor, formData, {});
-
-            if (response.status === 200) {
-              setLoading(false);
-              toast.success("Mentor account activated successfully!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                theme: "dark",
-              });
-              router.replace("/");
-            }
-          } catch (error: any) {
-            if (error.response && error.response.status === 401) {
-              await refreshAdminToken();
-              await uploadMentorInfo();
-            } else if (error?.message === "Network Error") {
-              toast.error("Check your network!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                theme: "dark",
-              });
-            } else if (error?.response?.status === 404) {
-              toast.error("Mentor not found!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                theme: "dark",
-              });
-            } else if (error?.response?.status === 500) {
-              toast.error("Error activating account!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                theme: "dark",
-              });
-            } else {
-              toast.error(error?.response?.data?.detail, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                theme: "dark",
-              });
-            }
-          } finally {
-            setLoading(false);
-          }
-        } else {
-          toast.error("Check form fields properly, some fields are missing!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-        }
+  const uploadMentorInfo = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const formData = new FormData();
+      formData.append("uid", uid);
+      formData.append("token", token);
+      formData.append("first_name", values.firstName);
+      formData.append("bio", values.bio);
+      formData.append("position", values.role);
+      formData.append("last_name", values.lastName);
+      formData.append("phone_number", `${selectedCode}${values.phone}`);
+      formData.append("password", values.password);
+      formData.append("confirm_password", values.confirmPassword);
+      if (selectedFile) {
+        formData.append("profile_photo", selectedFile);
       }
-    } else {
-      setError("Password and confirm password do not match!");
+      const response = await axios.post(urls.uploadMentor, formData, {});
+
+      if (response.status === 200) {
+        toast.success("Mentor account activated successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        router.replace("/");
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await uploadMentorInfo(values);
+      } else if (error?.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else if (error?.response?.status === 404) {
+        toast.error("Mentor not found!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else if (error?.response?.status === 500) {
+        toast.error("Error activating account!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
     }
   };
 
@@ -286,230 +297,253 @@ const MentorInformation = () => {
             className="hidden"
             onChange={handleImageUpload}
           />
+          <p className="flex items-center gap-1 mb-2 text-xs text-red-500">
+            <PiWarningCircle />
+            You must add a profile image
+          </p>
         </div>
-        <div className="sm:flex block gap-4 items-center">
-          <div className="flex gap-1 sm:py-0 py-2 flex-col w-full">
-            <label
-              className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-              htmlFor="first_name"
-            >
-              First Name
-            </label>
-            <input
-              type="text"
-              value={mentorData.first_name}
-              onChange={(e) =>
-                setMentorData({ ...mentorData, first_name: e.target.value })
-              }
-              className="bg-[#FAFAFA] border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              placeholder="Enter your first name"
-            />
-          </div>
-          <div className="flex gap-1 flex-col w-full">
-            <label
-              className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-              htmlFor="last_name"
-            >
-              Last Name
-            </label>
-            <input
-              type="text"
-              value={mentorData.last_name}
-              onChange={(e) =>
-                setMentorData({ ...mentorData, last_name: e.target.value })
-              }
-              className="bg-[#FAFAFA] border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              placeholder="Enter your last name"
-            />
-          </div>
-        </div>
-        <div className="flex flex-col gap-1 w-full my-2">
-          <label
-            className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-            htmlFor="phone_no"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(uploadMentorInfo)}
+            // className="sm:space-y-4 space-y-2"
           >
-            Phone Number
-          </label>
-          <div className="">
-            <input
-              type="number"
-              className="bg-[#FAFAFA] pl-20 indent-2 sm:indent-5 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              placeholder="070 1234 5678"
-              value={mentorData.phone_number}
-              onChange={(e) =>
-                setMentorData({ ...mentorData, phone_number: e.target.value })
-              }
-            />
-            <select
-              value={selectedCode}
-              onChange={(e) => setSelectedCode(e.target.value)}
-              className=" border border-[#DADADA] rounded-tl-[6px] rounded-bl-[6px] text-xs sm:text-sm md:text-base bg-[#FAFAFA] absolute left-0"
-            >
-              {countryCodes.map((country, index) => (
-                <option key={index} value={country.code}>
-                  {country.code}
-                </option>
-              ))}
-            </select>
-            <p className="flex items-center gap-1 text-[10px] sm:text-xs py-1 text-[#9F9F9F]">
-              <PiWarningCircle />
-              This number should be active on WhatsApp
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-1 flex-col w-full my-2">
-          <label
-            className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-            htmlFor="position"
-          >
-            Position
-          </label>
-          <select
-            className="bg-[#FAFAFA] indent-1 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-            name="position"
-            id="position"
-            value={mentorData.role}
-            onChange={(e) => {
-              setMentorData({
-                ...mentorData,
-                role: e.target.value,
-              });
-            }}
-          >
-            <option
-              className="text-[#9F9F9F] text-xs sm:text-sm md:text-base font-normal"
-              value=""
-            >
-              Select your Position
-            </option>
-            {roles.map((role, index) => {
-              return (
-                <option
-                  key={index}
-                  className="text-[#9F9F9F] capitalize text-xs sm:text-sm md:text-base font-normal"
-                  value={role.be}
-                >
-                  {role.fe}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-        <div className="flex gap-1 flex-col w-full my-2">
-          <label
-            className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-            htmlFor="bio"
-          >
-            Bio
-          </label>
-          <div>
-            <textarea
-              className="bg-[#FAFAFA] indent-1 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              name="bio"
-              id="bio"
-              value={mentorData.bio}
-              onChange={(e) =>
-                setMentorData({ ...mentorData, bio: e.target.value })
-              }
-              placeholder="Enter your bio here"
-            ></textarea>
-          </div>
-        </div>
-        <div className="flex flex-col gap-1 w-full my-2">
-          <label
-            className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-            htmlFor="password"
-          >
-            Password
-          </label>
-          <div className="relative">
-            <input
-              type={!showPassword ? "password" : "text"}
-              className="bg-[#FAFAFA] indent-8 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              placeholder="Password"
-              value={mentorData.password}
-              onChange={(e) =>
-                setMentorData({ ...mentorData, password: e.target.value })
-              }
-            />
-            <span className="border-r border-r-[#666666]  absolute left-3 mt-2 top-0">
-              <IoKeyOutline className="text-[#666666] h-4 w-4 sm:h-6  sm:w-6 mr-1" />
-            </span>
-            <span className="absolute right-2 top-0 mt-2">
-              {showPassword ? (
-                <FaRegEye
-                  className="sm:h-6 h-4 w-4 sm:w-6 text-[#666666]"
-                  onClick={() => setShowPassword((prev) => !prev)}
+            <div className="sm:flex block gap-4 items-center">
+              <div className="sm:py-0 py-2 w-full">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal">
+                        First Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          className="bg-[#FAFAFA] border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
+                          placeholder="Enter your first name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+              </div>
+              <div className="w-full">
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal">
+                        Last Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          className="bg-[#FAFAFA] border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
+                          placeholder="Enter your last name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <div className="w-full my-2">
+              <div className="">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <FormLabel className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal">
+                        Phone Number
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type="number"
+                            className="bg-[#FAFAFA] pl-20 indent-2 sm:indent-5 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
+                            placeholder="Enter your phone number"
+                            {...field}
+                          />
+                          <select
+                            value={selectedCode}
+                            onChange={(e) => setSelectedCode(e.target.value)}
+                            className=" border border-[#DADADA] rounded-tl-[6px] h-full rounded-bl-[6px] text-xs sm:text-sm md:text-base bg-[#FAFAFA] absolute left-0 top-0"
+                          >
+                            {countryCodes.map((country, index) => (
+                              <option key={index} value={country.code}>
+                                {country.code}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <p className="flex items-center gap-1 text-[10px] sm:text-xs py-1 text-[#9F9F9F]">
+                  <PiWarningCircle />
+                  This number should be active on WhatsApp
+                </p>
+              </div>
+            </div>
+            <div className="w-full my-2">
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal">
+                      Role
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your Role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-[#FAFAFA] indent-1 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal">
+                        {roles.map((role, index) => {
+                          return (
+                            <SelectItem
+                              key={index}
+                              className="text-[#9F9F9F] capitalize text-xs sm:text-sm md:text-base font-normal"
+                              value={role.be}
+                            >
+                              {role.fe}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full my-2">
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal">
+                      Bio
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        className="bg-[#FAFAFA] indent-1 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
+                        placeholder="Enter your bio"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full my-2">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold text-sm sm:text-base">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          className="bg-[#FAFAFA] indent-8 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          {...field}
+                        />
+                        <span className="border-r border-r-[#666666]  absolute left-3 mt-2 top-0">
+                          <IoKeyOutline className="text-[#666666] h-4 w-4 sm:h-6  sm:w-6 mr-1" />
+                        </span>
+                        <span className="absolute right-2 top-0 mt-2">
+                          {showPassword ? (
+                            <FaRegEye
+                              className="sm:h-6 h-4 w-4 sm:w-6 text-[#666666]"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            />
+                          ) : (
+                            <FaRegEyeSlash
+                              className="sm:h-6 h-4 w-4 sm:w-6  text-[#666666]"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            />
+                          )}
+                        </span>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full my-2">
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold text-sm sm:text-base">
+                      Confirm Password
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          className="bg-[#FAFAFA] indent-8 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          {...field}
+                        />
+                        <span className="border-r border-r-[#666666]  absolute left-3 mt-2 top-0">
+                          <IoKeyOutline className="text-[#666666] h-4 w-4 sm:h-6  sm:w-6 mr-1" />
+                        </span>
+                        <span className="absolute right-2 top-0 mt-2">
+                          {showConfirmPassword ? (
+                            <FaRegEye
+                              className="sm:h-6 h-4 w-4 sm:w-6 text-[#666666]"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            />
+                          ) : (
+                            <FaRegEyeSlash
+                              className="sm:h-6 h-4 w-4 sm:w-6  text-[#666666]"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            />
+                          )}
+                        </span>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <button
+              disabled={form.formState.isSubmitting ? true : false}
+              className="w-full disabled:bg-main/75 bg-main rounded-[8px] flex items-center justify-center py-4 cursor-pointer text-white text-xs sm:text-sm md:text-base font-medium my-4 text-center"
+            >
+              {form.formState.isSubmitting ? (
+                <Loader2 className="animate-spin" />
               ) : (
-                <FaRegEyeSlash
-                  className="sm:h-6 h-4 w-4 sm:w-6  text-[#666666]"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                />
+                "Submit"
               )}
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-col gap-1 w-full my-2">
-          <label
-            className="text-[#2E2E2E] text-xs sm:text-sm md:text-base font-normal"
-            htmlFor="confirm_password"
-          >
-            Confirm Password
-          </label>
-          <div className="relative">
-            <input
-              type={!showConfirmPassword ? "password" : "text"}
-              className="bg-[#FAFAFA] indent-8 border w-full border-[#DADADA] rounded-[6px] text-xs sm:text-sm md:text-base font-normal"
-              placeholder="Confirm Password"
-              value={mentorData.confirm_password}
-              onChange={(e) =>
-                setMentorData({
-                  ...mentorData,
-                  confirm_password: e.target.value,
-                })
-              }
-            />
-            <span className="border-r border-r-[#666666]  absolute left-3 mt-2 top-0">
-              <IoKeyOutline className="text-[#666666] h-4 w-4 sm:h-6 sm:w-6 mr-1" />
-            </span>
-            <span className="absolute right-2 top-0 mt-2">
-              {showConfirmPassword ? (
-                <FaRegEye
-                  className="sm:h-6 h-4 w-4 sm:w-6 text-[#666666]"
-                  onClick={() => setShowConfirmPassword((prev) => !prev)}
-                />
-              ) : (
-                <FaRegEyeSlash
-                  className="sm:h-6 h-4 w-4 sm:w-6 text-[#666666]"
-                  onClick={() => setShowConfirmPassword((prev) => !prev)}
-                />
-              )}
-            </span>
-            <p
-              className={`flex items-center gap-1 text-[10px] sm:text-xs py-1 ${
-                error === "Password does not have special characters!"
-                  ? "text-red-500"
-                  : "text-[#9F9F9F]"
-              }`}
-            >
-              <PiWarningCircle />
-              Password must contain special character
-            </p>
-            {error === "Password and confirm password do not match!" && (
-              <p className="text-[10px] sm:text-xs py-1 text-red-500">
-                Password and confirm password do not match!
-              </p>
-            )}
-          </div>
-        </div>
-        <button
-          onClick={uploadMentorInfo}
-          disabled={loading}
-          className="w-full disabled:bg-main/75 bg-main rounded-[8px] flex items-center justify-center py-4 cursor-pointer text-white text-xs sm:text-sm md:text-base font-medium my-4 text-center"
-        >
-          {loading ? <Loader2 className="animate-spin" /> : "Submit"}
-        </button>
+            </button>
+          </form>
+        </Form>
       </div>
     </div>
   );
