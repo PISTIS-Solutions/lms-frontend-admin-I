@@ -45,12 +45,12 @@ const formSchema = z
     lastName: z.string().min(2, {
       message: "Input last name",
     }),
-    phone: z.string().regex(/^[0-9]+$/, "Phone number must be numeric"),
+    phone: z.string().regex(/^[0-9]+$/, "Input phone number"),
     bio: z.string().min(2, {
       message: "Please include a bio",
     }),
     role: z.string({
-      message: "Please select a your position.",
+      required_error: "Please select a your position.",
     }),
     password: z.string().min(2, "Input password"),
     confirmPassword: z.string().min(2, "Input confirm password"),
@@ -516,12 +516,12 @@ const MentorInformation = () => {
                           {showConfirmPassword ? (
                             <FaRegEye
                               className="sm:h-6 h-4 w-4 sm:w-6 text-[#666666]"
-                              onClick={() => setShowPassword((prev) => !prev)}
+                              onClick={() => setShowConfirmPassword((prev) => !prev)}
                             />
                           ) : (
                             <FaRegEyeSlash
                               className="sm:h-6 h-4 w-4 sm:w-6  text-[#666666]"
-                              onClick={() => setShowPassword((prev) => !prev)}
+                              onClick={() => setShowConfirmPassword((prev) => !prev)}
                             />
                           )}
                         </span>
