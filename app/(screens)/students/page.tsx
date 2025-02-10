@@ -1,6 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight, Loader2Icon, Search } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Loader2,
+  Loader2Icon,
+  Search,
+} from "lucide-react";
 import useStudentsStore from "@/store/fetch-students";
 import { Button } from "@/components/ui/button";
 import { ToastContainer, toast } from "react-toastify";
@@ -20,6 +26,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { BsDownload } from "react-icons/bs";
 
 const StudentPage = () => {
   const { students, loading, fetchStudents, previous, next } =
@@ -238,6 +245,74 @@ const StudentPage = () => {
       </React.Fragment>
     ));
   };
+  const [stuLoading, setStuLoading] = useState(false);
+  const exportStudentsList = async () => {
+    try {
+      setStuLoading(true);
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.get(`${urls.exportStudents}`, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+        responseType: "blob",
+      });
+
+      if (response.status === 200) {
+        console.log(response, "res");
+
+        const fileBlob = new Blob([response.data], {
+          type: response.data.type,
+        });
+        const downloadUrl = URL.createObjectURL(fileBlob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        const fileName = response.headers["content-disposition"]
+          ? response.headers["content-disposition"].split("filename=")[1]
+          : "student_list.xlsx";
+
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast.success("Student List Downloaded!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        await refreshAdminToken();
+        await exportStudentsList();
+      } else if (error.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setStuLoading(false);
+    }
+  };
 
   return (
     <main>
@@ -247,20 +322,39 @@ const StudentPage = () => {
           <TopNav />
         </div>
         <div className="py-5 px-2 md:px-7">
-          <div className="relative w-full md:w-1/2">
-            {/* Search input field */}
-            <Input
-              type="text"
-              placeholder="Search student name or email address"
-              className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm italic rounded-[8px] border border-main"
-              value={searchQuery}
-              onChange={handleSearch}
-              // onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Search className="absolute top-2 right-1" />
+          <div className="flex flex-col gap-3 md:flex-row items-center justify-between">
+            <div className="relative w-full md:w-1/2">
+              {/* Search input field */}
+              <Input
+                type="text"
+                placeholder="Search student name or email address"
+                className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm italic rounded-[8px] border border-main"
+                value={searchQuery}
+                onChange={handleSearch}
+                // onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search className="absolute top-2 right-1" />
+            </div>
+            <button
+              disabled={stuLoading}
+              onClick={() => exportStudentsList()}
+              className="bg-white border border-main rounded-[8px] p-2 text-xs"
+            >
+              {stuLoading ? (
+                <span className="flex text-xs items-center gap-1 justify-center">
+                  Exporting... <Loader2 className="animate-spin" />
+                </span>
+              ) : (
+                <span className=" text-xs">
+                  Export Students List
+                  {/* <BsDownload className="text-main" /> */}
+                </span>
+              )}
+            </button>
           </div>
+
           <div className="w-full shadow-md my-5 rounded-[8px] bg-white h-auto p-2">
-            <div className="flex justify-between items-center">
+            <div className="flex gap-2 justify-between items-center">
               <h1 className="md:text-2xl text-base font-medium">
                 Students Database
               </h1>
