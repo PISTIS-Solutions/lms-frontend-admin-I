@@ -34,7 +34,4 @@ RUN npm install --only=production --legacy-peer-deps && npm cache clean --force
 
 # Expose the application port
 EXPOSE 3000
-# Start the application
-# Start the application
-# Start the application
 CMD ["npm", "start", ]
