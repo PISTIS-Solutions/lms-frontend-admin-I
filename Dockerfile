@@ -29,6 +29,9 @@ COPY --from=build /app/public /app/public
 COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/package-lock.json /app/package-lock.json
 
+# Copy npm from the build stage
+COPY --from=build /usr/local/bin/npm /usr/local/bin/npm
+
 # Install only production dependencies
 RUN npm install --only=production --legacy-peer-deps && npm cache clean --force
 
