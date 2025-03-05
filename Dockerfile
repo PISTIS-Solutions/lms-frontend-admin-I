@@ -23,7 +23,7 @@ RUN ls -la /app
 # Production stage
 FROM node:20-alpine
 
-# WORKDIR /app
+WORKDIR /app
 
 # # Copy only necessary files
 # COPY --from=build /app/.next /app/.next
