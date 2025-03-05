@@ -50,7 +50,7 @@ import { BiEdit } from "react-icons/bi";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoTrash } from "react-icons/io5";
 import { GrTarget } from "react-icons/gr";
-import modIcon from "@/public/assets/modIcon.svg";
+import modIcon from "@/src/assets/modIcon.svg";
 import EditProject from "@/components/side-comp/modal/edit-project";
 import EditProjects from "@/components/side-comp/modal/edit-projects";
 

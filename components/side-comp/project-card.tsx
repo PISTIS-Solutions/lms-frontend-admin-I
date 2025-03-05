@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-import img from "@/public/assets/course/ansible.png";
+import img from "@/src/assets/course/ansible.png";
 import { BookText, Hourglass, LucideLoader2, Trash2 } from "lucide-react";
 import useCourseRead from "@/store/course-read";
 import axios from "axios";

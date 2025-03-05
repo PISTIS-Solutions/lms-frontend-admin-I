@@ -49,7 +49,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import { IoTrash } from "react-icons/io5";
 import { GrTarget } from "react-icons/gr";
 import Image from "next/image";
-import modIcon from "@/public/assets/modIcon.svg";
+import modIcon from "@/src/assets/modIcon.svg";
 import EditProject from "@/components/side-comp/modal/edit-project";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });

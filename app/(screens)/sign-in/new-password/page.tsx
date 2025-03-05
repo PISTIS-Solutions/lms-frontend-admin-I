@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import logo from "../../../../public/assets/pistis_logo.png";
+import logo from "../../../../src/assets/pistis_logo.png";
 import { KeyRound, Eye, EyeOff } from "lucide-react";
 import {
   Form,
@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import Fulllogo from "@/public/assets/full-logo.png";
+import Fulllogo from "@/src/assets/full-logo.png";
 const formSchema = z.object({
   Password: z.string().min(6, {
     message: "Password must contain a minimum of 6 characters",

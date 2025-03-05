@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import "react-toastify/dist/ReactToastify.css";
 
-import mentorImg from "@/public/assets/avatar.png";
+import mentorImg from "@/src/assets/avatar.png";
 import { GoDotFill } from "react-icons/go";
 import { Loader2 } from "lucide-react";
 import { mentorAccess } from "@/utils/useMentorsAccess";

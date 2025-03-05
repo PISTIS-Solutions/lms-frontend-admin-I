@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import SideNav from "@/components/side-comp/side-nav";
 import Image from "next/image";
-import user from "@/public/assets/avatar.jpg";
+import user from "@/src/assets/avatar.jpg";
 import ProjectReview from "@/components/side-comp/project-review-table";
 import TopNav from "@/components/side-comp/topNav";
 import { Loader2 } from "lucide-react";

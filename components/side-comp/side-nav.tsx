@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-import logo from "@/public/assets/sideLogo.png";
+import logo from "@/src/assets/sideLogo.png";
 
 import { MdDashboard } from "react-icons/md";
 import { ImBooks } from "react-icons/im";
@@ -13,6 +13,7 @@ import { FaChalkboardUser } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import { IoHelpCircle } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
+import { IoWifiOutline } from "react-icons/io5";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileNav from "./mobile-nav";
@@ -46,6 +47,11 @@ const SideNav = () => {
       icon: <CgNotes />,
       title: "Projects",
       link: "project",
+    },
+    {
+      icon: <IoWifiOutline />,
+      title: "Live Sessions",
+      link: "cohorts",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,

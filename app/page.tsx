@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import logo from "@/public/assets/pistis_logo.png";
+import logo from "@/src/assets/pistis_logo.png";
 import { Eye, EyeOff, KeyRound, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,8 +11,8 @@ import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import coverImage from "@/public/assets/auth-image/sigin-in.webp";
-import avatarImg from "@/public/assets/auth-image/gene.webp";
+import coverImage from "@/src/assets/auth-image/sigin-in.webp";
+import avatarImg from "@/src/assets/auth-image/gene.webp";
 import InputField from "@/components/side-comp/sign-in/inputField";
 
 const SignIn = () => {
@@ -33,6 +33,7 @@ const SignIn = () => {
         password: formStore.password,
       });
       if (response.status === 200) {
+        console.log(response, "response")
         toast.success("Successfully Logged in!", {
           position: "top-right",
           autoClose: 5000,
