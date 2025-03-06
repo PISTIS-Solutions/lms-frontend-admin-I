@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
-import logo from "@/public/assets/sideLogo.png";
+import logo from "@/src/assets/sideLogo.png";
 import { RiArrowLeftFill } from "react-icons/ri";
 
 import { MdDashboard } from "react-icons/md";

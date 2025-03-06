@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-import logo from "@/public/assets/sideLogo.png";
+import logo from "@/src/assets/sideLogo.png";
 
 import { MdDashboard } from "react-icons/md";
 import { ImBooks } from "react-icons/im";

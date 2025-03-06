@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "@/public/assets/full-logo.png";
+import logo from "@/src/assets/full-logo.png";
 export default function Loading() {
   return (
     <div className=" bg-slate-50 flex justify-center items-center flex-col h-screen w-full">

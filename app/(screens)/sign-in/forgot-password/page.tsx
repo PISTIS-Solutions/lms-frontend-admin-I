@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import logo from "../../../../public/assets/pistis_logo.png";
+import logo from "@/src/assets/pistis_logo.png";
 import {
   Form,
   FormControl,

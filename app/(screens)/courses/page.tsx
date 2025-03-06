@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import CoursesCard from "@/components/side-comp/courses-card";
 import TopNav from "@/components/side-comp/topNav";
 
-import modGray from "@/public/assets/modGray.svg";
+import modGray from "@/src/assets/modGray.svg";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -15,8 +15,8 @@ import useModuleCount from "@/store/module-count";
 import useProjectCount from "@/store/projectCount";
 import EditCourse from "@/components/side-comp/modal/edit-course";
 import { Skeleton } from "@/components/ui/skeleton";
-import organizeIcon from "@/public/assets/svg/organize.svg";
-import saveIcon from "@/public/assets/svg/save.svg";
+import organizeIcon from "@/src/assets/svg/organize.svg";
+import saveIcon from "@/src/assets/svg/save.svg";
 
 import {
   DndContext,

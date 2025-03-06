@@ -19,7 +19,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import TopNav from "@/components/side-comp/topNav";
 
 import useModuleRead from "@/store/module-read";
-import modGray from "@/public/assets/modGray.svg";
+import modGray from "@/src/assets/modGray.svg";
 import SideModules from "@/components/side-comp/side-modules";
 import useCourseRead from "@/store/course-read";
 import { Input } from "@/components/ui/input";

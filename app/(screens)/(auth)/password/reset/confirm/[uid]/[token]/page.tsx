@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import logo from "@/public/assets/pistis_logo.png";
+import logo from "@/src/assets/pistis_logo.png";
 import {  KeyRound, Eye, EyeOff, Loader2 } from "lucide-react";
 import useForgotPassStore from "@/store/forgot-password";
 import { urls } from "@/utils/config";

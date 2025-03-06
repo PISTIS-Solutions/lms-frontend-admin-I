@@ -2,14 +2,14 @@
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import mentorImg from "@/public/assets/mentorImg.png";
+import mentorImg from "@/src/assets/mentorImg.png";
 import { PiWarningCircle } from "react-icons/pi";
 import { IoKeyOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-import pLogo from "@/public/assets/pistis_logo.png";
+import pLogo from "@/src/assets/pistis_logo.png";
 import countryCodes from "@/utils/countryCode";
-import pat from "@/public/assets/patric.png";
+import pat from "@/src/assets/patric.png";
 import axios from "axios";
 import { urls } from "@/utils/config";
 import { ToastContainer, toast } from "react-toastify";

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
-import user from "@/public/assets/avatar.png";
+import user from "@/src/assets/avatar.png";
 
 import { IoIosExit } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
-import pistis from "@/public/assets/full-logo.png";
+import pistis from "@/src/assets/full-logo.png";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
