@@ -17,6 +17,7 @@ COPY . .
 RUN npm run build --legacy-peer-deps
 
 RUN ls -la
+
 RUN ls -la /app
 
 
@@ -36,7 +37,7 @@ WORKDIR /app
 # COPY --from=build /usr/local/bin/npm /usr/local/bin/npm
 
 # Install only production dependencies
-RUN npm install --only=production --legacy-peer-deps && npm cache clean --force
+# RUN npm install --only=production --legacy-peer-deps && npm cache clean --force
 
 # Expose the application port
 EXPOSE 3000
