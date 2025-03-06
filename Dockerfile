@@ -31,7 +31,7 @@ WORKDIR /app
 # Copy only necessary files from build stage
 COPY --from=build /app/.next /app/.next
 COPY --from=build /app/public /app/public
-COPY --from=build /app/src/assets /app/src/assets  
+COPY --from=build /app/src/assets /app/src  
 COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/package-lock.json /app/package-lock.json
 
