@@ -31,8 +31,7 @@ jobs:
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
           echo $SHORT_SHA
           docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod  \
-          -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA  \
-          -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG .
+          -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA  .
 
           docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
           docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
