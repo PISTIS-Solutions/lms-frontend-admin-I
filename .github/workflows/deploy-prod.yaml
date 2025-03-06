@@ -42,7 +42,7 @@ jobs:
         run: |
           docker image ls
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod
-          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA
+          # docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG
          
 
