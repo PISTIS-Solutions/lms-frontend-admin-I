@@ -261,7 +261,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
       </div>
       <button
         disabled={loading}
-        onClick={() => exportMentorList(page, role)} // Example: page=1, role=""
+        onClick={() => exportMentorList(page, role)}
         className="text-[#C4C4C4] w-full sm:w-2/3 mx-auto my-4 flex justify-center font-medium text-sm sm:text-base bg-[#2FBC8D] rounded-[8px] cursor-pointer p-[16px_10px]"
       >
         {loading ? (
