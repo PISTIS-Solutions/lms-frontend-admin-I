@@ -41,6 +41,7 @@ RUN npm install --only=production --legacy-peer-deps && npm cache clean --force
 # Debugging: Check final files
 # RUN ls -la /app
 
+
 # Expose the application port
 EXPOSE 3000
 
