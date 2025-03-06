@@ -26,7 +26,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and tag Docker image
+      - name: Build. tag and push Docker image
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
           echo $SHORT_SHA
@@ -35,13 +35,13 @@ jobs:
 
           docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
           docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
-          
-      - name: Push Docker image to ECR
-        run: |
+
           docker image ls
+          
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
+
          
 
   deploy-kubernetes:
