@@ -1,4 +1,4 @@
-name: Deployment to Development Environment
+name: Deployment to Production Environment
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
           
       - name: Push Docker image to ECR
         run: |
-          docker images ls
+          docker image ls
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG
