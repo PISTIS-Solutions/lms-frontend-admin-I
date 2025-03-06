@@ -29,23 +29,21 @@ jobs:
       - name: Build and tag Docker image
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          DATE_TAG=$(date +'%Y-%m-%d_%H-%M')
+          DATE_TAG=$(date +'%Y%m%d-%H%M')
           docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod  \
           -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA  \
           -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG .
 
-          docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
-          docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
-          docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
+          docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod
+          docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA
+          docker tag ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG
           
       - name: Push Docker image to ECR
         run: |
-          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          DATE_TAG=$(date +'%Y-%m-%d_%H-%M')
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:prod
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$DATE_TAG
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:$SHORT_SHA
-          # docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.LMS_ECR_REPOSITORY_NAME }}:latest
+         
 
   deploy-kubernetes:
     runs-on: ubuntu-latest
@@ -65,5 +63,5 @@ jobs:
           token: ${{ secrets.WORKFLOW_PAT }}
           repository: PISTIS-Solutions/devops-config
           event-type: deploy-kubernetes-console-prod
-          client-payload: '{"env": "console-dev"}'
+          client-payload: '{"env": "console-prod"}'
 
