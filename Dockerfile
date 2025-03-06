@@ -14,13 +14,13 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Debugging: List files before build
-RUN ls -la /app
+# RUN ls -la /app
 
 # Build the app
 RUN npm run build --legacy-peer-deps
 
 # Debugging: List files after build
-RUN ls -la /app
+# RUN ls -la /app
 
 # Production stage
 FROM node:20-alpine
@@ -39,7 +39,7 @@ COPY --from=build /app/package-lock.json /app/package-lock.json
 RUN npm install --only=production --legacy-peer-deps && npm cache clean --force
 
 # Debugging: Check final files
-RUN ls -la /app
+# RUN ls -la /app
 
 # Expose the application port
 EXPOSE 3000
