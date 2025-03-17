@@ -1,15 +1,6 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  BookOpenText,
-  GraduationCap,
-  ListChecks,
-  Loader2,
-  Loader2Icon,
-} from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
 import axios from "axios";
 import { urls } from "@/utils/config";
@@ -59,6 +50,8 @@ const Dashboard = () => {
     }));
   };
 
+
+const [list, setList] = useState([]);
   const fetchAdminData = async () => {
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
@@ -67,12 +60,14 @@ const Dashboard = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
+      console.log(response?.data?.students)
       if (response.status === 200) {
         const formattedData = updateMonthNames(
           response.data.students_per_month
         );
         setAdminData(response.data);
         setStudentPerMonth(formattedData);
+        setList(response?.data?.students)
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -86,6 +81,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+    
   };
   const [projectOverview, setProjectOverview] = useState<any>();
   const [overviewLoad, setOverviewLoad] = useState<boolean>(false);
@@ -152,7 +148,7 @@ const Dashboard = () => {
             />
           </div>
           <div className="p-4">
-            <PaginatedTable />
+            <PaginatedTable  />
           </div>
         </div>
       </div>

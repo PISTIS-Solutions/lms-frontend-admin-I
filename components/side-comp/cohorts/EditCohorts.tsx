@@ -1,27 +1,55 @@
-"use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoSend } from "react-icons/io5";
 import { GrClose } from "react-icons/gr";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
+import axios from "axios";
 import { showToast } from "@/lib/showToast";
+import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
-import useCohortStore from "@/store/fetch-cohorts";
+import { useParams } from "next/navigation";
 
-const NewCohorts = ({ handleAddCohorts }: any) => {
+const EditCohorts = ({ setEditModal, cohortData, fetchCohortData }: any) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [details, setDetails] = useState({
-    tag: "pistis-cohort-",
+    tag: "",
     description: "",
     status: "active",
     regStatus: "open",
   });
 
-  const { fetchCohorts } = useCohortStore();
+  const params = useParams<{ id: string }>();
+
+  const id = params.id;
+
+  // Populate fields when cohortData is available
+  useEffect(() => {
+    if (cohortData) {
+      setStartDate(cohortData.start_date || "");
+      setEndDate(cohortData.end_date || "");
+      setDetails({
+        tag: cohortData.tag || "pistis-cohort-",
+        description: cohortData.description || "",
+        status: cohortData.status || "active",
+        regStatus: cohortData.registration_status || "open",
+      });
+    }
+  }, [cohortData]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]:
+        name === "tag"
+          ? `pistis-cohort-${value.replace(/^pistis-cohort-/, "")}`
+          : value,
+    }));
+  };
 
   const calculateDuration = () => {
     if (startDate && endDate) {
@@ -35,27 +63,13 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
     return "----";
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-
-    setDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]:
-        name === "tag"
-          ? `pistis-cohort-${value.replace(/^pistis-cohort-/, "")}`
-          : value,
-    }));
-  };
-
   const [loading, setLoading] = useState(false);
-  const createCohort = async () => {
+  const updateCohort = async () => {
     try {
       setLoading(true);
       const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.post(
-        `${urls.cohorts}`,
+      const response = await axios.patch(
+        `${urls.cohorts}${id}/`,
         {
           tag: details.tag,
           description: details.description,
@@ -70,20 +84,44 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
           },
         }
       );
-      if (response.status === 201) {
-        showToast("Cohort created successfully!", "success");
-        fetchCohorts( 1, "")
-        handleAddCohorts(false);
+      if (response.status === 200) {
+        toast.success("Updated Successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+        setEditModal(false);
+        fetchCohortData(id);
       }
     } catch (error: any) {
-      console.log(error, "error");
-      if (error.response && error.response.status === 401) {
+      setLoading(false);
+      if (error?.response && error?.response.status === 401) {
         await refreshAdminToken();
-        await createCohort();
-      } else if (error?.message === "Network Error") {
-        showToast("Check your network!", "error");
+        await updateCohort();
+      } else if (error.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       } else {
-        showToast(error?.response?.data[0], "error");
+        toast.error(error?.response?.data?.detail, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
       }
     } finally {
       setLoading(false);
@@ -95,10 +133,10 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
       <ToastContainer />
       <div className="flex items-center justify-between">
         <h1 className="text-[#2E2E2E] font-medium text-xl sm:text-2xl">
-          Create a New Cohort
+          Edit Cohort
         </h1>
         <GrClose
-          onClick={handleAddCohorts}
+          onClick={() => setEditModal(false)}
           className="sm:w-6 w-4 h-4 sm:h-6 cursor-pointer"
         />
       </div>
@@ -114,8 +152,7 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
             name="tag"
             value={details.tag}
             onChange={handleChange}
-            className="placeholder:placeholder:text-[#9F9F9F] text-black placeholder:text-xs sm:placeholder:text-base text-xs sm:text-base font-normal w-full p-[8px_12px] border border-[#DADADA] bg-[#FAFAFA]"
-            placeholder="Enter your proposed cohort topic here (e.g pistis-cohort-1)"
+            className="placeholder:text-[#9F9F9F] text-black placeholder:text-xs sm:placeholder:text-base text-xs sm:text-base font-normal w-full p-[8px_12px] border border-[#DADADA] bg-[#FAFAFA]"
           />
         </div>
 
@@ -129,7 +166,6 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
             value={details.description}
             onChange={handleChange}
             className="placeholder:text-[#9F9F9F] text-black placeholder:text-xs sm:placeholder:text-base text-xs sm:text-base font-normal w-full p-[8px_12px] border border-[#DADADA] bg-[#FAFAFA]"
-            placeholder="Enter any additional note or special request here"
           />
         </div>
 
@@ -146,7 +182,7 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="p-2 border-0 bg-none  sm:text-base text-sm"
+            className="p-2 border-0 bg-none sm:text-base text-sm"
           />
           <span className="px-2">to</span>
           <input
@@ -230,31 +266,19 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
 
         {/* Submit Button */}
         <button
-          onClick={() => createCohort()}
-          className={`text-center  sm:text-base text-sm w-full ${
-            details.tag && details.description && startDate && endDate
-              ? "bg-[#2E2E2E]"
-              : "bg-[#9F9F9F] cursor-not-allowed"
-          } text-white rounded-[6px] py-2 sm:py-4`}
-          disabled={
-            !details.tag ||
-            !details.description ||
-            !startDate ||
-            !endDate ||
-            loading
-          }
+          onClick={() => updateCohort()}
+          disabled={loading}
+          className="text-center disabled:cursor-not-allowed disabled:bg-[#2e2e2e]/30 sm:text-base text-sm w-full bg-[#2E2E2E] text-white rounded-[6px] py-2 sm:py-4"
         >
-          {loading ? "Creating..." : "Create a New Cohort"}
+          {loading ? "Updating..." : "Update Cohort"}
         </button>
 
         <p className="text-center text-[#666666] font-normal text-xs my-4">
           Facilisis vulputate quis mi a sed. At sodales nunc bibendum aliquet.
-          Pulvinar nisl feugiat eros et elementum erat accumsan nibh amet. Eget
-          lectus sodales integer.
         </p>
       </div>
     </div>
   );
 };
 
-export default NewCohorts;
+export default EditCohorts;

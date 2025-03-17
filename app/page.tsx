@@ -52,7 +52,7 @@ const SignIn = () => {
           sameSite: "None",
           secure: true,
         });
-        Cookies.set("fullName", response.data.user.full_name, {
+        Cookies.set("fullName", response.data.user.first_name, {
           sameSite: "None",
           secure: true,
         });
@@ -112,7 +112,7 @@ const SignIn = () => {
           <Image
             src={coverImage}
             alt="auth image"
-            className="w-full h-full object-fill "
+            className="w-full h-full object-fit xl:object-cover "
           />
           <div className="absolute bottom-0 left-0 right-0 overflow-hidden rounded-[20px]  text-white w-[78.8%] ml-[24px] mb-[24px] ">
             <div className="auth-border_gradient ">

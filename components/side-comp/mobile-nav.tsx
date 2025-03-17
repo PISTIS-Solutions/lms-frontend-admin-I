@@ -12,7 +12,7 @@ import { RiGraduationCapFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
 import { FaChalkboardUser } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import { IoHelpCircle } from "react-icons/io5";
+import { IoHelpCircle, IoWifiOutline } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
 import { IoMenuSharp } from "react-icons/io5";
 import Link from "next/link";
@@ -54,6 +54,11 @@ const MobileNav = ({ role }: any) => {
       icon: <CgNotes />,
       title: "Projects",
       link: "project",
+    },
+    {
+      icon: <IoWifiOutline />,
+      title: "Live Sessions",
+      link: "cohorts",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,
