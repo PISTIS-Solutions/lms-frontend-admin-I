@@ -64,7 +64,7 @@ const ReadCohort = () => {
           draggable: false,
           theme: "dark",
         });
-        setCohortstu(response?.data?.results?.students);
+        setCohortstu(response?.data);
       }
     } catch (error: any) {
       setFetching(false);
@@ -427,7 +427,7 @@ const ReadCohort = () => {
                       <>
                         {cohortStu?.map((person: any) => (
                           <tr
-                            onClick={() => router.push(`/cohorts/${person.id}`)}
+                            // onClick={() => router.push(`/cohorts/${person.id}`)}
                             className="cursor-pointer hover:bg-slate-100"
                             key={person.id}
                           >

@@ -151,21 +151,29 @@ const StudentPage = () => {
 
   //date and time format funct
   const renderStudents = () => {
-    function formatDateTime(dateTimeString: any) {
-      const date = new Date(dateTimeString);
+    function formatDateTime(dateTimeString: string) {
+      if (!dateTimeString) return { date: "N/A", time: "N/A" };
 
-      const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const year = date.getFullYear();
+      const [timePart, datePart] = dateTimeString.split(", ");
 
-      const hours = String(date.getHours()).padStart(2, "0");
-      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const [day, month, year] = datePart.split("/").map(Number);
+
+      const [hours, minutes] = timePart.split(":").map(Number);
+
+      const date = new Date(year, month - 1, day, hours, minutes);
 
       return {
-        date: `${day}/${month}/${year}`,
-        time: `${hours}:${minutes}`,
+        date: `${String(day).padStart(2, "0")}/${String(month).padStart(
+          2,
+          "0"
+        )}/${year}`,
+        time: `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}`,
       };
     }
+
     // console.log(students);
 
     return students.map((person) => (
@@ -177,12 +185,12 @@ const StudentPage = () => {
               readStudent(person?.id);
             }}
           >
-            {person?.full_name}
+            {person?.first_name + " " + person?.last_name}
           </td>
           <td className="py-2 md:py-4 text-left">{person?.email}</td>
-          <td className="py-2 md:py-4">{person?.courses_completed}</td>
+          <td className="py-2 md:py-4">{person?.courses_completed.length}</td>
           <td className="py-2 md:py-4 text-center">{person?.phone_number}</td>
-          <td className="py-2 md:py-4">{person?.status}</td>
+          <td className="py-2 md:py-4">{person?.subscription?.status}</td>
           <td className="py-2 md:py-4">
             {person?.is_active ? "Completed" : "Pending"}
           </td>

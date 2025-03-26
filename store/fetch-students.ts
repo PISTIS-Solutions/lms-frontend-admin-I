@@ -8,9 +8,12 @@ import refreshAdminToken from "@/utils/refreshToken";
 interface student {
   id: string;
   email: string;
-  full_name: string;
-  courses_completed: number;
+  // full_name: string;
+  first_name: string;
+  last_name: string;
+  courses_completed: [];
   status: string;
+  subscription: string | any;
   phone_number: string;
   location: string;
   is_student: boolean;
@@ -61,18 +64,19 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       const trimmedQuery = searchQuery.trim();
 
       const response = await axios.get(
-        `${baseURL}/users/student/?page=${page}&search=${trimmedQuery}&status=${selectedValue}&ordering=${ordering}&is_active=${isActive}&date_joined`,
+        `${baseURL}/students/students/?page=${page}&search=${trimmedQuery}&status=${selectedValue}&ordering=${ordering}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
           },
         }
       );
+      console.log(response, "students")
       set({
-        students: response.data.results,
-        count: response.data.count,
-        next: response.data.next,
-        previous: response.data.previous,
+        students: response.data,
+        // count: response.data.count,
+        // next: response.data.next,
+        // previous: response.data.previous,
       });
       return response.data.results;
     } catch (error: any) {

@@ -23,11 +23,11 @@ export const urls = {
   projectReview: `${baseURL}/users/admin/project-review/`,
   manageStudentStatus: `${baseURL}/users/admin/manage-subscriptions/`,
   UpdateCourses: `${baseURL}/courses/update-order/`,
-  mentorList: `${baseURL}/users/mentors/`,
-  manageRole: `${baseURL}/users/roles/manage_role/`,
-  inviteMentor: `${baseURL}/users/mentors/invite/`,
-  exportMentor: `${baseURL}/users/mentors/export_pdf/`,
-  uploadMentor: `${baseURL}/users/mentors/activate/`,
-  exportStudents: `${baseURL}/users/mentors/export_excel/`,
+  mentorList: `${baseURL}/mentors/`,
+  manageRole: `${baseURL}/mentors/manage_role/`,
+  inviteMentor: `${baseURL}/mentors/invite/`,
+  exportMentor: `${baseURL}/mentors/export_pdf/`,
+  uploadMentor: `${baseURL}/mentors/activate/`,
+  exportStudents: `${baseURL}/students/export_to_excel/`,
   cohorts: `${baseURL}/cohorts/`
 };

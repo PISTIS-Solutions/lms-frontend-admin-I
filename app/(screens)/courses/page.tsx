@@ -325,7 +325,7 @@ const Courses = () => {
                   {displayedCourses?.map((course: any) => (
                     <>
                       <CoursesCard
-                        image={course?.course_image_url}
+                        image={course?.course_image}
                         id={course?.id}
                         title={course?.title}
                         duration={course?.course_duration}
