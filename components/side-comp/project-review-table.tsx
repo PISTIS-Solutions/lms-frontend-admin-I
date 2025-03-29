@@ -204,7 +204,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
             Previous
           </Button>
         </div>
-        <div className="flex space-x-4">
+        {/* <div className="flex space-x-4">
           {pageNumbers.map((page) => (
             <p
               key={page}
@@ -218,7 +218,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
               {page}
             </p>
           ))}
-        </div>
+        </div> */}
         <div>
           <Button
             onClick={nextPage}
