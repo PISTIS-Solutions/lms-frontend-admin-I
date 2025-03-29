@@ -42,7 +42,7 @@ const PaginatedTable = () => {
           className="cursor-pointer"
         >
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
-            {person.full_name}
+          {person?.first_name + " " + person?.last_name}
           </td>
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
             {person.email}
@@ -51,7 +51,7 @@ const PaginatedTable = () => {
             {person.location}
           </td>
           <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
-            {person.status}
+          {person?.subscription?.status}
           </td>
         </tr>
       ));
