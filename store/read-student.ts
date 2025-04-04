@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { urls } from "@/utils/config";
+import { baseURL, urls } from "@/utils/config";
 import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 
@@ -21,11 +21,12 @@ const useStudentInfoStore = create<readStudent>((set, get) => ({
     try {
       set({ loading: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
-      const response = await axios.get(`${urls.getStudents}${id}`, {
+      const response = await axios.get(`${baseURL}/students/${id}/details/`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
+      console.log(response)
       set({ studentData: response.data });
       set({ response: response.status });
       if (response.status === 200) {

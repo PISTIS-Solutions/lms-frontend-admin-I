@@ -451,9 +451,11 @@ const StudentPage = () => {
                         Time
                       </th>
 
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 rounded-r-2xl">
-                        Access
-                      </th>
+                      {(role === "advanced" || role === "super_admin") && (
+                        <th className="md:py-2 md:text-base px-5 text-xs py-2 rounded-r-2xl">
+                          Access
+                        </th>
+                      )}
                     </tr>
                   </thead>
                   <tbody className="">

@@ -61,8 +61,8 @@ const Student = () => {
                   />
                   <div>
                     <h3 className="lg:text-lg text-base font-medium text-500">
-                      {studentData?.full_name ? (
-                        studentData?.full_name
+                      {studentData?.first_name ? (
+                        studentData?.first_name + " " + studentData?.last_name
                       ) : (
                         <Skeleton />
                       )}
@@ -109,7 +109,7 @@ const Student = () => {
                 </div>
               </div>
               <div className=" text-[#939393] text-xs md:text-lg text-right pr-2">
-                <p>Time left: {studentData?.time_left?.time_left}</p>
+                <p>Time left: {studentData?.time_left}</p>
                 <p>Last login: {studentData?.last_login}</p>
                 <p>Status: {studentData?.status}</p>
               </div>

@@ -73,10 +73,10 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       );
       console.log(response, "students")
       set({
-        students: response.data,
-        // count: response.data.count,
-        // next: response.data.next,
-        // previous: response.data.previous,
+        students: response.data.results,
+        count: response.data.count,
+        next: response.data.next,
+        previous: response.data.previous,
       });
       return response.data.results;
     } catch (error: any) {
