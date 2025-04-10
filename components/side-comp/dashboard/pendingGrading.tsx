@@ -6,8 +6,8 @@ import React from "react";
 
 const PendingGrading = ({overviewLoad, projectOverview}:any) => {
   return (
-    <div className="bg-white h-[370px] md:h-[650px] rounded-[8px] p-2 shadow-sm col-span-3">
-      <h1 className="md:text-2xl text-lg font-medium mb-4">Pending Grading</h1>
+    <div className="bg-white h-[370px] md:h-[650px] rounded-[8px] p-2 shadow-sm col-span-4">
+      <h1 className="md:text-xl text-lg font-semibold mb-4">Pending Grading</h1>
       <div>
         <ScrollArea className="w-full h-[300px] md:h-[400px] rounded-md">
           <div>
@@ -34,7 +34,7 @@ const PendingGrading = ({overviewLoad, projectOverview}:any) => {
                           {initials}
                         </AvatarFallback>
                       </Avatar>
-                      <p className="md:text-lg text-sm">
+                      <p className="md:text-base text-sm">
                         Project {project?.project?.title} submitted by{" "}
                         {project?.student?.full_name}
                       </p>

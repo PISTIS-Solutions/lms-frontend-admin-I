@@ -127,7 +127,7 @@ const [list, setList] = useState([]);
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
-        <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
+        <div className="md:h-[96px] h-[50px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <h1 className="sm:text-2xl text-xs md:text-lg font-medium">
             {`Hello, ${userName}`}
           </h1>
@@ -136,7 +136,7 @@ const [list, setList] = useState([]);
         <ToastContainer />
         <div className="">
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
-            <div className=" col-span-1 lg:col-span-7">
+            <div className=" col-span-1 lg:col-span-6">
               <DashCards loading={loading} adminData={adminData} />
               <EnrollmentActivity
                 chartConfig={chartConfig}

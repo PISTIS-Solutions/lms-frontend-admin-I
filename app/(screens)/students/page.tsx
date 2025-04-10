@@ -7,6 +7,8 @@ import {
   Loader2Icon,
   Search,
 } from "lucide-react";
+import { FaAngleLeft } from "react-icons/fa6";
+import { FaAngleRight } from "react-icons/fa6";
 import useStudentsStore from "@/store/fetch-students";
 import { Button } from "@/components/ui/button";
 import { ToastContainer, toast } from "react-toastify";
@@ -27,9 +29,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { BsDownload } from "react-icons/bs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useStudentStore from "@/store/fetch-student";
 
 const StudentPage = () => {
-  const { students, loading, fetchStudents, previous, next } =
+  const { students, loading, fetchStudents, previous, next, count } =
     useStudentsStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,13 +48,16 @@ const StudentPage = () => {
   //   console.log(`Selected Value: ${value}`); // Debugging
   // };
 
+  const [category, setCategory] = useState("");
+
   useEffect(() => {
     fetchStudents(
       currentPage,
       searchQuery,
       selectedValue,
       ordering,
-      selectedOnboardingValue
+      selectedOnboardingValue,
+      category
     );
   }, [
     currentPage,
@@ -58,6 +65,7 @@ const StudentPage = () => {
     selectedValue,
     ordering,
     selectedOnboardingValue,
+    category,
   ]);
 
   const nextPage = async () => {
@@ -142,11 +150,17 @@ const StudentPage = () => {
     setCurrentPage(1);
   };
 
+  const { studentData, fetchStudentData } = useStudentStore();
+
+  const userName = studentData?.full_name;
+  const initials = userName ? userName.charAt(0).toUpperCase() : "";
+
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const userRole = localStorage.getItem("admin_role");
     setRole(userRole);
+    fetchStudentData();
   }, []);
 
   //date and time format funct
@@ -180,18 +194,30 @@ const StudentPage = () => {
       <React.Fragment key={person?.id}>
         <tr className=" md:text-base text-xs px-3 md:px-0">
           <td
-            className="cursor-pointer font-semibold text-main py-2 md:py-4 text-left  px-5"
+            className="cursor-pointer font-normal text-[#484848] py-2 md:py-4 text-left  px-5"
             onClick={() => {
               readStudent(person?.id);
             }}
           >
             {person?.first_name + " " + person?.last_name}
           </td>
-          <td className="py-2 md:py-4 text-left">{person?.email}</td>
-          <td className="py-2 md:py-4">{person?.courses_completed.length}</td>
-          <td className="py-2 md:py-4 text-center">{person?.phone_number}</td>
-          <td className="py-2 md:py-4">{person?.subscription?.status}</td>
-          <td className="py-2 md:py-4">
+          <td className="py-2 text-xs sm:text-sm font-medium text-[#484848] md:py-4 text-left">
+            {person?.email}
+          </td>
+          {/* <td className="py-2 md:py-4">{person?.courses_completed.length}</td> */}
+          <td className="py-2 font-normal text-[#484848] md:py-4 text-center">
+            {person?.phone_number}
+          </td>
+          <td
+            className={`py-2 font-normal ${
+              person?.subscription?.status === "Paid"
+                ? "text-[#2FBC8D]"
+                : "text-[#FF7F11]"
+            } md:py-4`}
+          >
+            {person?.subscription?.status}
+          </td>
+          {/* <td className="py-2 md:py-4">
             {person?.is_active ? "Completed" : "Pending"}
           </td>
           <td className="py-2 md:py-4">
@@ -199,7 +225,7 @@ const StudentPage = () => {
           </td>
           <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).time}
-          </td>
+          </td> */}
           {(role === "advanced" || role === "super_admin") && (
             <td
               onClick={() => toggleStudentOptions(person?.id)}
@@ -326,54 +352,115 @@ const StudentPage = () => {
     <main>
       <SideNav />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
-        <div className="md:h-[96px] h-[60px] flex justify-end items-center bg-white shadow-md p-4 w-full">
-          <TopNav />
+        <div className="flex p-2 sm:p-4 items-center justify-between">
+          <h1 className="text-main text-base sm:text-base md:text-3xl font-medium">
+            Students
+            <span className="font-medium text-base sm:text-base md:text-2xl text-[#666666]">
+              (
+              {loading ? (
+                <Loader2 className="animate-spin inline-block" />
+              ) : (
+                count
+              )}
+              )
+            </span>
+          </h1>
+          <div className="flex items-center gap-6">
+            <div className="flex flex-row-reverse sm:flex-row items-center gap-2">
+              <Avatar>
+                <AvatarImage
+                  className=" object-cover"
+                  src={studentData?.profile_photo}
+                />
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+              <div>
+                {loading ? (
+                  <Skeleton className="h-4 w-[250px]" />
+                ) : (
+                  <div>
+                    <h1 className="text-sm text-right sm:text-left sm:text-base text-main font-semibold">
+                      {userName}
+                    </h1>
+                    <p className="text-[#666666] font-normal text-xs">
+                      {studentData?.email}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="px-4 flex sm:flex-row flex-col items-center gap-2">
+          <p className="text-main font-normal text-xs sm:text-sm">
+            Student Categories:
+          </p>
+          <div className="p-2 grid grid-cols-2 sm:grid-cols-4 items-center gap-4 rounded-[4px] border border-[#9F9F9F] bg-white">
+            <span
+              onClick={() => setCategory("")}
+              className={`${
+                category === "" ? "bg-main text-white" : "text-[#9F9F9F]"
+              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+            >
+              <p className="font-medium text-sm ">Free</p>
+            </span>
+            <span
+              onClick={() => setCategory("Beginner")}
+              className={`${
+                category === "Beginner"
+                  ? "bg-main text-white"
+                  : "text-[#9F9F9F]"
+              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+            >
+              <p className="font-medium text-sm ">Beginner</p>
+            </span>
+            <span
+              onClick={() => setCategory("Intermediate")}
+              className={`${
+                category === "Intermediate"
+                  ? "bg-main text-white"
+                  : "text-[#9F9F9F]"
+              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+            >
+              <p className="font-medium text-sm ">Intermediate</p>
+            </span>
+            <span
+              onClick={() => setCategory("Advanced")}
+              className={`${
+                category === "Advanced"
+                  ? "bg-main text-white"
+                  : "text-[#9F9F9F]"
+              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+            >
+              <p className="font-medium text-sm ">Advanced</p>
+            </span>
+          </div>
         </div>
         <div className="py-5 px-2 md:px-7">
-          <div className="flex flex-col gap-3 md:flex-row items-center justify-between">
-            <div className="relative w-full md:w-1/2">
-              {/* Search input field */}
-              <Input
-                type="text"
-                placeholder="Search student name or email address"
-                className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm italic rounded-[8px] border border-main"
-                value={searchQuery}
-                onChange={handleSearch}
-                // onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="absolute top-2 right-1" />
-            </div>
-            <button
-              disabled={stuLoading}
-              onClick={() => exportStudentsList()}
-              className="bg-white border border-main rounded-[8px] p-2 text-xs"
-            >
-              {stuLoading ? (
-                <span className="flex text-xs items-center gap-1 justify-center">
-                  Exporting... <Loader2 className="animate-spin" />
-                </span>
-              ) : (
-                <span className=" text-xs">
-                  Export Students List
-                  {/* <BsDownload className="text-main" /> */}
-                </span>
-              )}
-            </button>
-          </div>
+          <div className="flex flex-col gap-3 md:flex-row items-center justify-between"></div>
 
           <div className="w-full shadow-md my-5 rounded-[8px] bg-white h-auto p-2">
-            <div className="flex gap-2 justify-between items-center">
-              <h1 className="md:text-2xl text-base font-medium">
-                Students Database
-              </h1>
-              <div className="flex gap-x-3 items-center">
-                <div className="h-fit">
-                  <p className="text-gray-600 text-xs">
-                    Filter by onboarding status
+            <div className="flex sm:flex-row flex-col  justify-between items-center py-2.5">
+              <div className="relative w-full md:w-1/3 sm:my-0 my-1.5">
+                {/* Search input field */}
+                <Input
+                  type="text"
+                  placeholder="Search for students"
+                  className="placeholder:text-[#A2A2A2] text-black text-xs md:text-sm italic rounded-[8px] border border-[#9F9F9F]"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  // onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Search className="absolute top-2 right-1 text-[#9F9F9F]" />
+              </div>
+              <div className="flex sm:flex-row flex-col items-center gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[#666666] whitespace-nowrap font-normal text-xs sm:text-sm">
+                    Filter by:
                   </p>
                   <select
                     name="onboarding-filter"
-                    className="rounded-[8px] md:text-base text-xs"
+                    className="rounded-[8px] border border-[#9F9F9F] text-[#9F9F9F] md:text-base text-xs"
                     id="onboarding-filter"
                     value={selectedOnboardingValue}
                     onChange={(e: any) => {
@@ -382,74 +469,65 @@ const StudentPage = () => {
                     }}
                   >
                     <option className="md:text-base text-xs" value="">
-                      Select status
+                      Payment Status
                     </option>
                     <option className="md:text-base text-xs" value="false">
                       Pending
                     </option>
                     <option className="md:text-base text-xs" value="true">
-                      Completed
+                      Confirmed
                     </option>
                   </select>
                 </div>
-                <div>
-                  <p className="text-gray-600 text-xs">Filter by plan</p>
-                  <select
-                    name="plan-filter"
-                    className="rounded-[8px] md:text-base text-xs"
-                    id="filter"
-                    value={selectedValue}
-                    onChange={(e: any) => {
-                      setSelectedValue(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <option className="md:text-base text-xs" value="">
-                      Select plan
-                    </option>
-                    <option className="md:text-base text-xs" value="free">
-                      Free
-                    </option>
-                    <option className="md:text-base text-xs" value="paid">
-                      Paid
-                    </option>
-                    <option className="md:text-base text-xs" value="blocked">
-                      Blocked
-                    </option>
-                  </select>
-                </div>
+                <button
+                  disabled={stuLoading}
+                  onClick={() => exportStudentsList()}
+                  className="bg-white border border-sub text-sub w-full rounded-[8px] px-2.5 py-2.5 text-xs"
+                >
+                  {stuLoading ? (
+                    <span className="flex text-xs items-center gap-1 justify-center">
+                      Exporting... <Loader2 className="animate-spin" />
+                    </span>
+                  ) : (
+                    <span className="  text-xs flex justify-center items-center gap-1.5">
+                      <BsDownload className="text-sub w-5 h-5 " />
+                      Export
+                    </span>
+                  )}
+                </button>
               </div>
             </div>
+
             <div>
               <div className=" overflow-x-scroll md:overflow-x-auto">
                 <ToastContainer />
                 <table className="w-full mt-2 text-center relative">
-                  <thead className="text-main">
-                    <tr className="bg-[#F8F9FF] py-2 w-full">
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-left w-1/4 rounded-l-2xl">
-                        Full name
+                  <thead className="text-[#00173A] rounded-[6px] ">
+                    <tr className="bg-[#E6F6FF] py-2 w-full">
+                      <th className="md:py-2 md:text-base text-[#00173A] font-medium  px-5 text-xs py-2 text-left w-1/4 rounded-l-2xl">
+                        Name
                       </th>
-                      <th className="md:py-2 md:text-base text-xs py-2 text-left">
+                      <th className="md:py-2 md:text-base  text-[#00173A] font-medium text-xs py-2 text-left">
                         Email
                       </th>
-                      <th className="md:py-2 md:text-base text-xs py-2 text-center">
+                      {/* <th className="md:py-2 md:text-base text-xs py-2 text-center">
                         <p className="w-min mx-auto">Courses Completed</p>
-                      </th>
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
+                      </th> */}
+                      <th className="md:py-2 md:text-base whitespace-nowrap text-[#00173A] font-medium px-5 text-xs py-2 text-center">
                         Phone Number
                       </th>
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
-                        Plan
+                      <th className="md:py-2 md:text-base whitespace-nowrap  text-[#00173A] font-medium px-5 text-xs py-2 text-center">
+                        Payment Status
                       </th>
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
-                        Onboarding Status
-                      </th>
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
+                      {/* <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
+                        Batch
+                      </th> */}
+                      {/* <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Date
                       </th>
                       <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
                         Time
-                      </th>
+                      </th> */}
 
                       {(role === "advanced" || role === "super_admin") && (
                         <th className="md:py-2 md:text-base px-5 text-xs py-2 rounded-r-2xl">
@@ -476,14 +554,14 @@ const StudentPage = () => {
                     )}
                   </tbody>
                 </table>
-                <div className="flex items-center justify-end gap-1 mt-2">
+                <div className="flex  items-center justify-end gap-1 mt-2">
                   <div>
                     <Button
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       onClick={prevPage}
                       disabled={previous === null}
                     >
-                      <ArrowLeft />
+                      <FaAngleLeft className="w-5 h-5" />
                       Previous
                     </Button>
                   </div>
@@ -493,7 +571,7 @@ const StudentPage = () => {
                       className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
                       disabled={next === null}
                     >
-                      <ArrowRight />
+                      <FaAngleRight />
                       Next
                     </Button>
                   </div>
