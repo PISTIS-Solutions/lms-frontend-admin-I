@@ -215,7 +215,7 @@ const StudentPage = () => {
                 : "text-[#FF7F11]"
             } md:py-4`}
           >
-            {person?.subscription?.status}
+            {person?.subscription?.status === "Paid" ? "Completed" : "Pending"}
           </td>
           {/* <td className="py-2 md:py-4">
             {person?.is_active ? "Completed" : "Pending"}

@@ -69,8 +69,8 @@ const SideNav = () => {
 
   return (
     <div>
-      <nav className="w-64 hidden lg:block bg-main h-screen absolute top-0">
-        <Image className="py-14 px-5" src={logo} priority alt="logo" />
+      <nav className="w-64 hidden lg:block bg-main h-screen overflow-y-scroll absolute top-0">
+        <Image className="py-5 px-5" src={logo} priority alt="logo" />
         <div className="flex justify-between flex-col h-[80%]">
           <div>
             {navTexts.map((nav, index) => {

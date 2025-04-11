@@ -85,7 +85,7 @@ const MobileNav = ({ role }: any) => {
       </div>
       <nav
         ref={sideNavRef}
-        className={`w-full bg-main h-screen absolute top-0 transform transition-transform duration-300 ease-in-out ${
+        className={`w-full bg-main h-screen overflow-y-scroll absolute top-0 transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
