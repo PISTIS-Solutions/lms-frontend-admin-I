@@ -66,7 +66,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       const trimmedQuery = searchQuery.trim();
 
       const response = await axios.get(
-        `${baseURL}/students/students/?page=${page}&search=${trimmedQuery}&status=${selectedValue}&ordering=${ordering}&page_size=5&category=${category}`,
+        `${baseURL}/students/students/?page=${page}&search=${trimmedQuery}&payment_status=${selectedValue}&ordering=${ordering}&page_size=5&category=${category}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,

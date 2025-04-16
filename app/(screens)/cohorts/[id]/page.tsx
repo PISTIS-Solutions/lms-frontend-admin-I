@@ -440,9 +440,9 @@ const ReadCohort = () => {
                             <td className="p-[6px_12px] whitespace-nowrap md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                               {person.phone_number}
                             </td>
-                            <td>
+                            {/* <td>
                               <HiDotsHorizontal className="w-6 h-6 text-[#666666] cursor-pointer" />
-                            </td>
+                            </td> */}
                           </tr>
                         ))}
                       </>

@@ -20,7 +20,7 @@ export const urls = {
   setStudentPassword: `${baseURL}/users/set_password/`,
   projectOverview: `${baseURL}/pending-grading/`,
   deleteStudent: `${baseURL}/users/deactivate_me/`,
-  projectReview: `${baseURL}/users/admin/project-review/`,
+  projectReview: `${baseURL}/project-review/`,
   manageStudentStatus: `${baseURL}/users/admin/manage-subscriptions/`,
   UpdateCourses: `${baseURL}/courses/update-order/`,
   mentorList: `${baseURL}/mentors/`,

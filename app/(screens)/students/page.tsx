@@ -39,7 +39,7 @@ const StudentPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [selectedValue, setSelectedValue] = useState("");
-  const [selectedOnboardingValue, setSelectedOnboardingValue] = useState("");
+  // const [selectedOnboardingValue, setSelectedOnboardingValue] = useState("");
   const [ordering, setOrdering] = useState("");
   const router = useRouter();
   // console.log(students);
@@ -56,7 +56,7 @@ const StudentPage = () => {
       searchQuery,
       selectedValue,
       ordering,
-      selectedOnboardingValue,
+      // selectedOnboardingValue,
       category
     );
   }, [
@@ -64,7 +64,7 @@ const StudentPage = () => {
     searchQuery,
     selectedValue,
     ordering,
-    selectedOnboardingValue,
+    // selectedOnboardingValue,
     category,
   ]);
 
@@ -462,9 +462,9 @@ const StudentPage = () => {
                     name="onboarding-filter"
                     className="rounded-[8px] border border-[#9F9F9F] text-[#9F9F9F] md:text-base text-xs"
                     id="onboarding-filter"
-                    value={selectedOnboardingValue}
+                    value={selectedValue}
                     onChange={(e: any) => {
-                      setSelectedOnboardingValue(e.target.value);
+                      setSelectedValue(e.target.value);
                       setCurrentPage(1);
                     }}
                   >
