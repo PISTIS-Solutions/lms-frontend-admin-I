@@ -40,7 +40,7 @@ const StudentPage = () => {
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [selectedValue, setSelectedValue] = useState("");
   // const [selectedOnboardingValue, setSelectedOnboardingValue] = useState("");
-  const [ordering, setOrdering] = useState("");
+  // const [ordering, setOrdering] = useState("");
   const router = useRouter();
   // console.log(students);
   // const handleChange = (value: string) => {
@@ -55,7 +55,7 @@ const StudentPage = () => {
       currentPage,
       searchQuery,
       selectedValue,
-      ordering,
+      // ordering,
       // selectedOnboardingValue,
       category
     );
@@ -63,7 +63,7 @@ const StudentPage = () => {
     currentPage,
     searchQuery,
     selectedValue,
-    ordering,
+    // ordering,
     // selectedOnboardingValue,
     category,
   ]);
@@ -215,7 +215,7 @@ const StudentPage = () => {
                 : "text-[#FF7F11]"
             } md:py-4`}
           >
-            {person?.subscription?.status === "Paid" ? "Completed" : "Pending"}
+            {person?.subscription?.status === "Paid" ? "Completed" : "-"}
           </td>
           {/* <td className="py-2 md:py-4">
             {person?.is_active ? "Completed" : "Pending"}
@@ -471,11 +471,17 @@ const StudentPage = () => {
                     <option className="md:text-base text-xs" value="">
                       Payment Status
                     </option>
-                    <option className="md:text-base text-xs" value="false">
+                    <option className="md:text-base text-xs" value="Free">
+                      Free
+                    </option>
+                    <option className="md:text-base text-xs" value="Paid">
+                      Paid
+                    </option>
+                    <option className="md:text-base text-xs" value="Pending">
                       Pending
                     </option>
-                    <option className="md:text-base text-xs" value="true">
-                      Confirmed
+                    <option className="md:text-base text-xs" value="Blocked">
+                      Blocked
                     </option>
                   </select>
                 </div>

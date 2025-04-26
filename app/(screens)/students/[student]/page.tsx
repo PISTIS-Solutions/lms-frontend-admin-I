@@ -17,12 +17,18 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 // import { format, formatDistanceToNowStrict, parseISO } from "date-fns";
 
-const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
 
 const Student = () => {
+const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
   const { studentData, loading, fetchStudentInfo } = useStudentInfoStore();
-  const { projectReview, reviewLoad, fetchProjectReview } =
-    usePendingGradeStore();
+  const {
+    projectReview,
+    reviewLoad,
+    fetchProjectReview,
+    count,
+    next,
+    previous,
+  } = usePendingGradeStore();
   const params = useParams<{ student: string }>();
   const [selectedValue, setSelectedValue] = useState("");
 
@@ -163,7 +169,10 @@ const Student = () => {
                       className="rounded-[8px] md:text-base text-xs"
                       id="filter"
                       value={selectedValue}
-                      onChange={(e: any) => setSelectedValue(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        const selected = e.target.value;
+                        setSelectedValue(selected);
+                      }}
                     >
                       <option className="md:text-base text-xs" value="">
                         Select status
@@ -183,6 +192,10 @@ const Student = () => {
                 <ProjectReview
                   reviewLoad={reviewLoad}
                   projectReview={projectReview}
+                  count={count}
+                  next={next}
+                  previous={previous}
+                  fetchProjectReview={fetchProjectReview}
                 />
               </div>
             </div>

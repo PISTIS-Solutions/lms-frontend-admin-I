@@ -8,11 +8,18 @@ import { toast } from "react-toastify";
 interface pendingGrading {
   projectReview: any;
   reviewLoad: boolean;
+  count: 0;
+  next: null;
+  previous: null;
   fetchProjectReview: (id: string, submissionStatus: string) => Promise<void>;
 }
 const usePendingGradeStore = create<pendingGrading>((set, get) => ({
   projectReview: [],
   reviewLoad: false,
+  count: 0,
+  next: null,
+  previous: null,
+
   fetchProjectReview: async (id, submissionStatus = "") => {
     try {
       set({ reviewLoad: true });
@@ -26,9 +33,15 @@ const usePendingGradeStore = create<pendingGrading>((set, get) => ({
         }
       );
       if (response.status === 200) {
-        set({ projectReview: response.data });
-        set({ reviewLoad: false });
-        // console.log(response.data, "rD")
+        set({
+          projectReview: response.data.results,
+          reviewLoad: false,
+          count: response.data.count,
+          next: response.data.next,
+          previous: response.data.previous,
+        });
+        console.log(response.data, "rD");
+        return response.data.results;
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
