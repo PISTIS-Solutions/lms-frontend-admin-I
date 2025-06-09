@@ -132,6 +132,7 @@ const CoursesCard = ({
             src={image}
             width={100}
             height={100}
+            unoptimized
             alt={title}
             className="rounded-tr-[4px] h-[191px] object-cover w-full rounded-tl-[4px] bg-cover rounded-t-lg"
           />

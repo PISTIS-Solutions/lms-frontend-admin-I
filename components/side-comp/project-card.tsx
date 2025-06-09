@@ -95,6 +95,7 @@ const ProjectCard = ({
           width={100}
           height={100}
           alt={title}
+          unoptimized
           priority
           className="rounded-tr-[4px] h-[191px] object-cover w-full rounded-tl-[4px]"
         />

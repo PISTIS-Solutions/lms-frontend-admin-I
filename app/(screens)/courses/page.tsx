@@ -81,6 +81,7 @@ const Courses = () => {
         setAllCourses(response.data);
         const ids = response.data.map((course: { id: number }) => course.id);
         setCourseIds(ids);
+        console.log(response.data, "response")
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
