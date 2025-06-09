@@ -12,7 +12,7 @@ import { RiGraduationCapFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
 import { FaChalkboardUser } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import { IoHelpCircle } from "react-icons/io5";
+import { IoHelpCircle, IoWifiOutline } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
 import { IoMenuSharp } from "react-icons/io5";
 import Link from "next/link";
@@ -55,6 +55,11 @@ const MobileNav = ({ role }: any) => {
       title: "Projects",
       link: "project",
     },
+    {
+      icon: <IoWifiOutline />,
+      title: "Live Sessions",
+      link: "cohorts",
+    },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,
       title: "Mentors",
@@ -80,7 +85,7 @@ const MobileNav = ({ role }: any) => {
       </div>
       <nav
         ref={sideNavRef}
-        className={`w-full bg-main h-screen absolute top-0 transform transition-transform duration-300 ease-in-out ${
+        className={`w-full bg-main h-screen overflow-y-scroll absolute top-0 transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

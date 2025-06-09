@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { urls } from "@/utils/config";
+import { baseURL, urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -20,7 +20,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
       setLoadSubmit(true);
       const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(
-        `${urls.uploadCourses}${person?.course}/submissions/${person?.submission_id}`,
+        `${baseURL}/students/${person?.course?.id}/submissions/${person?.submission_id}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,

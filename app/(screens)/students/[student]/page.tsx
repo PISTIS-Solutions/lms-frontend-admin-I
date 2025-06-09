@@ -15,15 +15,25 @@ import usePendingGradeStore from "@/store/project-review";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+// import { format, formatDistanceToNowStrict, parseISO } from "date-fns";
 
-const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
 
 const Student = () => {
+const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
   const { studentData, loading, fetchStudentInfo } = useStudentInfoStore();
-  const { projectReview, reviewLoad, fetchProjectReview } =
-    usePendingGradeStore();
+  const {
+    projectReview,
+    reviewLoad,
+    fetchProjectReview,
+    count,
+    next,
+    previous,
+  } = usePendingGradeStore();
   const params = useParams<{ student: string }>();
   const [selectedValue, setSelectedValue] = useState("");
+
+  const [timeLeftString, setTimeLeftString] = useState("");
+  const [lastLoginString, setLastLoginString] = useState("");
 
   const id = params.student;
 
@@ -34,6 +44,37 @@ const Student = () => {
   useEffect(() => {
     fetchProjectReview(id, selectedValue);
   }, [id, selectedValue]);
+
+  useEffect(() => {
+    if (studentData?.time_left) {
+      const endDate = new Date(studentData.time_left);
+      const now = new Date();
+      const diffTime = endDate.getTime() - now.getTime();
+
+      if (diffTime > 0) {
+        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const months = Math.floor(days / 30);
+        const remainingDays = days % 30;
+        setTimeLeftString(`${months} month(s), ${remainingDays} day(s)`);
+      } else {
+        setTimeLeftString("Expired");
+      }
+    }
+
+    if (studentData?.last_login) {
+      const loginDate = new Date(studentData.last_login);
+      const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      };
+      const formatted = loginDate.toLocaleString("en-US", options);
+      setLastLoginString(formatted);
+    }
+  }, [studentData]);
 
   return (
     <main className="relative">
@@ -61,8 +102,8 @@ const Student = () => {
                   />
                   <div>
                     <h3 className="lg:text-lg text-base font-medium text-500">
-                      {studentData?.full_name ? (
-                        studentData?.full_name
+                      {studentData?.first_name ? (
+                        studentData?.first_name + " " + studentData?.last_name
                       ) : (
                         <Skeleton />
                       )}
@@ -109,8 +150,8 @@ const Student = () => {
                 </div>
               </div>
               <div className=" text-[#939393] text-xs md:text-lg text-right pr-2">
-                <p>Time left: {studentData?.time_left?.time_left}</p>
-                <p>Last login: {studentData?.last_login}</p>
+                <p>Time left: {timeLeftString}</p>
+                <p>Last login: {lastLoginString}</p>
                 <p>Status: {studentData?.status}</p>
               </div>
             </div>
@@ -128,7 +169,10 @@ const Student = () => {
                       className="rounded-[8px] md:text-base text-xs"
                       id="filter"
                       value={selectedValue}
-                      onChange={(e: any) => setSelectedValue(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        const selected = e.target.value;
+                        setSelectedValue(selected);
+                      }}
                     >
                       <option className="md:text-base text-xs" value="">
                         Select status
@@ -148,6 +192,10 @@ const Student = () => {
                 <ProjectReview
                   reviewLoad={reviewLoad}
                   projectReview={projectReview}
+                  count={count}
+                  next={next}
+                  previous={previous}
+                  fetchProjectReview={fetchProjectReview}
                 />
               </div>
             </div>

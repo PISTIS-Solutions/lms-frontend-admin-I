@@ -39,19 +39,19 @@ const PaginatedTable = () => {
         <tr
           onClick={() => readStudent(person.id)}
           key={person.id}
-          className="cursor-pointer"
+          className="cursor-pointer text-center"
         >
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
-            {person.full_name}
+          <td className="py-1.5 md:text-base text-sm px-2 md:px-0 md:py-2.5">
+            {person?.first_name + " " + person?.last_name}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
+          <td className="py-1.5 md:text-base text-sm px-2 md:px-0 md:py-2.5">
             {person.email}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
+          <td className="py-1.5 md:text-base text-sm px-2 md:px-0 md:py-2.5">
             {person.location}
           </td>
-          <td className="py-2 md:text-base text-sm px-2 md:px-0 md:py-3">
-            {person.status}
+          <td className="py-1.5 md:text-base text-sm px-2 md:px-0 md:py-2.5">
+            {person?.subscription?.status}
           </td>
         </tr>
       ));
@@ -67,8 +67,8 @@ const PaginatedTable = () => {
       </div>
 
       <table className="w-full mt-2 ">
-        <thead className="text-main text-left">
-          <tr className="bg-[#F8F9FF] py-2 w-full">
+        <thead className="text-black font-medium text-center ">
+          <tr className="bg-gray-400 py-2  w-full">
             <th className="md:py-3 md:text-base text-sm px-2 md:px-0 py-2">
               Name
             </th>

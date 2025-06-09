@@ -13,6 +13,7 @@ import { FaChalkboardUser } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import { IoHelpCircle } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
+import { IoWifiOutline } from "react-icons/io5";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileNav from "./mobile-nav";
@@ -47,6 +48,11 @@ const SideNav = () => {
       title: "Projects",
       link: "project",
     },
+    {
+      icon: <IoWifiOutline />,
+      title: "Live Sessions",
+      link: "cohorts",
+    },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,
       title: "Mentors",
@@ -63,8 +69,8 @@ const SideNav = () => {
 
   return (
     <div>
-      <nav className="w-64 hidden lg:block bg-main h-screen absolute top-0">
-        <Image className="py-14 px-5" src={logo} priority alt="logo" />
+      <nav className="w-64 hidden lg:block bg-main h-screen overflow-y-scroll absolute top-0">
+        <Image className="py-5 px-5" src={logo} priority alt="logo" />
         <div className="flex justify-between flex-col h-[80%]">
           <div>
             {navTexts.map((nav, index) => {

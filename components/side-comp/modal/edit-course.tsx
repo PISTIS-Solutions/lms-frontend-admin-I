@@ -89,7 +89,7 @@ const EditCourse = ({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (courseTitle && hours && minutes && courseLink && selectedFile) {
+    if (courseTitle && hours && courseLink && selectedFile) {
       try {
         setLoading(true);
 

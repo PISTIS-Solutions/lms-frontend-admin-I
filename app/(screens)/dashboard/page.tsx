@@ -1,15 +1,6 @@
 "use client";
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  BookOpenText,
-  GraduationCap,
-  ListChecks,
-  Loader2,
-  Loader2Icon,
-} from "lucide-react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
 import axios from "axios";
 import { urls } from "@/utils/config";
@@ -59,6 +50,8 @@ const Dashboard = () => {
     }));
   };
 
+
+const [list, setList] = useState([]);
   const fetchAdminData = async () => {
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
@@ -67,12 +60,14 @@ const Dashboard = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
+      console.log(response?.data?.students)
       if (response.status === 200) {
         const formattedData = updateMonthNames(
           response.data.students_per_month
         );
         setAdminData(response.data);
         setStudentPerMonth(formattedData);
+        setList(response?.data?.students)
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -86,6 +81,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+    
   };
   const [projectOverview, setProjectOverview] = useState<any>();
   const [overviewLoad, setOverviewLoad] = useState<boolean>(false);
@@ -98,6 +94,7 @@ const Dashboard = () => {
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
+      console.log(response, "pending grading")
       setProjectOverview(response.data);
       setOverviewLoad(false);
     } catch (error: any) {
@@ -130,7 +127,7 @@ const Dashboard = () => {
     <main className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
-        <div className="md:h-[96px] h-[60px] flex justify-between items-center bg-white shadow-md p-4 w-full">
+        <div className="md:h-[96px] h-[50px] flex justify-between items-center bg-white shadow-md p-4 w-full">
           <h1 className="sm:text-2xl text-xs md:text-lg font-medium">
             {`Hello, ${userName}`}
           </h1>
@@ -139,7 +136,7 @@ const Dashboard = () => {
         <ToastContainer />
         <div className="">
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
-            <div className=" col-span-1 lg:col-span-7">
+            <div className=" col-span-1 lg:col-span-6">
               <DashCards loading={loading} adminData={adminData} />
               <EnrollmentActivity
                 chartConfig={chartConfig}
@@ -152,7 +149,7 @@ const Dashboard = () => {
             />
           </div>
           <div className="p-4">
-            <PaginatedTable />
+            <PaginatedTable  />
           </div>
         </div>
       </div>

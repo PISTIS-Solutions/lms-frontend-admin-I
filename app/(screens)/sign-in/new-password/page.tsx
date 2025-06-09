@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import logo from "@/src/assets/pistis_logo.png";
+import logo from "../../../../src/assets/pistis_logo.png";
 import { KeyRound, Eye, EyeOff } from "lucide-react";
 import {
   Form,

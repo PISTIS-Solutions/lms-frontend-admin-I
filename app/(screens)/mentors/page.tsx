@@ -227,13 +227,13 @@ const Mentors = () => {
                         <tr key={person.id}>
                           <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                             {/* {person.first_name + person.last_name} */}
-                            {person.first_name} {person.last_name}
+                            {person.user.first_name} {person.user.last_name}
                           </td>
                           <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                            {person.email}
+                            {person.user.email}
                           </td>
                           <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                            {person.phone_number}
+                            {person.user.phone_number}
                           </td>
                           <td
                             className={`${

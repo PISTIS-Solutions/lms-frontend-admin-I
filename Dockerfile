@@ -20,6 +20,7 @@ COPY . .
 RUN npm run build --legacy-peer-deps
 
 # Debugging: List files after build
+
 # RUN ls -la /app
 
 # Production stage

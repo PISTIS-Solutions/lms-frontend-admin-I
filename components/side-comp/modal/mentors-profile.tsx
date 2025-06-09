@@ -54,7 +54,7 @@ const MentorsProfile = ({ handleInfoModal, selectedMentor }: any) => {
         <div className="relative w-40 mx-auto col-span-3">
           <div className=" w-4 h-4 bg-[#2FBC8D] border border-white rounded-full absolute top-8 right-0 " />
           <Image
-            src={selectedMentor?.profile_photo}
+            src={selectedMentor?.user?.profile_photo}
             className="rounded-full w-40 object-fill h-40"
             alt="user"
             width="160"
@@ -72,12 +72,12 @@ const MentorsProfile = ({ handleInfoModal, selectedMentor }: any) => {
           <div className="">
             <div>
               <h1 className="text-main capitalize text-xl sm:text-2xl text-center sm:text-left font-medium">
-                {selectedMentor?.first_name} {selectedMentor?.last_name}
+                {selectedMentor?.user?.first_name} {selectedMentor?.user?.last_name}
               </h1>
               <div className="text-[#666666] text-xs md:text-sm font-normal flex sm:justify-normal justify-center items-center gap-4">
-                <p>{selectedMentor?.email}</p>
+                <p>{selectedMentor?.user?.email}</p>
                 <GoDotFill />
-                <p>{selectedMentor?.phone_number}</p>
+                <p>{selectedMentor?.user?.phone_number}</p>
               </div>
             </div>
             <IoClose

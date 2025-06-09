@@ -4,7 +4,7 @@ import { Loader2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { urls } from "@/utils/config";
+import { baseURL, urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -14,7 +14,12 @@ import { useParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
+const PendingModal = ({
+  handleCloseModal,
+  person,
+  projectReview,
+  fetchProjectReview,
+}: any) => {
   const params = useParams<{ student: string }>();
   const id = params.student;
   const [submitDetails, setSubmitDetails] = useState<any | null>(null);
@@ -25,7 +30,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
       setLoadSubmit(true);
       const adminAccessToken = Cookies.get("adminAccessToken");
       const response = await axios.get(
-        `${urls.uploadCourses}${person?.course}/submissions/${person?.submission_id}`,
+        `${baseURL}/students/${person?.course?.id}/submissions/${person?.submission_id}/`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
@@ -65,6 +70,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
       setLoadSubmit(false);
     }
   };
+
   useEffect(() => {
     fetchSubDetails();
   }, []);
@@ -80,7 +86,7 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
         setLoading(true);
         const accessToken = Cookies.get("adminAccessToken");
         const response = await axios.patch(
-          `${urls.getCourses}${person?.course?.id}/submissions/${person?.submission_id}/`,
+          `${baseURL}/students/${person?.course?.id}/submissions/${person?.submission_id}/`,
           {
             project_id: person?.project?.id,
             submission_link: submitDetails?.submission_link,
@@ -105,7 +111,8 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
           });
           setLoading(false);
           handleCloseModal();
-          window.location.reload();
+          fetchProjectReview(id, "");
+          // window.location.reload();
         }
       } catch (error: any) {
         if (error.response && error.response.status === 401) {
@@ -154,9 +161,12 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
         setRejectSubmit(true);
         const accessToken = Cookies.get("adminAccessToken");
         const response = await axios.patch(
-          `${urls.getCourses}${person?.course?.id}/submissions/${person?.submission_id}/`,
+          `${baseURL}/students/${person?.course?.id}/submissions/${person?.submission_id}/`,
           {
+            project_id: person?.project?.id,
+            submission_link: submitDetails?.submission_link,
             mentor_comments: comment,
+            // status: "Reviewed",
             status: "Rejected",
           },
           {
@@ -177,7 +187,8 @@ const PendingModal = ({ handleCloseModal, person, projectReview }: any) => {
           });
           setRejectSubmit(false);
           handleCloseModal();
-          window.location.reload();
+          // window.location.reload();
+          fetchProjectReview(id, "");
         }
       } catch (error: any) {
         if (error.response && error.response.status === 401) {

@@ -10,8 +10,16 @@ import ReviewedModal from "./modal/reviewed-modal";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
-const ProjectReview = ({ reviewLoad, projectReview }: any) => {
+const ProjectReview = ({
+  reviewLoad,
+  projectReview,
+  count,
+  next,
+  previous,
+  fetchProjectReview,
+}: any) => {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -21,15 +29,14 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
 
   const totalPages = Math.ceil(projectReview.length / itemsPerPage);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+  const nextPage = async () => {
+    if (next !== null) {
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
-
   const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    if (previous !== null) {
+      setCurrentPage((prevPage) => prevPage - 1);
     }
   };
 
@@ -193,39 +200,24 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
         </tbody>
       </table>
 
-      <div className="flex items-center justify-end gap-5 mt-2">
+      <div className="flex  items-center justify-end gap-1 mt-2">
         <div>
           <Button
-            className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
+            className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
             onClick={prevPage}
-            disabled={currentPage === 1}
+            disabled={previous === null}
           >
-            <ArrowLeft />
+            <FaAngleLeft className="w-5 h-5" />
             Previous
           </Button>
         </div>
-        {/* <div className="flex space-x-4">
-          {pageNumbers.map((page) => (
-            <p
-              key={page}
-              onClick={() => goToPage(page)}
-              className={
-                page === currentPage
-                  ? "cursor-pointer font-semibold text-main"
-                  : "text-slate-400 cursor-pointer"
-              }
-            >
-              {page}
-            </p>
-          ))}
-        </div> */}
         <div>
           <Button
             onClick={nextPage}
-            className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
-            disabled={currentPage === totalPages}
+            className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
+            disabled={next === null}
           >
-            <ArrowRight />
+            <FaAngleRight />
             Next
           </Button>
         </div>
@@ -238,6 +230,7 @@ const ProjectReview = ({ reviewLoad, projectReview }: any) => {
               projectReview={projectReview}
               person={selectedPerson}
               handleCloseModal={handleCloseModal}
+              fetchProjectReview={fetchProjectReview}
             />
           </div>
         )}

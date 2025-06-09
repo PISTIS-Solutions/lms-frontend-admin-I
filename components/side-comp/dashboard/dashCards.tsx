@@ -4,7 +4,7 @@ import React from "react";
 const DashCards = ({loading, adminData}:any) => {
   return (
     <div className="flex gap-x-4 overflow-x-scroll justify-between pr-4">
-      <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
+      <div className=" w-full h-[128px] shadow-md rounded-[8px] border-t-4 bg-white border-t-sub flex items-center justify-between px-5">
         <div>
           {loading ? (
             <Loader2 className="animate-spin text-xl" />
@@ -21,7 +21,7 @@ const DashCards = ({loading, adminData}:any) => {
           <BookOpenText className="text-main" />
         </span>
       </div>
-      <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
+      <div className=" w-full h-[128px] shadow-md rounded-[8px] border-t-4 bg-white border-t-main flex items-center justify-between px-5">
         <div>
           {loading ? (
             <Loader2 className="animate-spin text-xl" />
@@ -38,7 +38,7 @@ const DashCards = ({loading, adminData}:any) => {
           <GraduationCap className="text-main" />
         </span>
       </div>
-      <div className=" w-full h-[128px] rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
+      <div className=" w-full h-[128px] shadow-md rounded-[8px] border-t-4 bg-white border-t-[#CC3366] flex items-center justify-between px-5">
         <div>
           {loading ? (
             <Loader2 className="animate-spin text-xl" />

@@ -5,59 +5,44 @@ import { baseURL, urls } from "@/utils/config";
 import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
 
-interface student {
+interface cohorts {
   id: string;
-  email: string;
-  // full_name: string;
-  first_name: string;
-  last_name: string;
-  courses_completed: [];
+  tag: string;
+  start_date: string;
+  end: string;
+  description: number;
   status: string;
-  subscription: string | any;
-  phone_number: string;
-  location: string;
-  is_student: boolean;
-  has_complete_onboarding: boolean;
-  is_active: boolean;
-  profile_photo: string;
-  date_joined: string;
-  last_login: string;
-  time_left: {
-    time_left: string;
-    expiration_date: string;
-  };
+  registration_status: string;
 }
 
-interface StudentsStore {
-  students: student[];
+interface CohortStore {
+  cohorts: cohorts[];
   loading: boolean;
   count: number;
   next: null | string;
   previous: null | string;
-  fetchStudents: (
+  fetchCohorts: (
     page: number,
     searchQuery?: string,
-    selectedValue?: string,
+    // selectedValue?: string,
     // ordering?: string,
-    // isActive?: string,
-    category?:string
+    // isActive?: string
   ) => Promise<any>;
 }
 
-const useStudentsStore = create<StudentsStore>((set, get) => ({
-  students: [],
-  loading: false,
+const useCohortStore = create<CohortStore>((set, get) => ({
+  cohorts: [],
   count: 0,
+  loading: false,
   next: null,
   previous: null,
 
-  fetchStudents: async (
+  fetchCohorts: async (
     page,
-    searchQuery = "",
-    selectedValue = "",
+    searchQuery = ""
+    // selectedValue = "",
     // ordering = "",
-    // isActive = "",
-    category = ""
+    // isActive = ""
   ) => {
     try {
       set({ loading: true });
@@ -65,27 +50,24 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
 
       const trimmedQuery = searchQuery.trim();
 
-      const response = await axios.get(
-        `${baseURL}/students/students/?page=${page}&search=${trimmedQuery}&payment_status=${selectedValue}&page_size=5&category=${category}`,
-        {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-          },
-        }
-      );
-      // console.log(response, "students");
+      const response = await axios.get(`${urls.cohorts}?page=${page}&search=${trimmedQuery}&page_size=10`, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+      console.log(response)
       set({
-        students: response.data.results,
+        cohorts: response.data.results,
         count: response.data.count,
         next: response.data.next,
         previous: response.data.previous,
       });
       return response.data.results;
     } catch (error: any) {
-      console.error("Error fetching students:", error.message);
+      console.error("Error fetching cohorts:", error.message);
       if (error.response && error.response.status === 401) {
         await refreshAdminToken();
-        await get().fetchStudents(page, searchQuery, selectedValue, category);
+        await get().fetchCohorts(page, searchQuery);
       } else if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
@@ -113,4 +95,4 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
   },
 }));
 
-export default useStudentsStore;
+export default useCohortStore;

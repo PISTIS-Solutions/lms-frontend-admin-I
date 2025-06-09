@@ -1,4 +1,5 @@
-name: Deployment to Production Environment
+
+name: Deployment to Development Environment
 
 on:
   push:
@@ -25,7 +26,6 @@ jobs:
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-
       - name: Build. tag and push Docker image
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
@@ -62,5 +62,5 @@ jobs:
           token: ${{ secrets.WORKFLOW_PAT }}
           repository: PISTIS-Solutions/devops-config
           event-type: deploy-kubernetes-console-prod
-          client-payload: '{"env": "console-prod"}'
+          client-payload: '{"env": "console-dev"}'
 
