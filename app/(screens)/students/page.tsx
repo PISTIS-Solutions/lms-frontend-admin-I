@@ -48,7 +48,7 @@ const StudentPage = () => {
   //   console.log(`Selected Value: ${value}`); // Debugging
   // };
 
-  const [category, setCategory] = useState("Free");
+  const [category, setCategory] = useState("");
 
   useEffect(() => {
     fetchStudents(
@@ -397,7 +397,10 @@ const StudentPage = () => {
           </p>
           <div className="p-2 grid grid-cols-2 sm:grid-cols-4 items-center gap-4 rounded-[4px] border border-[#9F9F9F] bg-white">
             <span
-              onClick={() => setCategory("Free")}
+              onClick={() => {
+                setSelectedValue("Free");
+                setCategory("");
+              }}
               className={`${
                 category === "Free" ? "bg-main text-white" : "text-[#9F9F9F]"
               } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
