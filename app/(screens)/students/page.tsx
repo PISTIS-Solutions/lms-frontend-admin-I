@@ -454,7 +454,7 @@ const StudentPage = () => {
                 <Search className="absolute top-2 right-1 text-[#9F9F9F]" />
               </div>
               <div className="flex sm:flex-row flex-col items-center gap-1.5">
-                <div className="flex items-center gap-1.5">
+                {/* <div className="flex items-center gap-1.5">
                   <p className="text-[#666666] whitespace-nowrap font-normal text-xs sm:text-sm">
                     Filter by:
                   </p>
@@ -484,7 +484,7 @@ const StudentPage = () => {
                       Blocked
                     </option>
                   </select>
-                </div>
+                </div> */}
                 <button
                   disabled={stuLoading}
                   onClick={() => exportStudentsList()}

@@ -136,7 +136,7 @@ const [list, setList] = useState([]);
         <ToastContainer />
         <div className="">
           <div className="grid grid-cols-1 lg:grid-cols-10 p-4">
-            <div className=" col-span-1 lg:col-span-6">
+            <div className=" col-span-1 lg:col-span-7">
               <DashCards loading={loading} adminData={adminData} />
               <EnrollmentActivity
                 chartConfig={chartConfig}
