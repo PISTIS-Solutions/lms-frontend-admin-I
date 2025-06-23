@@ -402,13 +402,18 @@ const StudentPage = () => {
                 setCategory("");
               }}
               className={`${
-                category === "Free" ? "bg-main text-white" : "text-[#9F9F9F]"
+                selectedValue === "Free"
+                  ? "bg-main text-white"
+                  : "text-[#9F9F9F]"
               } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Free</p>
             </span>
             <span
-              onClick={() => setCategory("Beginner")}
+              onClick={() => {
+                setCategory("Beginner");
+                setSelectedValue("");
+              }}
               className={`${
                 category === "Beginner"
                   ? "bg-main text-white"
@@ -418,7 +423,10 @@ const StudentPage = () => {
               <p className="font-medium text-sm ">Beginner</p>
             </span>
             <span
-              onClick={() => setCategory("Intermediate")}
+              onClick={() => {
+                setCategory("Intermediate");
+                setSelectedValue("");
+              }}
               className={`${
                 category === "Intermediate"
                   ? "bg-main text-white"
@@ -428,7 +436,11 @@ const StudentPage = () => {
               <p className="font-medium text-sm ">Intermediate</p>
             </span>
             <span
-              onClick={() => setCategory("Advanced")}
+              onClick={() => {
+                setCategory("Advanced");
+
+                setSelectedValue("");
+              }}
               className={`${
                 category === "Advanced"
                   ? "bg-main text-white"
