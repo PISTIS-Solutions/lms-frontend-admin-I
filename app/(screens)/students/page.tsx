@@ -397,15 +397,23 @@ const StudentPage = () => {
           </p>
           <div className="p-2 grid grid-cols-2 sm:grid-cols-4 items-center gap-4 rounded-[4px] border border-[#9F9F9F] bg-white">
             <span
-              onClick={() => setCategory("")}
+              onClick={() => {
+                setSelectedValue("Free");
+                setCategory("");
+              }}
               className={`${
-                category === "" ? "bg-main text-white" : "text-[#9F9F9F]"
+                selectedValue === "Free"
+                  ? "bg-main text-white"
+                  : "text-[#9F9F9F]"
               } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Free</p>
             </span>
             <span
-              onClick={() => setCategory("Beginner")}
+              onClick={() => {
+                setCategory("Beginner");
+                setSelectedValue("");
+              }}
               className={`${
                 category === "Beginner"
                   ? "bg-main text-white"
@@ -415,7 +423,10 @@ const StudentPage = () => {
               <p className="font-medium text-sm ">Beginner</p>
             </span>
             <span
-              onClick={() => setCategory("Intermediate")}
+              onClick={() => {
+                setCategory("Intermediate");
+                setSelectedValue("");
+              }}
               className={`${
                 category === "Intermediate"
                   ? "bg-main text-white"
@@ -425,7 +436,11 @@ const StudentPage = () => {
               <p className="font-medium text-sm ">Intermediate</p>
             </span>
             <span
-              onClick={() => setCategory("Advanced")}
+              onClick={() => {
+                setCategory("Advanced");
+
+                setSelectedValue("");
+              }}
               className={`${
                 category === "Advanced"
                   ? "bg-main text-white"
@@ -454,7 +469,7 @@ const StudentPage = () => {
                 <Search className="absolute top-2 right-1 text-[#9F9F9F]" />
               </div>
               <div className="flex sm:flex-row flex-col items-center gap-1.5">
-                <div className="flex items-center gap-1.5">
+                {/* <div className="flex items-center gap-1.5">
                   <p className="text-[#666666] whitespace-nowrap font-normal text-xs sm:text-sm">
                     Filter by:
                   </p>
@@ -484,7 +499,7 @@ const StudentPage = () => {
                       Blocked
                     </option>
                   </select>
-                </div>
+                </div> */}
                 <button
                   disabled={stuLoading}
                   onClick={() => exportStudentsList()}

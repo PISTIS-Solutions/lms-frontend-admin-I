@@ -6,7 +6,7 @@ import React from "react";
 
 const PendingGrading = ({overviewLoad, projectOverview}:any) => {
   return (
-    <div className="bg-white h-[370px] md:h-[650px] rounded-[8px] p-2 shadow-sm col-span-4">
+    <div className="bg-white h-[370px] md:h-[650px] rounded-[8px] p-2 shadow-sm col-span-3">
       <h1 className="md:text-xl text-lg font-semibold mb-4">Pending Grading</h1>
       <div>
         <ScrollArea className="w-full h-[300px] md:h-[400px] rounded-md">
