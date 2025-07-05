@@ -66,6 +66,10 @@ const Courses = () => {
   const [isDragDropEnabled, setIsDragDropEnabled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [courseType, setCourseType] = useState<"intermediate" | "advanced">(
+    "intermediate"
+  );
+
   //fetch course
   const fetchCourses = async () => {
     const adminAccessToken = Cookies.get("adminAccessToken");
@@ -81,7 +85,7 @@ const Courses = () => {
         setAllCourses(response.data);
         const ids = response.data.map((course: { id: number }) => course.id);
         setCourseIds(ids);
-        console.log(response.data, "response")
+        console.log(response.data, "response");
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -298,6 +302,28 @@ const Courses = () => {
             setDisplayedCourses={setDisplayedCourses}
             handleUpdateCourses={handleUpdateCourses}
           />
+          <div className="rounded-[6px] p-2 border border-[#DADADA] my-2 inline-flex items-center gap-5">
+            <span
+              onClick={() => setCourseType("intermediate")}
+              className={`"text-[#9F9F9F] cursor-pointer text-sm font-normal ${
+                courseType === "intermediate"
+                  ? "bg-main rounded-[6px] p-2 text-white"
+                  : "bg-white"
+              } `}
+            >
+              <p>Intermediate Course</p>
+            </span>
+            <span
+              onClick={() => setCourseType("advanced")}
+              className={`"text-[#9F9F9F] cursor-pointer text-sm font-normal ${
+                courseType === "advanced"
+                  ? "bg-main rounded-[6px] p-2 text-white"
+                  : "bg-white"
+              } `}
+            >
+              <p>Advance Course</p>
+            </span>
+          </div>
           {loading ? (
             <div className="my-5 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5">
               <div className="flex flex-col justify-center items-center">

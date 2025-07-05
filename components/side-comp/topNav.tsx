@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Cookies from "js-cookie";
 import useStudentStore from "@/store/fetch-student";
-import { Loader } from "lucide-react";
+import { Loader, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 
@@ -19,19 +19,34 @@ const TopNav = () => {
 
   return (
     <Link href="/settings">
-      <div className="flex items-center gap-1 md:gap-2">
-        <Avatar>
-          <AvatarImage src={studentData?.profile_photo} />
-          <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
-        <div>
-          {loading ? (
-            <Loader className="animate-spin" />
-            // <Skeleton/>
-          ) : (
-            <h1 className="md:text-base text-sm font-medium">{userName}</h1>
-          )}
-          <p className="md:text-sm text-xs text-[#5D5B5B]">Admin</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          {/* <GoBellFill className="text-main w-6 h-6" /> */}
+          <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage
+                className=" object-cover"
+                src={studentData?.profile_photo}
+              />
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
+            <div>
+              {loading ? (
+                // <Loader className="animate-spin" />
+                <Skeleton className="h-4 w-[250px]" />
+              ) : (
+                <div>
+                  <h1 className="text-base text-main font-semibold">
+                    {userName}
+                  </h1>
+                  <p className="text-[#666666] font-normal text-xs">
+                    {studentData?.email}
+                  </p>
+                </div>
+              )}
+            </div>
+            {/* <FiChevronDown className="w-4 h-4 text-[#666666] cursor-pointer" /> */}
+          </div>
         </div>
       </div>
     </Link>

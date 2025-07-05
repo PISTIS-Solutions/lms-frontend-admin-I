@@ -16,11 +16,15 @@ import PublishBtn from "./publishBtn";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
+import { showToast } from "@/lib/showToast";
+import { FaAnglesLeft, FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { FiMinus } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const AddProjectForms = () => {
-  const [sections, setSections] = useState([{ id: 1 }]);
+  const [sections, setSections] = useState([{ id: 1, isOpen: true }]);
 
   const {
     setFilteredProjectData,
@@ -42,31 +46,27 @@ const AddProjectForms = () => {
     setCourseTitle,
   } = useCourseFormStore();
 
-  const addSection = () => {
-    const newId = sections.length + 1;
-    setSections([...sections, { id: newId }]);
-    toast.success("Section Added", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      theme: "dark",
-    });
+  const toggleSection = (id: number) => {
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === id ? { ...section, isOpen: !section.isOpen } : section
+      )
+    );
   };
 
-  const deleteSection = (id: any) => {
+  const addSection = () => {
+    const newId = sections.length + 1;
+    setSections([...sections, { id: newId, isOpen: true }]);
+    showToast("Section Added", "success");
+  };
+
+  const deleteSection = (id: number) => {
+    if (sections.length === 1) {
+      showToast("Cannot delete the only section", "error");
+      return;
+    }
     setSections(sections.filter((section) => section.id !== id));
-    toast.error("Section Deleted", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      theme: "dark",
-    });
+    showToast("Section Deleted", "error");
   };
 
   const router = useRouter();
@@ -77,7 +77,7 @@ const AddProjectForms = () => {
     if (
       courseTitle !== "" &&
       courseLink !== "" &&
-      filteredModuleDataStore.length !== 0  &&
+      filteredModuleDataStore.length !== 0 &&
       filteredProjectDataStore.length !== 0
     ) {
       try {
@@ -302,160 +302,190 @@ const AddProjectForms = () => {
   return (
     <div className="pt-5">
       <ToastContainer />
+      <h1 className="md:text-3xl text-xl font-semibold">Projects</h1>
       {sections.map((section, index) => (
-        <div key={section.id} className="mt-4">
-          <div className="flex items-center justify-between">
-            <h1 className="md:text-3xl text-xl font-semibold">
-              Project Details
-            </h1>
-            {index > 0 ? (
-              <Button
-                onClick={() => deleteSection(section.id)}
-                className="cursor-pointer flex items-center justify-center gap-2 bg-red-500 hover:text-white rounded-[8px] px-4 py-2 text-black"
-              >
-                <MinusCircle className="text-white" />
-                <span className="text-sm font-normal">Delete Section</span>
-              </Button>
+        <div
+          key={section.id}
+          className="mb-4 border border-[#DADADA] rounded-lg"
+        >
+          <div
+            className="flex justify-between items-center border-b border-[#DADADA] p-3 cursor-pointer"
+            onClick={() => toggleSection(section.id)}
+          >
+            <h1 className="font-medium">Project {index + 1}</h1>
+            {section.isOpen ? (
+              <FaChevronUp className="text-gray-500" />
             ) : (
-              <Button
-                onClick={addSection}
-                className="cursor-pointer flex items-center justify-center gap-2 bg-[#F1F1F1] hover:text-white rounded-[8px] px-4 py-2 text-black"
-              >
-                <PlusCircle />
-                <span className="text-sm font-normal">Add Section</span>
-              </Button>
+              <FaChevronDown className="text-gray-500" />
             )}
           </div>
-
-          <form className="my-4">
-            <div>
-              <div className="flex flex-end">
-              </div>
-              <label className="md:text-xl text-sm text-[#3E3E3E]">
-                <p className="">Project Title</p>
-              </label>
-              <div className="">
-                <Input
-                  type="text"
-                  name={`projectTitle-${section.id}`}
-                  id={`projectTitle-${section.id}`}
-                  className="bg-[#FAFAFA] "
-                  placeholder="Input Project Title"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="md:text-xl text-sm text-[#3E3E3E]">
-                <p className="mt-2">Project Link</p>
-              </label>
+          {section.isOpen && (
+            <form className="p-3 space-y-3 transition-all duration-300">
               <div>
-                <Input
-                  type="url"
-                  name={`projectLink-${section.id}`}
-                  id={`projectLink-${section.id}`}
-                  className="bg-[#FAFAFA]"
-                  placeholder="Input Project Link"
-                />
+                <div className="flex flex-end"></div>
+                <label className="md:text-base text-sm text-[#3E3E3E]">
+                  <p className="">Project Title</p>
+                </label>
+                <div className="">
+                  <Input
+                    type="text"
+                    name={`projectTitle-${section.id}`}
+                    id={`projectTitle-${section.id}`}
+                    className="bg-[#FAFAFA] "
+                    placeholder="Input Project Title"
+                  />
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="md:text-xl text-sm text-[#3E3E3E]">
-                <p className="mt-2">Additional Note</p>
-              </label>
               <div>
-                <ReactQuill
-                  modules={{ toolbar: toolbarOptions }}
-                  theme="snow"
-                  // name={`moduleDetails-${section.id}`}
-                  id={`projectDetails-${section.id}`}
-                  className="bg-[#FAFAFA]"
-                  placeholder="Input project content details"
-                  // value={description}
-                  // onChange={setDescription}
-                />
+                <label className="md:text-base text-sm text-[#3E3E3E]">
+                  <p className="mt-2">Project Link</p>
+                </label>
+                <div>
+                  <Input
+                    type="url"
+                    name={`projectLink-${section.id}`}
+                    id={`projectLink-${section.id}`}
+                    className="bg-[#FAFAFA]"
+                    placeholder="Input Project Link"
+                  />
+                </div>
               </div>
-            </div>
-          </form>
+              <div>
+                <label className="md:text-base text-sm text-[#3E3E3E]">
+                  <p className="mt-2">Additional Note</p>
+                </label>
+                <div>
+                  <ReactQuill
+                    modules={{ toolbar: toolbarOptions }}
+                    theme="snow"
+                    // name={`moduleDetails-${section.id}`}
+                    id={`projectDetails-${section.id}`}
+                    className="bg-[#FAFAFA]"
+                    placeholder="Input project content details"
+                    // value={description}
+                    // onChange={setDescription}
+                  />
+                </div>
+              </div>
+              {index > 0 && (
+                <Button
+                  onClick={() => deleteSection(section.id)}
+                  className="mt-2 bg-red-500 hover:bg-red-600 text-white w-full flex items-center justify-center gap-2"
+                >
+                  <FiMinus />
+                  <span className="text-sm font-normal">Delete Section</span>
+                </Button>
+              )}
+            </form>
+          )}
         </div>
       ))}
-      <PublishBtn
-        loading={loading}
-        onContinue={onContinue}
-        upload={uploadProject}
-        test={test}
-      />
 
-      <div className="bg-white overflow-y-scroll w-3/4 h-[60vh] p-2 rounded-[8px]">
-        <div className="">
-          <h1 className="font-semibold text-xl text-main">
-            Course Details Preview
-          </h1>
+      <Button
+        onClick={addSection}
+        className="mt-4 w-full flex items-center justify-center gap-2 bg-[#F1F1F1] hover:text-white text-black"
+      >
+        <IoMdAdd />
+        <span className="text-sm font-normal">Add a New Project</span>
+      </Button>
+
+      <div className="flex mt-5 items-center justify-between gap-4">
+        <Button
+          type="button"
+          onClick={() => router.back()}
+          className="bg-gray-200 flex items-center gap-1 flex-row-reverse text-[#333] hover:bg-gray-300 w-1/2 max-w-[113px]"
+        >
+          Prev <FaAnglesLeft className="inline" />
+        </Button>
+
+        <PublishBtn
+          loading={loading}
+          onContinue={onContinue}
+          upload={uploadProject}
+          test={test}
+        />
+      </div>
+
+      <div className="bg-white overflow-y-scroll w-full max-w-4xl h-[60vh] p-6 rounded-[8px] shadow space-y-4">
+        <h1 className="font-semibold text-2xl text-main border-b pb-2">
+          Course Details Preview
+        </h1>
+
+        <div className="space-y-3">
+          <div>
+            <h2 className="font-semibold text-main">Course Title</h2>
+            <p className="text-[#3E3E3E]">{courseTitle}</p>
+          </div>
+
+          <div>
+            <h2 className="font-semibold text-main">Course Duration</h2>
+            <p className="text-[#3E3E3E]">
+              {hours} Hour(s), {minutes} Minute(s), {seconds} Second(s)
+            </p>
+          </div>
+
+          <div>
+            <h2 className="font-semibold text-main">Course Description</h2>
+            <div
+              className="text-[#3E3E3E] leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: description }}
+            ></div>
+          </div>
+
+          <div>
+            <h2 className="font-semibold text-main">Course Link</h2>
+            <a
+              href={courseLink}
+              className="text-blue-600 hover:underline break-all"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {courseLink}
+            </a>
+          </div>
         </div>
-        <div>
-          <ul>
-            {/* <Image src={selectedFile} alt={courseTitle}/> */}
-            <li className="py-1">
-              <span className="font-semibold text-main">Course Title:</span>{" "}
-              <br /> {courseTitle}
-            </li>
-            <li className="py-1">
-              <span className="font-semibold text-main">Course Duration:</span>{" "}
-              <br /> {hours} Hours, {minutes} Minutes and {seconds} Seconds
-            </li>
-            <li className="py-1">
-              <span className="font-semibold text-main">
-                Course Description:
-              </span>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: description,
-                }}
-                className=" text-[#3E3E3E]"
-              ></p>
-            </li>
-            <li className="py-1">
-              <span className="font-semibold text-main">CourseLink:</span>{" "}
-              <br /> {courseLink}
-            </li>
-            <hr />
-            <div className="py-2">
-              <h1>Modules</h1>
-              {filteredModuleDataStore.map((module: any) => {
-                return (
-                  <ul key={module.id}>
-                    <ol className="py-1">
-                      <span className="font-semibold text-main">
-                        Module Title:
-                      </span>{" "}
-                      <br /> {module.module_title}
-                    </ol>
-                    <ol className="py-1">
-                      <span className="font-semibold text-main">
-                        Module Description:
-                      </span>
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: module.description,
-                        }}
-                        className=" text-[#3E3E3E]"
-                      ></p>
-                    </ol>
 
-                    <ol className="py-1">
-                      <span className="font-semibold text-main">
-                        Module Link:
-                      </span>{" "}
-                      <br /> <span>{module.module_url}</span>
-                    </ol>
-                    <hr />
-                  </ul>
-                );
-              })}
+        <hr className="my-4 border-gray-300" />
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-main">Modules</h2>
+          {filteredModuleDataStore.map((module: any, index: number) => (
+            <div
+              key={index}
+              className="border border-[#E0E0E0] rounded-md p-4 space-y-2"
+            >
+              <div>
+                <h3 className="font-semibold text-main">
+                  Module {index + 1} Title
+                </h3>
+                <p className="text-[#3E3E3E]">{module.module_title}</p>
+              </div>
+
+              {module.description && (
+                <div>
+                  <h3 className="font-semibold text-main">Description</h3>
+                  <div
+                    className="text-[#3E3E3E] leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: module.description }}
+                  ></div>
+                </div>
+              )}
+
+              <div>
+                <h3 className="font-semibold text-main">Module Link</h3>
+                <a
+                  href={module.module_url}
+                  className="text-blue-600 hover:underline break-all"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {module.module_url}
+                </a>
+              </div>
             </div>
-          </ul>
+          ))}
         </div>
       </div>
-    
     </div>
   );
 };
