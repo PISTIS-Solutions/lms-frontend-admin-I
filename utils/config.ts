@@ -1,7 +1,8 @@
 import Cookies from "js-cookie";
 
 // export const baseURL = process.env.NEXT_PUBLIC_API_URL;
-export const baseURL = "https://backend.pististechub.io/api/v2/auth";
+//export const baseURL = "https://backend.pististechub.io/api/v2/auth";
+export const baseURL = "https://lms-backend-1-9kcc.onrender.com/api/v2/auth";
 const courseID = Cookies.get("courseId");
 
 export const urls = {
