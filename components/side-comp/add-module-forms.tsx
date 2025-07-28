@@ -156,7 +156,7 @@ const AddModuleForms = () => {
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <label className="md:text-base text-sm text-[#3E3E3E]">
                   Sub-title
                 </label>
@@ -167,7 +167,7 @@ const AddModuleForms = () => {
                   className="bg-[#FAFAFA]"
                   placeholder="Enter your module sub-title here"
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label className="md:text-base text-sm text-[#3E3E3E]">

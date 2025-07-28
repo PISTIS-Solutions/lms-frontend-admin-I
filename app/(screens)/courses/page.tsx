@@ -66,8 +66,8 @@ const Courses = () => {
   const [isDragDropEnabled, setIsDragDropEnabled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [courseType, setCourseType] = useState<"intermediate" | "advanced">(
-    "intermediate"
+  const [courseType, setCourseType] = useState<"Intermediate" | "Advanced">(
+    "Intermediate"
   );
 
   //fetch course
@@ -75,7 +75,7 @@ const Courses = () => {
     const adminAccessToken = Cookies.get("adminAccessToken");
     try {
       setLoading(true);
-      const response = await axios.get(urls.getCourses, {
+      const response = await axios.get(`${urls.getCourses}?course_category=${courseType}`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
@@ -85,7 +85,7 @@ const Courses = () => {
         setAllCourses(response.data);
         const ids = response.data.map((course: { id: number }) => course.id);
         setCourseIds(ids);
-        console.log(response.data, "response");
+        console.log(response, "response");
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -102,7 +102,7 @@ const Courses = () => {
   };
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [courseType]);
 
   //delete course
   const [deleting, setDeleting] = useState(false);
@@ -304,9 +304,9 @@ const Courses = () => {
           />
           <div className="rounded-[6px] p-2 border border-[#DADADA] my-2 inline-flex items-center gap-5">
             <span
-              onClick={() => setCourseType("intermediate")}
+              onClick={() => setCourseType("Intermediate")}
               className={`"text-[#9F9F9F] cursor-pointer text-sm font-normal ${
-                courseType === "intermediate"
+                courseType === "Intermediate"
                   ? "bg-main rounded-[6px] p-2 text-white"
                   : "bg-white"
               } `}
@@ -314,14 +314,14 @@ const Courses = () => {
               <p>Intermediate Course</p>
             </span>
             <span
-              onClick={() => setCourseType("advanced")}
+              onClick={() => setCourseType("Advanced")}
               className={`"text-[#9F9F9F] cursor-pointer text-sm font-normal ${
-                courseType === "advanced"
+                courseType === "Advanced"
                   ? "bg-main rounded-[6px] p-2 text-white"
                   : "bg-white"
               } `}
             >
-              <p>Advance Course</p>
+              <p>Advanced Course</p>
             </span>
           </div>
           {loading ? (

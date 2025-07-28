@@ -26,6 +26,7 @@ interface student {
     time_left: string;
     expiration_date: string;
   };
+  user_id: string;
 }
 
 interface StudentsStore {

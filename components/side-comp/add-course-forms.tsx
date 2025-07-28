@@ -12,18 +12,24 @@ import "react-quill/dist/quill.snow.css";
 import { showToast } from "@/lib/showToast";
 import { AiOutlineUpload } from "react-icons/ai";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import { Target } from "lucide-react";
 
 const AddCourseForms = () => {
   const {
     courseTitle,
-    description,
+
     courseLink,
     selectedFile,
     hours,
     minutes,
     seconds,
+    price,
+    course_category,
+    courseOverwiew,
+    setPrice,
+    setCourseCategory,
+    setCourseOverview,
     setCourseTitle,
-    setDescription,
     setCourseLink,
     setSelectedFile,
     setHours,
@@ -32,13 +38,18 @@ const AddCourseForms = () => {
   } = useCourseFormStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [courseLevel, setCourseLevel] = useState("intermediate");
+  // const [courseLevel, setCourseLevel] = useState("intermediate");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      setSelectedFile(file);
+      if (file.size <= 5 * 1024 * 1024) {
+        setSelectedFile(file);
+      } else {
+        showToast("Image size should not exceed 5MB", "error");
+      }
     } else {
+      showToast("Please upload a valid image file", "error");
       setSelectedFile(null);
     }
   };
@@ -53,12 +64,13 @@ const AddCourseForms = () => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
-      courseTitle &&
-      hours &&
-      minutes &&
-      courseLink &&
-      // description &&
-      selectedFile
+      courseTitle.trim() &&
+      courseLink.trim() &&
+      courseOverwiew.trim() &&
+      selectedFile &&
+      price &&
+      course_category &&
+      (hours || minutes || seconds)
     ) {
       showToast("Course Created", "success");
       router.push("/courses/add-course/add-modules");
@@ -125,7 +137,7 @@ const AddCourseForms = () => {
                 onChange={(e) => setCourseLink(e.target.value)}
               />
             </FormItem>
-            <FormItem className="py-2">
+            {/* <FormItem className="py-2">
               <label className="py-2 text-[#666666]">Course Description</label>
               <textarea
                 className="w-full h-24 bg-[#FAFAFA] border border-[#D6DADE] rounded-md p-2"
@@ -133,20 +145,20 @@ const AddCourseForms = () => {
                 // value={courseDescription}
                 // onChange={(e) => setCourseDescription(e.target.value)}
               />
-            </FormItem>
+            </FormItem> */}
             <FormItem className="py-2">
               <label className="py-2 text-[#666666]">Course Overview</label>
               <textarea
                 className="w-full h-24 bg-[#FAFAFA] border border-[#D6DADE] rounded-md p-2"
                 placeholder="Enter your course overview here"
-                // value={courseDescription}
-                // onChange={(e) => setCourseDescription(e.target.value)}
+                value={courseOverwiew}
+                onChange={(e) => setCourseOverview(e.target.value)}
               />
             </FormItem>
             <div className="py-2">
               <label className="py-2 block text-[#666666]">Course Level</label>
               <div className="flex items-center gap-4">
-                {["intermediate", "advanced"].map((level) => (
+                {["Intermediate", "Advanced"].map((level) => (
                   <label
                     key={level}
                     className="flex items-center cursor-pointer"
@@ -156,8 +168,8 @@ const AddCourseForms = () => {
                       name="courseLevel"
                       id={level}
                       value={level}
-                      checked={courseLevel === level}
-                      onChange={() => setCourseLevel(level)}
+                      checked={course_category === level}
+                      onChange={() => setCourseCategory(level)}
                       className="accent-sub w-4 h-4"
                     />
                     <span className="text-[#666666] ml-2 capitalize">
@@ -173,7 +185,6 @@ const AddCourseForms = () => {
               </label>
 
               <div className="flex flex-wrap items-center gap-4">
-              
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
@@ -191,7 +202,6 @@ const AddCourseForms = () => {
                   <span className="text-sm text-[#666666]">Hour(s)</span>
                 </div>
 
-                
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
@@ -209,7 +219,6 @@ const AddCourseForms = () => {
                   <span className="text-sm text-[#666666]">Min(s)</span>
                 </div>
 
-                
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
@@ -229,7 +238,7 @@ const AddCourseForms = () => {
               </div>
             </FormItem>
             <div className="flex items-center gap-6 py-4">
-              <div className="flex-1">
+              {/* <div className="flex-1">
                 <label className="block mb-1 text-[#666666]">
                   Select Tutor
                 </label>
@@ -245,7 +254,7 @@ const AddCourseForms = () => {
                   <option value="jane">Jane Smith</option>
                   <option value="emeka">Emeka Obi</option>
                 </select>
-              </div>
+              </div> */}
 
               <div className="flex-1">
                 <label className="block mb-1 text-[#666666]">Price</label>
@@ -256,6 +265,9 @@ const AddCourseForms = () => {
                   <input
                     type="number"
                     name="price"
+                    value={price}
+                    min={1}
+                    onChange={(e) => setPrice(e.target.value)}
                     placeholder="Enter amount"
                     className="w-full pl-8 pr-3 py-2 border border-[#ccc] rounded text-[#333] focus:outline-none focus:ring-1 focus:ring-sub"
                   />
