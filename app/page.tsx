@@ -33,7 +33,7 @@ const SignIn = () => {
         password: formStore.password,
       });
       if (response.status === 200) {
-        console.log(response, "response")
+        console.log(response, "response on sign in")
         toast.success("Successfully Logged in!", {
           position: "top-right",
           autoClose: 5000,

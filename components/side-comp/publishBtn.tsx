@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Loader2Icon } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
+import { MdArrowRightAlt } from "react-icons/md";
 
 interface BtnTypes {
   loading: boolean;
@@ -21,7 +22,7 @@ const PublishBtn = ({ loading, onContinue, upload, test }: BtnTypes) => {
   } = useCourseFormStore();
 
   useEffect(() => {
-    handleConditionalLogging(); // Call handleConditionalLogging on component mount or when filteredProjectDataStore changes
+    handleConditionalLogging(); 
   }, [filteredProjectDataStore]);
 
   const handleConditionalLogging = () => {
@@ -42,9 +43,12 @@ const PublishBtn = ({ loading, onContinue, upload, test }: BtnTypes) => {
         onClick={(e) => {
           onContinue(e);
         }}
-        className="py-6 text-black w-full hover:text-white px-28 bg-sub mx-auto font-semibold"
+        className="bg-sub  text-white hover:bg-sub/90 w-full"
       >
-        {loading ? <Loader2Icon className="animate-spin" /> : "Publish"}
+        {loading ? <Loader2Icon className="animate-spin" /> : <div className="flex items-center gap-1">
+          Publish Course
+          <MdArrowRightAlt className="w-[16px] h-[12px]" />
+          </div>}
       </Button>
     </div>
   );

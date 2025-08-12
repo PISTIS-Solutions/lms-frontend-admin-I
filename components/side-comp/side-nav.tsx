@@ -14,6 +14,7 @@ import { IoMdSettings } from "react-icons/io";
 import { IoHelpCircle } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
 import { IoWifiOutline } from "react-icons/io5";
+import { RiCoupon2Fill } from "react-icons/ri";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileNav from "./mobile-nav";
@@ -36,7 +37,6 @@ const SideNav = () => {
       icon: <ImBooks />,
       title: "Course Content",
       link: "courses",
-      // otherLink: "courses/add-course/add-modules"
     },
     {
       icon: <RiGraduationCapFill />,
@@ -52,6 +52,11 @@ const SideNav = () => {
       icon: <IoWifiOutline />,
       title: "Live Sessions",
       link: "cohorts",
+    },
+    {
+      icon: <RiCoupon2Fill />,
+      title: "Coupon",
+      link: "coupon",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,
@@ -93,7 +98,7 @@ const SideNav = () => {
           <div>
             <div>
               {/* <Link href={"/help"} > */}
-              <div
+              {/* <div
                 className={`link ${
                   pathname === "/help"
                     ? " text-white border-l-white border-l-4"
@@ -103,7 +108,7 @@ const SideNav = () => {
                 {" "}
                 <IoHelpCircle />
                 <span className="text-lg">Help & Information</span>
-              </div>
+              </div> */}
               {/* </Link> */}
             </div>
             <div>

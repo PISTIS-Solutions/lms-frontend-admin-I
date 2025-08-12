@@ -66,12 +66,16 @@ const Courses = () => {
   const [isDragDropEnabled, setIsDragDropEnabled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [courseType, setCourseType] = useState<"Intermediate" | "Advanced">(
+    "Intermediate"
+  );
+
   //fetch course
   const fetchCourses = async () => {
     const adminAccessToken = Cookies.get("adminAccessToken");
     try {
       setLoading(true);
-      const response = await axios.get(urls.getCourses, {
+      const response = await axios.get(`${urls.getCourses}?course_category=${courseType}`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
@@ -81,7 +85,7 @@ const Courses = () => {
         setAllCourses(response.data);
         const ids = response.data.map((course: { id: number }) => course.id);
         setCourseIds(ids);
-        console.log(response.data, "response")
+        console.log(response, "response");
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -98,7 +102,7 @@ const Courses = () => {
   };
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [courseType]);
 
   //delete course
   const [deleting, setDeleting] = useState(false);
@@ -298,6 +302,28 @@ const Courses = () => {
             setDisplayedCourses={setDisplayedCourses}
             handleUpdateCourses={handleUpdateCourses}
           />
+          <div className="rounded-[6px] p-2 border border-[#DADADA] my-2 inline-flex items-center gap-5">
+            <span
+              onClick={() => setCourseType("Intermediate")}
+              className={`"text-[#9F9F9F] cursor-pointer text-sm font-normal ${
+                courseType === "Intermediate"
+                  ? "bg-main rounded-[6px] p-2 text-white"
+                  : "bg-white"
+              } `}
+            >
+              <p>Intermediate Course</p>
+            </span>
+            <span
+              onClick={() => setCourseType("Advanced")}
+              className={`"text-[#9F9F9F] cursor-pointer text-sm font-normal ${
+                courseType === "Advanced"
+                  ? "bg-main rounded-[6px] p-2 text-white"
+                  : "bg-white"
+              } `}
+            >
+              <p>Advanced Course</p>
+            </span>
+          </div>
           {loading ? (
             <div className="my-5 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2 md:gap-5">
               <div className="flex flex-col justify-center items-center">

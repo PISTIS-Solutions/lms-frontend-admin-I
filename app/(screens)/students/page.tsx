@@ -31,6 +31,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { BsDownload } from "react-icons/bs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useStudentStore from "@/store/fetch-student";
+import CouponModal from "@/components/side-comp/coupon/couponModal";
+import { RiCoupon2Fill } from "react-icons/ri";
 
 const StudentPage = () => {
   const { students, loading, fetchStudents, previous, next, count } =
@@ -38,7 +40,7 @@ const StudentPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStudent, setExpandedStudent] = useState(null);
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState("Free");
   // const [selectedOnboardingValue, setSelectedOnboardingValue] = useState("");
   // const [ordering, setOrdering] = useState("");
   const router = useRouter();
@@ -49,6 +51,7 @@ const StudentPage = () => {
   // };
 
   const [category, setCategory] = useState("");
+  const [challenge, setChallenge] = useState(false);
 
   useEffect(() => {
     fetchStudents(
@@ -57,7 +60,8 @@ const StudentPage = () => {
       selectedValue,
       // ordering,
       // selectedOnboardingValue,
-      category
+      category,
+      challenge
     );
   }, [
     currentPage,
@@ -66,6 +70,7 @@ const StudentPage = () => {
     // ordering,
     // selectedOnboardingValue,
     category,
+    challenge
   ]);
 
   const nextPage = async () => {
@@ -163,30 +168,36 @@ const StudentPage = () => {
     fetchStudentData();
   }, []);
 
+  const [coupon, setCoupon] = useState({
+    list: false,
+    create: false,
+    selectedStudentId: "",
+  });
+
   //date and time format funct
   const renderStudents = () => {
-    function formatDateTime(dateTimeString: string) {
-      if (!dateTimeString) return { date: "N/A", time: "N/A" };
+    // function formatDateTime(dateTimeString: string) {
+    //   if (!dateTimeString) return { date: "N/A", time: "N/A" };
 
-      const [timePart, datePart] = dateTimeString.split(", ");
+    //   const [timePart, datePart] = dateTimeString.split(", ");
 
-      const [day, month, year] = datePart.split("/").map(Number);
+    //   const [day, month, year] = datePart.split("/").map(Number);
 
-      const [hours, minutes] = timePart.split(":").map(Number);
+    //   const [hours, minutes] = timePart.split(":").map(Number);
 
-      const date = new Date(year, month - 1, day, hours, minutes);
+    //   const date = new Date(year, month - 1, day, hours, minutes);
 
-      return {
-        date: `${String(day).padStart(2, "0")}/${String(month).padStart(
-          2,
-          "0"
-        )}/${year}`,
-        time: `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-          2,
-          "0"
-        )}`,
-      };
-    }
+    //   return {
+    //     date: `${String(day).padStart(2, "0")}/${String(month).padStart(
+    //       2,
+    //       "0"
+    //     )}/${year}`,
+    //     time: `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    //       2,
+    //       "0"
+    //     )}`,
+    //   };
+    // }
 
     // console.log(students);
 
@@ -201,7 +212,7 @@ const StudentPage = () => {
           >
             {person?.first_name + " " + person?.last_name}
           </td>
-          <td className="py-2 text-xs sm:text-sm font-medium text-[#484848] md:py-4 text-left">
+          <td className="py-2 font-medium text-[#484848] md:py-4 text-left">
             {person?.email}
           </td>
           {/* <td className="py-2 md:py-4">{person?.courses_completed.length}</td> */}
@@ -222,9 +233,20 @@ const StudentPage = () => {
           </td>
           <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).date}
-          </td>
-          <td className="py-2 md:py-4">
-            {formatDateTime(person?.date_joined).time}
+          </td>*/}
+          {/* <td className=" whitespace-nowrap text-xs my-4 ">
+            <p
+              onClick={() =>
+                setCoupon({
+                  list: false,
+                  create: true,
+                  selectedStudentId: person?.user_id,
+                })
+              }
+              className="text-green-500 border p-2 rounded-sm cursor-pointer"
+            >
+              Create
+            </p>{" "}
           </td> */}
           {(role === "advanced" || role === "super_admin") && (
             <td
@@ -351,6 +373,7 @@ const StudentPage = () => {
   return (
     <main>
       <SideNav />
+      <ToastContainer />
       <div className="lg:ml-64 ml-0 overflow-y-scroll h-screen">
         <div className="flex p-2 sm:p-4 items-center justify-between">
           <h1 className="text-main text-base sm:text-base md:text-3xl font-medium">
@@ -405,7 +428,7 @@ const StudentPage = () => {
                 selectedValue === "Free"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Free</p>
             </span>
@@ -418,7 +441,7 @@ const StudentPage = () => {
                 category === "Beginner"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1  cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Beginner</p>
             </span>
@@ -431,7 +454,7 @@ const StudentPage = () => {
                 category === "Intermediate"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Intermediate</p>
             </span>
@@ -445,18 +468,32 @@ const StudentPage = () => {
                 category === "Advanced"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 py-1.5 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Advanced</p>
             </span>
+            {/* <span
+              onClick={() => {
+                setCategory("Advanced");
+
+                setSelectedValue("");
+              }}
+              className={`${
+                category === "Advanced"
+                  ? "bg-main text-white"
+                  : "text-[#9F9F9F]"
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
+            >
+              <p className="font-medium text-sm ">Challenge Bucket</p>
+            </span> */}
           </div>
         </div>
         <div className="py-5 px-2 md:px-7">
           <div className="flex flex-col gap-3 md:flex-row items-center justify-between"></div>
 
           <div className="w-full shadow-md my-5 rounded-[8px] bg-white h-auto p-2">
-            <div className="flex sm:flex-row flex-col  justify-between items-center py-2.5">
-              <div className="relative w-full md:w-1/3 sm:my-0 my-1.5">
+            <div className="flex sm:flex-row flex-col gap-1 justify-between items-center py-2.5">
+              <div className="relative w-full sm:my-0 my-1.5">
                 {/* Search input field */}
                 <Input
                   type="text"
@@ -468,7 +505,7 @@ const StudentPage = () => {
                 />
                 <Search className="absolute top-2 right-1 text-[#9F9F9F]" />
               </div>
-              <div className="flex sm:flex-row flex-col items-center gap-1.5">
+              <div className="flex sm:flex-row flex-col items-center gap-2">
                 {/* <div className="flex items-center gap-1.5">
                   <p className="text-[#666666] whitespace-nowrap font-normal text-xs sm:text-sm">
                     Filter by:
@@ -500,22 +537,47 @@ const StudentPage = () => {
                     </option>
                   </select>
                 </div> */}
-                <button
-                  disabled={stuLoading}
-                  onClick={() => exportStudentsList()}
-                  className="bg-white border border-sub text-sub w-full rounded-[8px] px-2.5 py-2.5 text-xs"
-                >
-                  {stuLoading ? (
-                    <span className="flex text-xs items-center gap-1 justify-center">
-                      Exporting... <Loader2 className="animate-spin" />
-                    </span>
-                  ) : (
-                    <span className="  text-xs flex justify-center items-center gap-1.5">
-                      <BsDownload className="text-sub w-5 h-5 " />
-                      Export
-                    </span>
-                  )}
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-xs whitespace-nowrap">Challenge User</p>
+                  <input
+                    type="checkbox"
+                    checked={challenge}
+                    onChange={() => setChallenge(!challenge)}
+                    className="w-4 h-4 text-main border border-[#9F9F9F] rounded focus:ring-2 focus:ring-main"
+                  />
+                </div>
+                <div className="flex gap-1 items-center w-full">
+                  <button
+                    disabled={stuLoading}
+                    onClick={() => exportStudentsList()}
+                    className="bg-white border border-sub text-sub w-full rounded-[8px] px-2.5 py-2.5 text-xs"
+                  >
+                    {stuLoading ? (
+                      <span className="flex text-xs items-center gap-1 justify-center">
+                        Exporting...{" "}
+                        <Loader2 className="animate-spin w-5 h-5" />
+                      </span>
+                    ) : (
+                      <span className="  text-xs flex justify-center items-center gap-1.5">
+                        <BsDownload className="text-sub w-5 h-5 " />
+                        Export
+                      </span>
+                    )}
+                  </button>
+                  {/* <button
+                    onClick={() =>
+                      setCoupon({
+                        create: false,
+                        list: true,
+                        selectedStudentId: "",
+                      })
+                    }
+                    className="bg-sub flex items-center gap-1 text-white w-full rounded-[8px] px-2.5 py-2.5 text-xs"
+                  >
+                    <RiCoupon2Fill className="text-white w-5 h-5" />
+                    Coupon(s)
+                  </button> */}
+                </div>
               </div>
             </div>
 
@@ -545,9 +607,9 @@ const StudentPage = () => {
                       </th> */}
                       {/* <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Date
-                      </th>
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
-                        Time
+                      </th>*/}
+                      {/* <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
+                        Coupon
                       </th> */}
 
                       {(role === "advanced" || role === "super_admin") && (
@@ -602,6 +664,9 @@ const StudentPage = () => {
           </div>
         </div>
       </div>
+      {((coupon.create && coupon.selectedStudentId != "") || coupon.list) && (
+        <CouponModal coupon={coupon} setCoupon={setCoupon} />
+      )}
     </main>
   );
 };

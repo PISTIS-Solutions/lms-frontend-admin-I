@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 
 // export const baseURL = process.env.NEXT_PUBLIC_API_URL;
-//export const baseURL = "https://backend.pististechub.io/api/v2/auth";
+// export const baseURL = "https://backend.dev.pististechub.io/api/v2/auth";
 export const baseURL = "https://lms-backend-1-9kcc.onrender.com/api/v2/auth";
 const courseID = Cookies.get("courseId");
 
@@ -30,5 +30,6 @@ export const urls = {
   exportMentor: `${baseURL}/mentors/export_pdf/`,
   uploadMentor: `${baseURL}/mentors/activate/`,
   exportStudents: `${baseURL}/students/export_to_excel/`,
-  cohorts: `${baseURL}/cohorts/`
+  cohorts: `${baseURL}/cohorts/`,
+  coupon: `${baseURL}/coupon-codes/`
 };
