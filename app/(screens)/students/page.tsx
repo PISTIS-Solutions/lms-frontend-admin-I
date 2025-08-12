@@ -40,7 +40,7 @@ const StudentPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStudent, setExpandedStudent] = useState(null);
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState("Free");
   // const [selectedOnboardingValue, setSelectedOnboardingValue] = useState("");
   // const [ordering, setOrdering] = useState("");
   const router = useRouter();
@@ -51,6 +51,7 @@ const StudentPage = () => {
   // };
 
   const [category, setCategory] = useState("");
+  const [challenge, setChallenge] = useState(false);
 
   useEffect(() => {
     fetchStudents(
@@ -59,7 +60,8 @@ const StudentPage = () => {
       selectedValue,
       // ordering,
       // selectedOnboardingValue,
-      category
+      category,
+      challenge
     );
   }, [
     currentPage,
@@ -68,6 +70,7 @@ const StudentPage = () => {
     // ordering,
     // selectedOnboardingValue,
     category,
+    challenge
   ]);
 
   const nextPage = async () => {
@@ -231,7 +234,7 @@ const StudentPage = () => {
           <td className="py-2 md:py-4">
             {formatDateTime(person?.date_joined).date}
           </td>*/}
-          <td className=" whitespace-nowrap text-xs my-4 ">
+          {/* <td className=" whitespace-nowrap text-xs my-4 ">
             <p
               onClick={() =>
                 setCoupon({
@@ -244,7 +247,7 @@ const StudentPage = () => {
             >
               Create
             </p>{" "}
-          </td>
+          </td> */}
           {(role === "advanced" || role === "super_admin") && (
             <td
               onClick={() => toggleStudentOptions(person?.id)}
@@ -425,7 +428,7 @@ const StudentPage = () => {
                 selectedValue === "Free"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Free</p>
             </span>
@@ -438,7 +441,7 @@ const StudentPage = () => {
                 category === "Beginner"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1  cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Beginner</p>
             </span>
@@ -451,7 +454,7 @@ const StudentPage = () => {
                 category === "Intermediate"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Intermediate</p>
             </span>
@@ -465,10 +468,24 @@ const StudentPage = () => {
                 category === "Advanced"
                   ? "bg-main text-white"
                   : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 cursor-pointer rounded-[4px]`}
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
             >
               <p className="font-medium text-sm ">Advanced</p>
             </span>
+            {/* <span
+              onClick={() => {
+                setCategory("Advanced");
+
+                setSelectedValue("");
+              }}
+              className={`${
+                category === "Advanced"
+                  ? "bg-main text-white"
+                  : "text-[#9F9F9F]"
+              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
+            >
+              <p className="font-medium text-sm ">Challenge Bucket</p>
+            </span> */}
           </div>
         </div>
         <div className="py-5 px-2 md:px-7">
@@ -488,7 +505,7 @@ const StudentPage = () => {
                 />
                 <Search className="absolute top-2 right-1 text-[#9F9F9F]" />
               </div>
-              <div className="flex sm:flex-row flex-col items-center gap-1.5">
+              <div className="flex sm:flex-row flex-col items-center gap-2">
                 {/* <div className="flex items-center gap-1.5">
                   <p className="text-[#666666] whitespace-nowrap font-normal text-xs sm:text-sm">
                     Filter by:
@@ -520,6 +537,15 @@ const StudentPage = () => {
                     </option>
                   </select>
                 </div> */}
+                <div className="flex items-center gap-1.5">
+                  <p className="text-xs whitespace-nowrap">Challenge User</p>
+                  <input
+                    type="checkbox"
+                    checked={challenge}
+                    onChange={() => setChallenge(!challenge)}
+                    className="w-4 h-4 text-main border border-[#9F9F9F] rounded focus:ring-2 focus:ring-main"
+                  />
+                </div>
                 <div className="flex gap-1 items-center w-full">
                   <button
                     disabled={stuLoading}
@@ -538,7 +564,7 @@ const StudentPage = () => {
                       </span>
                     )}
                   </button>
-                  <button
+                  {/* <button
                     onClick={() =>
                       setCoupon({
                         create: false,
@@ -550,7 +576,7 @@ const StudentPage = () => {
                   >
                     <RiCoupon2Fill className="text-white w-5 h-5" />
                     Coupon(s)
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -582,9 +608,9 @@ const StudentPage = () => {
                       {/* <th className="md:py-2 md:text-base px-5 text-xs py-2 text-center">
                         Date
                       </th>*/}
-                      <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
+                      {/* <th className="md:py-2 md:text-base px-5 text-xs py-2 ">
                         Coupon
-                      </th>
+                      </th> */}
 
                       {(role === "advanced" || role === "super_admin") && (
                         <th className="md:py-2 md:text-base px-5 text-xs py-2 rounded-r-2xl">

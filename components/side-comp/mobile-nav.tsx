@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useRef, useState } from "react";
 
 import logo from "@/src/assets/sideLogo.png";
-import { RiArrowLeftFill } from "react-icons/ri";
+import { RiArrowLeftFill, RiCoupon2Fill } from "react-icons/ri";
 
 import { MdDashboard } from "react-icons/md";
 import { ImBooks } from "react-icons/im";
@@ -43,7 +43,6 @@ const MobileNav = ({ role }: any) => {
       icon: <ImBooks />,
       title: "Course Content",
       link: "courses",
-      // otherLink: "courses/add-course/add-modules"
     },
     {
       icon: <RiGraduationCapFill />,
@@ -59,6 +58,11 @@ const MobileNav = ({ role }: any) => {
       icon: <IoWifiOutline />,
       title: "Live Sessions",
       link: "cohorts",
+    },
+    {
+      icon: <RiCoupon2Fill />,
+      title: "Coupon",
+      link: "coupon",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,
@@ -113,7 +117,7 @@ const MobileNav = ({ role }: any) => {
           <div>
             <div className="text-white text-center duration-150 ease-in-out cursor-pointer my-1 py-1">
               {/* <Link href={"/help"} > */}
-              <div
+              {/* <div
                 className={`link ${
                   pathname === "/help"
                     ? " text-white border-l-white border-l-4"
@@ -123,7 +127,7 @@ const MobileNav = ({ role }: any) => {
                 {" "}
                 <IoHelpCircle />
                 <span className="text-sm">Help & Information</span>
-              </div>
+              </div> */}
               {/* </Link> */}
             </div>
             <Link href={"/log-out"} className="">

@@ -41,7 +41,8 @@ interface StudentsStore {
     selectedValue?: string,
     // ordering?: string,
     // isActive?: string,
-    category?:string
+    category?: string,
+    is_challenge_user?: boolean
   ) => Promise<any>;
 }
 
@@ -57,8 +58,9 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
     searchQuery = "",
     selectedValue = "",
     // ordering = "",
-    // isActive = "",
-    category = ""
+    // isActive = "",,
+    category = "",
+    is_challenge_user = false
   ) => {
     try {
       set({ loading: true });
@@ -67,7 +69,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       const trimmedQuery = searchQuery.trim();
 
       const response = await axios.get(
-        `${baseURL}/students/students/?page=${page}&search=${trimmedQuery}&payment_status=${selectedValue}&page_size=10&category=${category}`,
+        `${baseURL}/students/students/?page=${page}&search=${trimmedQuery}&payment_status=${selectedValue}&page_size=10&category=${category}&is_challenge_user=${is_challenge_user}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,

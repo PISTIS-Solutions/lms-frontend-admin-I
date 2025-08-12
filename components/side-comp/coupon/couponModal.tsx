@@ -31,7 +31,7 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
 
   const listCoupon = async () => {
     try {
-      //   setLoading(true);
+
       const adminAccessToken = Cookies.get("adminAccessToken");
 
       const response = await axios.get(`${urls.coupon}`, {
@@ -208,7 +208,11 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
   return (
     <div className="absolute animate-in top-0 left-0 bg-black/30 w-full h-screen overflow-scroll flex justify-center items-center z-50">
       <ToastContainer />
-      <div className="bg-white rounded-sm shadow-sm p-4 h-[70vh] overflow-scroll relative w-11/12 xl:w-1/3">
+      <div
+        className={`bg-white rounded-sm shadow-sm p-4 ${
+          coupon.create ? "h-auto" : "h-[70vh]"
+        } overflow-scroll relative w-11/12 xl:w-1/3`}
+      >
         <X
           onClick={() =>
             setCoupon({
@@ -327,7 +331,7 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
                   return (
                     <li
                       key={coupon.id}
-                      onClick={() => setSelectedCoupon(index)} 
+                      onClick={() => setSelectedCoupon(index)}
                       className={`transition-all duration-200 cursor-pointer ${
                         isSelected
                           ? "border-main ring-2 ring-main/20 bg-main/5"
@@ -373,6 +377,10 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
                         <p>
                           <strong className="text-gray-700">Discount:</strong>{" "}
                           {coupon.discount_percentage}%
+                        </p>
+                        <p>
+                          <strong className="text-gray-700">User:</strong>{" "}
+                          {coupon.user_email ? coupon.user_email : "All users"}
                         </p>
                         <p>
                           <strong className="text-gray-700">
