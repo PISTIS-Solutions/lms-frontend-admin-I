@@ -12,7 +12,7 @@ import { RiGraduationCapFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
 import { FaChalkboardUser } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import { IoHelpCircle, IoWifiOutline } from "react-icons/io5";
+import { IoHelpCircle, IoReaderSharp, IoWifiOutline } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
 import { IoMenuSharp } from "react-icons/io5";
 import Link from "next/link";
@@ -63,6 +63,11 @@ const MobileNav = ({ role }: any) => {
       icon: <RiCoupon2Fill />,
       title: "Coupon",
       link: "coupon",
+    },
+    {
+      icon: <IoReaderSharp />,
+      title: "Blog",
+      link: "blog",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,

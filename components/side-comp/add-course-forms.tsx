@@ -37,8 +37,8 @@ const AddCourseForms = () => {
     setSeconds,
   } = useCourseFormStore();
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
   // const [courseLevel, setCourseLevel] = useState("intermediate");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
