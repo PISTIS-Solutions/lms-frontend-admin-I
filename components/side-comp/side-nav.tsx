@@ -11,7 +11,7 @@ import { RiGraduationCapFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
 import { FaChalkboardUser } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
-import { IoHelpCircle } from "react-icons/io5";
+import { IoReaderSharp } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
 import { IoWifiOutline } from "react-icons/io5";
 import { RiCoupon2Fill } from "react-icons/ri";
@@ -57,6 +57,11 @@ const SideNav = () => {
       icon: <RiCoupon2Fill />,
       title: "Coupon",
       link: "coupon",
+    },
+    {
+      icon: <IoReaderSharp />,
+      title: "Blog",
+      link: "blog",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,

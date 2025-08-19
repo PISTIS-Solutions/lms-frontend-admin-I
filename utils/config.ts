@@ -31,5 +31,7 @@ export const urls = {
   uploadMentor: `${baseURL}/mentors/activate/`,
   exportStudents: `${baseURL}/students/export_to_excel/`,
   cohorts: `${baseURL}/cohorts/`,
-  coupon: `${baseURL}/coupon-codes/`
+  coupon: `${baseURL}/coupon-codes/`,
+
+  blog: `${baseURL}/blogs/`
 };
