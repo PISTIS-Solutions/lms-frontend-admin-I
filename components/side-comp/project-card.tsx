@@ -21,7 +21,7 @@ interface cardProps {
   duration: number;
   handleCardClick: any;
   handleOpen: () => void;
-  
+  category: string;
 }
 
 const ProjectCard = ({
@@ -32,40 +32,9 @@ const ProjectCard = ({
   handleCardClick,
   project,
   handleOpen,
+  category,
 }: cardProps) => {
   const { fetchProjectRead } = useProjectRead();
-  // const [moduleCount, setModuleCount] = useState(0);
-  // const [loading, setLoading] = useState(false);
-
-  // useEffect(() => {
-  //   const getProjectCount = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const adminAccessToken = Cookies.get("adminAccessToken");
-  //       const response = await axios.get(`${urls.getCourses}${id}/projects/`, {
-  //         headers: {
-  //           Authorization: `Bearer ${adminAccessToken}`,
-  //         },
-  //       });
-  //       if (response.status === 200) {
-  //         setModuleCount(response.data.length);
-  //         setLoading(false);
-  //       } else {
-  //         console.error(`Error fetching modules for course ${id}`);
-  //         setModuleCount(0);
-  //       }
-  //     } catch (error: any) {
-  //       console.error(`Error: ${error.message}`);
-  //       setModuleCount(0);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   getProjectCount();
-  // }, []);
-
-  // const imageUrl = img?.replace("image/upload/", "");
   const { getProjectCount } = useProjectCount();
   const [moduleCount, setModuleCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -116,6 +85,9 @@ const ProjectCard = ({
               )}{" "}
               projects
             </div>
+            <span className="inline-block mt-2 px-2 py-1 text-xs font-medium bg-main/10 text-main rounded-full capitalize">
+              {category} Course
+            </span>
           </div>
         </div>
       </div>

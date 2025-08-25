@@ -54,24 +54,8 @@ const StudentPage = () => {
   const [challenge, setChallenge] = useState(false);
 
   useEffect(() => {
-    fetchStudents(
-      currentPage,
-      searchQuery,
-      selectedValue,
-      // ordering,
-      // selectedOnboardingValue,
-      category,
-      challenge
-    );
-  }, [
-    currentPage,
-    searchQuery,
-    selectedValue,
-    // ordering,
-    // selectedOnboardingValue,
-    category,
-    challenge
-  ]);
+    fetchStudents(currentPage, searchQuery, selectedValue, category, challenge);
+  }, [currentPage, searchQuery, selectedValue, category, challenge]);
 
   const nextPage = async () => {
     if (next !== null) {
@@ -423,6 +407,7 @@ const StudentPage = () => {
               onClick={() => {
                 setSelectedValue("Free");
                 setCategory("");
+                setCurrentPage(1);
               }}
               className={`${
                 selectedValue === "Free"
@@ -436,6 +421,7 @@ const StudentPage = () => {
               onClick={() => {
                 setCategory("Beginner");
                 setSelectedValue("");
+                setCurrentPage(1);
               }}
               className={`${
                 category === "Beginner"
@@ -448,6 +434,7 @@ const StudentPage = () => {
             <span
               onClick={() => {
                 setCategory("Intermediate");
+                setCurrentPage(1);
                 setSelectedValue("");
               }}
               className={`${
@@ -461,7 +448,7 @@ const StudentPage = () => {
             <span
               onClick={() => {
                 setCategory("Advanced");
-
+                setCurrentPage(1);
                 setSelectedValue("");
               }}
               className={`${
@@ -472,20 +459,6 @@ const StudentPage = () => {
             >
               <p className="font-medium text-sm ">Advanced</p>
             </span>
-            {/* <span
-              onClick={() => {
-                setCategory("Advanced");
-
-                setSelectedValue("");
-              }}
-              className={`${
-                category === "Advanced"
-                  ? "bg-main text-white"
-                  : "text-[#9F9F9F]"
-              } flex justify-center items-center px-2 py-1 cursor-pointer rounded-[4px]`}
-            >
-              <p className="font-medium text-sm ">Challenge Bucket</p>
-            </span> */}
           </div>
         </div>
         <div className="py-5 px-2 md:px-7">

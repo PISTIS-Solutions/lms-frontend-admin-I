@@ -191,6 +191,7 @@ const Project = () => {
                     module={project.module}
                     duration={project.duration}
                     project={project.project}
+                    category={project?.course_category}
                   />
                 </div>
               ))

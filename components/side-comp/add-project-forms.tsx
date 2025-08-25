@@ -104,7 +104,8 @@ const AddProjectForms = () => {
       );
       payload.append("course_url", courseLink);
       payload.append("course_image", selectedFile);
-      payload.append("price", price);
+      payload.append("price", price ? price.toString() : "null");
+
       payload.append("overview", courseOverwiew);
       payload.append("course_category", course_category);
 
@@ -155,7 +156,11 @@ const AddProjectForms = () => {
     } else if (error?.message === "Network Error") {
       showToast("Check your network!", "error");
     } else if (error?.response?.status === 400) {
-      showToast("Check links and form fields properly!", "error");
+      console.log(error, "error");
+      showToast(
+        error?.response?.data || "Check links and form fields properly!",
+        "error"
+      );
     } else {
       showToast(error?.response?.data?.detail || "Upload failed", "error");
     }
@@ -191,7 +196,7 @@ const AddProjectForms = () => {
             document.getElementById(
               `projectDetails-${section.id}`
             ) as HTMLElement
-          )?.textContent ?? ""; 
+          )?.textContent ?? "";
 
         return {
           project_title: title,
@@ -319,7 +324,9 @@ const AddProjectForms = () => {
           </div>
           <div>
             <h2 className="font-semibold text-main">Course Description</h2>
-            <p  className="text-blue-600 hover:underline break-all">{courseOverwiew}</p>
+            <p className="text-blue-600 hover:underline break-all">
+              {courseOverwiew}
+            </p>
           </div>
           <div>
             <h2 className="font-semibold text-main">Course Link</h2>
