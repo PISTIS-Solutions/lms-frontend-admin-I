@@ -104,7 +104,9 @@ const AddProjectForms = () => {
       );
       payload.append("course_url", courseLink);
       payload.append("course_image", selectedFile);
-      payload.append("price", price ? price.toString() : "null");
+      if (price !== undefined && price !== null) {
+        payload.append("price", price.toString());
+      }
 
       payload.append("overview", courseOverwiew);
       payload.append("course_category", course_category);
@@ -138,9 +140,9 @@ const AddProjectForms = () => {
       });
 
       if (response.status === 201) {
-        showToast(`${response.data.title} added`, "error");
-        resetForm();
-        router.push("/courses");
+        showToast(`${response.data.title} added`, "success");
+        // resetForm();
+        // router.push("/courses");
       }
     } catch (error: any) {
       handleUploadError(error);
