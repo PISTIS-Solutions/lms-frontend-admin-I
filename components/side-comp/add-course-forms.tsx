@@ -68,7 +68,7 @@ const AddCourseForms = () => {
       courseLink.trim() &&
       courseOverwiew.trim() &&
       selectedFile &&
-      price &&
+      // price &&
       course_category &&
       (hours || minutes || seconds)
     ) {
@@ -256,7 +256,7 @@ const AddCourseForms = () => {
                 </select>
               </div> */}
 
-              <div className="flex-1">
+             { course_category === "Advanced" && <div className="flex-1">
                 <label className="block mb-1 text-[#666666]">Price</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#666666]">
@@ -272,7 +272,7 @@ const AddCourseForms = () => {
                     className="w-full pl-8 pr-3 py-2 border border-[#ccc] rounded text-[#333] focus:outline-none focus:ring-1 focus:ring-sub"
                   />
                 </div>
-              </div>
+              </div>}
             </div>
           </div>
           <div className="flex items-center justify-between gap-4">
