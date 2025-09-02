@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Loader2, Loader2Icon, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 // import { dummydata } from "@/app/data/dummyModules";
@@ -18,6 +18,7 @@ import TopNav from "@/components/side-comp/topNav";
 import AddProjectModal from "@/components/side-comp/modal/add-project-modal";
 import refreshAdminToken from "@/utils/refreshToken";
 import { Skeleton } from "@/components/ui/skeleton";
+import { createAxiosInstance } from "@/lib/axios";
 
 const Project = () => {
   const router = useRouter();
@@ -28,7 +29,7 @@ const Project = () => {
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-
+  const axios = createAxiosInstance();
   const [projects, setCourses] = useState<any | null>(null);
   const fetchCourses = async () => {
     try {
@@ -41,10 +42,7 @@ const Project = () => {
       });
       setCourses(response.data);
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchCourses();
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

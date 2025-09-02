@@ -1,11 +1,12 @@
 import { create } from "zustand";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface readStudent {
   studentData: any;
@@ -13,7 +14,7 @@ interface readStudent {
   // response: any;
   fetchStudentData: () => Promise<void>;
 }
-
+const axios = createAxiosInstance();
 const useStudentStore = create<readStudent>((set, get) => ({
   studentData: null,
   loading: false,
@@ -28,10 +29,7 @@ const useStudentStore = create<readStudent>((set, get) => ({
       });
       set({ studentData: response.data });
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await get().fetchStudentData();
-      } else if (error.message === "Network Error") {
+    if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

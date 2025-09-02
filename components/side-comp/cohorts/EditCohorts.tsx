@@ -4,11 +4,12 @@ import { GrClose } from "react-icons/gr";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { urls } from "@/utils/config";
-import axios from "axios";
+// import axios from "axios";
 import { showToast } from "@/lib/showToast";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { useParams } from "next/navigation";
+import { createAxiosInstance } from "@/lib/axios";
 
 const EditCohorts = ({ setEditModal, cohortData, fetchCohortData }: any) => {
   const [startDate, setStartDate] = useState("");
@@ -19,7 +20,7 @@ const EditCohorts = ({ setEditModal, cohortData, fetchCohortData }: any) => {
     status: "active",
     regStatus: "open",
   });
-
+  const axios = createAxiosInstance();
   const params = useParams<{ id: string }>();
 
   const id = params.id;
@@ -99,10 +100,7 @@ const EditCohorts = ({ setEditModal, cohortData, fetchCohortData }: any) => {
       }
     } catch (error: any) {
       setLoading(false);
-      if (error?.response && error?.response.status === 401) {
-        await refreshAdminToken();
-        await updateCohort();
-      } else if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

@@ -10,7 +10,7 @@ import { FaChevronDown, FaChevronUp, FaAnglesLeft } from "react-icons/fa6";
 import useCourseFormStore from "@/store/course-module-project";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 import PublishBtn from "./publishBtn";
@@ -18,6 +18,7 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "./toolbar";
 import { showToast } from "@/lib/showToast";
+import { createAxiosInstance } from "@/lib/axios";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -25,7 +26,7 @@ const AddProjectForms = () => {
   const [sections, setSections] = useState([{ id: 1, isOpen: true }]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const axios = createAxiosInstance();
   const {
     setFilteredProjectData,
     filteredProjectDataStore,
@@ -152,13 +153,10 @@ const AddProjectForms = () => {
   };
 
   const handleUploadError = async (error: any) => {
-    if (error?.response?.status === 401) {
-      await refreshAdminToken();
-      await uploadProject();
-    } else if (error?.message === "Network Error") {
+   if (error?.message === "Network Error") {
       showToast("Check your network!", "error");
     } else if (error?.response?.status === 400) {
-      console.log(error, "error");
+      // console.log(error, "error");
       showToast(
         error?.response?.data || "Check links and form fields properly!",
         "error"

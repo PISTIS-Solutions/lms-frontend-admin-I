@@ -9,11 +9,12 @@ import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
 import { toolbarOptions } from "../toolbar";
 import { urls } from "@/utils/config";
-import axios from "axios";
+// import axios from "axios";
 import refreshAdminToken from "@/utils/refreshToken";
 
 import Cookies from "js-cookie";
 import { Loader } from "lucide-react";
+import { createAxiosInstance } from "@/lib/axios";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -27,7 +28,7 @@ const EditProject = ({
   const [projectLink, setProjectLink] = useState("");
   const [description, setDescription] = useState("");
   const [editLoading, seteditLoading] = useState(false);
-
+  const axios = createAxiosInstance();
   useEffect(() => {
     if (project?.project_title) {
       setProjectitle(project?.project_title);
@@ -65,7 +66,7 @@ const EditProject = ({
 
         if (response.status === 200) {
           seteditLoading(false);
-        //   setEditModal(false);
+          //   setEditModal(false);
           toast.success("Project successfully edited!", {
             position: "top-right",
             autoClose: 5000,
@@ -79,10 +80,7 @@ const EditProject = ({
           fetchProjects();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await editProject(e);
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -119,8 +117,6 @@ const EditProject = ({
     }
   };
 
-
-  
   return (
     <div className="rounded-[8px] border-t-4 border-t-primary bg-white p-2 md:p-6 w-[90%]">
       <ToastContainer />
@@ -178,23 +174,23 @@ const EditProject = ({
         </div>
         <div className="flex items-center mt-2 gap-2 justify-center">
           <p
-              onClick={() => {
-                setEditModal(false);
-              }}
+            onClick={() => {
+              setEditModal(false);
+            }}
             className="cursor-pointer w-full py-4 rounded-[8px] text-center border border-[#3e3e3e] text-sm md:text-lg hover:bg-[#3e3e3e] hover:text-white font-medium"
           >
             Cancel
           </p>
           <button
-              disabled={editLoading}
+            disabled={editLoading}
             className="w-full py-4 flex items-center justify-center disabled:bg-sub/25 rounded-[8px] bg-sub"
             type="submit"
           >
             {editLoading ? (
-                <Loader className="animate-spin text-center" />
-              ) : (
-                "Proceed"
-              )}
+              <Loader className="animate-spin text-center" />
+            ) : (
+              "Proceed"
+            )}
           </button>
         </div>
       </form>

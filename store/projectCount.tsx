@@ -1,13 +1,14 @@
 // useProjectCount.ts
 import { create } from "zustand";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface State {
   getProjectCount: (id: any) => Promise<number>;
 }
-
+const axios = createAxiosInstance();
 const useProjectCount = create<State>(() => ({
   getProjectCount: async (id: any) => {
     try {

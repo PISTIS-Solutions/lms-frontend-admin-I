@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 import { toast } from "react-toastify";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface pendingGrading {
   projectReview: any;
@@ -13,6 +14,7 @@ interface pendingGrading {
   previous: null;
   fetchProjectReview: (id: string, submissionStatus: string) => Promise<void>;
 }
+const axios = createAxiosInstance();
 const usePendingGradeStore = create<pendingGrading>((set, get) => ({
   projectReview: [],
   reviewLoad: false,
@@ -40,14 +42,11 @@ const usePendingGradeStore = create<pendingGrading>((set, get) => ({
           next: response.data.next,
           previous: response.data.previous,
         });
-        console.log(response.data, "rD");
+        // console.log(response.data, "rD");
         return response.data.results;
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await get().fetchProjectReview(id, submissionStatus);
-      } else if (error.message === "Network Error") {
+    if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

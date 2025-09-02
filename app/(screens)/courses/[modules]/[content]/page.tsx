@@ -28,7 +28,7 @@ import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -51,13 +51,14 @@ import { BiEdit } from "react-icons/bi";
 import { FaTrashAlt } from "react-icons/fa";
 import { GrTarget } from "react-icons/gr";
 import { IoTrash } from "react-icons/io5";
+import { createAxiosInstance } from "@/lib/axios";
 
 const Content = () => {
   const params = useParams<{ modules: string; content: string }>();
   const router = useRouter();
   const courseID = params.modules;
   const moduleID = params.content;
-
+  const axios = createAxiosInstance();
   const [selectedModuleId, setSelectedModuleId] = useState(moduleID);
   const { moduleData, fetchModuleRead, moduleLoading } = useModuleRead();
   const { courseRead, fetchCourseRead, loading } = useCourseRead();
@@ -134,10 +135,7 @@ const Content = () => {
           fetchCourseRead(courseID);
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await editModule(e);
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -226,10 +224,7 @@ const Content = () => {
       }
     } catch (error: any) {
       // console.error("Error deleting course:", error.response.data.detail);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCourse();
-      } else if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

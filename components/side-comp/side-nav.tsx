@@ -18,6 +18,7 @@ import { RiCoupon2Fill } from "react-icons/ri";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileNav from "./mobile-nav";
+import { FaUsersBetweenLines } from "react-icons/fa6";
 
 const SideNav = () => {
   const [role, setRole] = useState<string | null>(null);
@@ -62,6 +63,11 @@ const SideNav = () => {
       icon: <IoReaderSharp />,
       title: "Blog",
       link: "blog",
+    },
+    {
+      icon: <FaUsersBetweenLines />,
+      title: "Sessions",
+      link: "sessions",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,

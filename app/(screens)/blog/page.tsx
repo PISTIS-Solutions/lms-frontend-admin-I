@@ -3,7 +3,7 @@ import SideNav from "@/components/side-comp/side-nav";
 import TopNav from "@/components/side-comp/topNav";
 import { Button } from "@/components/ui/button";
 import { urls } from "@/utils/config";
-import axios from "axios";
+// import axios from "axios";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -15,6 +15,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+import {
+  CustomH2,
+  code,
+  customH3,
+  customOL,
+  customP,
+  customTD,
+  customTH,
+  customUL,
+  strong,
+  customLink,
+} from "@/utils/markdown";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface blogT {
   id: string;
@@ -37,10 +53,12 @@ const BlogPage = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const axios = createAxiosInstance();
+
   const fetchBlogs = async () => {
     try {
       const response = await axios.get(`${urls.blog}`);
-      console.log(response.data, "blog res");
+      // console.log(response.data, "blog res");
       if (response.status === 200) {
         setBlogs(response.data || []);
       } else {
@@ -72,10 +90,7 @@ const BlogPage = () => {
         toast.error("Delete blog: Something went wrong!");
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await deleteBlog(id);
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!");
       } else if (error.response.data.detail === "Not found.") {
         toast.error("Course already deleted!");
@@ -111,10 +126,7 @@ const BlogPage = () => {
       fetchBlogs();
       setShowEditModal(false);
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await editBlog();
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!");
       } else if (error.response.data.detail === "Not found.") {
         toast.error("Course already deleted!");
@@ -212,7 +224,23 @@ const BlogPage = () => {
                       {blog.title}
                     </h2>
                     <p className="text-[#666666] text-sm line-clamp-2">
-                      {blog.description}
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          h2: CustomH2,
+                          h3: customH3,
+                          ol: customOL,
+                          p: customP,
+                          ul: customUL,
+                          th: customTH,
+                          td: customTD,
+                          strong: strong,
+                          code: code,
+                          a: customLink,
+                        }}
+                      >
+                        {blog.description}
+                      </ReactMarkdown>
                     </p>
                     <div>
                       <p className="text-main text-xs font-medium">

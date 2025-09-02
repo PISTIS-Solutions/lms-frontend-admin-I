@@ -10,7 +10,7 @@ import { MdDashboard } from "react-icons/md";
 import { ImBooks } from "react-icons/im";
 import { RiGraduationCapFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
-import { FaChalkboardUser } from "react-icons/fa6";
+import { FaChalkboardUser, FaUsersBetweenLines } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import { IoHelpCircle, IoReaderSharp, IoWifiOutline } from "react-icons/io5";
 import { IoIosLogOut } from "react-icons/io";
@@ -68,6 +68,11 @@ const MobileNav = ({ role }: any) => {
       icon: <IoReaderSharp />,
       title: "Blog",
       link: "blog",
+    },
+    {
+      icon: <FaUsersBetweenLines />,
+      title: "Sessions",
+      link: "sessions",
     },
     role === "super_admin" && {
       icon: <FaChalkboardUser />,

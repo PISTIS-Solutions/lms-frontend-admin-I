@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { urls } from "@/utils/config";
+import { createAxiosInstance } from "@/lib/axios";
 
+const axios = createAxiosInstance();
 export const mentorAccess = async (
   requestBody: any,
   callback: () => void,
@@ -21,14 +23,11 @@ export const mentorAccess = async (
     });
 
     if (response.status === 200) {
-      setLoading(false)
+      setLoading(false);
       callback();
     }
   } catch (error: any) {
-    if (error.response && error.response.status === 401) {
-      await refreshAdminToken();
-      await mentorAccess(requestBody, callback, setLoading);
-    } else if (error.message === "Network Error") {
+   if (error.message === "Network Error") {
       toast.error("Check your network!", {
         position: "top-right",
         autoClose: 5000,

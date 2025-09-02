@@ -10,10 +10,11 @@ import { AiOutlineUpload } from "react-icons/ai";
 import { showToast } from "@/lib/showToast";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 import { toast, ToastContainer } from "react-toastify";
+import { createAxiosInstance } from "@/lib/axios";
 
 type BlogState = {
   title: string;
@@ -76,7 +77,7 @@ const CreateBlog = () => {
 
     setBlog((prev) => ({ ...prev, blogImage: file }));
   };
-
+  const axios = createAxiosInstance();
   const createBlog = async () => {
     try {
       if (!validateBlog()) return;
@@ -108,10 +109,7 @@ const CreateBlog = () => {
         setBlog((prev) => ({ ...prev, loading: false }));
       }
     } catch (err: any) {
-      if (err?.response?.status === 401) {
-        await refreshAdminToken();
-        await createBlog();
-      } else if (err?.message === "Network Error") {
+      if (err?.message === "Network Error") {
         toast.error("Check your network!");
       } else if (err?.response?.status === 400) {
         toast.error("Check links and form fields properly!");

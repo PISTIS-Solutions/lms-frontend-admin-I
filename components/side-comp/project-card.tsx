@@ -4,12 +4,13 @@ import React, { useEffect, useState } from "react";
 import img from "@/src/assets/course/ansible.png";
 import { BookText, Hourglass, LucideLoader2, Trash2 } from "lucide-react";
 import useCourseRead from "@/store/course-read";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 
 import Cookies from "js-cookie";
 import useProjectRead from "@/store/project-read";
 import useProjectCount from "@/store/projectCount";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface cardProps {
   id: number;
@@ -48,7 +49,7 @@ const ProjectCard = ({
 
     fetchModuleCount();
   }, [id, getProjectCount]);
-
+  const axios = createAxiosInstance();
   return (
     <div className="relative">
       <div
