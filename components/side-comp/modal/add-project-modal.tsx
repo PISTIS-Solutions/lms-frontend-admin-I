@@ -25,13 +25,14 @@ import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import { Input } from "@/components/ui/input";
 
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { toolbarOptions } from "@/components/side-comp/toolbar";
+import { createAxiosInstance } from "@/lib/axios";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -52,7 +53,7 @@ const AddProjectModal = ({
   });
 
   const [editLoading, seteditLoading] = useState(false);
-
+  const axios = createAxiosInstance();
   const onSubmit = async (data: z.infer<typeof formSchema>, e: any) => {
     e.preventDefault();
     if (
@@ -95,10 +96,7 @@ const AddProjectModal = ({
           fetchCourses();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await onSubmit(e, data);
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,

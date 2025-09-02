@@ -6,7 +6,7 @@ import TopNav from "@/components/side-comp/topNav";
 
 import modGray from "@/src/assets/modGray.svg";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import { ToastContainer } from "react-toastify";
@@ -37,6 +37,7 @@ import {
 import { showToast } from "@/lib/showToast";
 import OrganiseComp from "@/components/side-comp/courses/organiseComp";
 import DeleteModal from "@/components/side-comp/courses/deleteModal";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface Course {
   id: string;
@@ -69,29 +70,29 @@ const Courses = () => {
   const [courseType, setCourseType] = useState<"Intermediate" | "Advanced">(
     "Intermediate"
   );
-
+  const axios = createAxiosInstance();
   //fetch course
   const fetchCourses = async () => {
     const adminAccessToken = Cookies.get("adminAccessToken");
     try {
       setLoading(true);
-      const response = await axios.get(`${urls.getCourses}?course_category=${courseType}`, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-        },
-      });
+      const response = await axios.get(
+        `${urls.getCourses}?course_category=${courseType}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
       if (response.status === 200) {
         setDisplayedCourses(response.data);
         setAllCourses(response.data);
         const ids = response.data.map((course: { id: number }) => course.id);
         setCourseIds(ids);
-        console.log(response, "response");
+        // console.log(response, "response");
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchCourses();
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");
@@ -124,10 +125,7 @@ const Courses = () => {
         fetchCourses();
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCourse(courseId);
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else if (error.response.data.detail === "Not found.") {
         showToast("Course already deleted!", "error");
@@ -240,10 +238,7 @@ const Courses = () => {
       setAllCourses(displayedCourses);
       showToast(response.data.detail, "success");
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await handleUpdateCourses(displayedCourses);
-      } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");

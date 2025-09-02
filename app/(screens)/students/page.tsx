@@ -17,7 +17,7 @@ import SideNav from "@/components/side-comp/side-nav";
 import TopNav from "@/components/side-comp/topNav";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { urls } from "@/utils/config";
@@ -33,6 +33,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useStudentStore from "@/store/fetch-student";
 import CouponModal from "@/components/side-comp/coupon/couponModal";
 import { RiCoupon2Fill } from "react-icons/ri";
+import { createAxiosInstance } from "@/lib/axios";
 
 const StudentPage = () => {
   const { students, loading, fetchStudents, previous, next, count } =
@@ -49,7 +50,7 @@ const StudentPage = () => {
   //   setSelectedValue(value);
   //   console.log(`Selected Value: ${value}`); // Debugging
   // };
-
+  const axios = createAxiosInstance();
   const [category, setCategory] = useState("");
   const [challenge, setChallenge] = useState(false);
 
@@ -104,10 +105,7 @@ const StudentPage = () => {
         setExpandedStudent(null);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await manageStudentSubscription(id, status);
-      } else if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -325,10 +323,7 @@ const StudentPage = () => {
         });
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await exportStudentsList();
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

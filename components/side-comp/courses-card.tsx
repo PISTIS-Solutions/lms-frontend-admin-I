@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { LucideLoader2, Menu } from "lucide-react";
 import { FaTrashAlt } from "react-icons/fa";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import useCourseRead from "@/store/course-read";
@@ -17,6 +17,7 @@ import useModuleCount from "@/store/module-count";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface cardProps {
   id: number;
@@ -46,7 +47,7 @@ const CoursesCard = ({
   // const [loading, setLoading] = useState(false);
   const { fetchCourseRead } = useCourseRead();
   // const [moduleCount, setModuleCount] = useState(0);
-
+  const axios = createAxiosInstance();
   // useEffect(() => {
   //   const getModuleCount = async () => {
   //     setLoading(true);

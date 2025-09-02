@@ -23,7 +23,7 @@ import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -40,6 +40,7 @@ import {
   strong,
   customLink,
 } from "@/utils/markdown";
+import { createAxiosInstance } from "@/lib/axios";
 
 const Module = () => {
   const router = useRouter();
@@ -54,7 +55,7 @@ const Module = () => {
   const handleModal = () => {
     setOpenModal((prev) => !prev);
   };
-
+  const axios = createAxiosInstance();
   const handleItemClick = (moduleId: any) => {
     setSelectedModuleId(moduleId === selectedModuleId ? null : moduleId);
     router.replace(`/courses/${courseID}/${moduleId}`);
@@ -103,10 +104,7 @@ const Module = () => {
           fetchCourseRead(courseID);
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await editModule(e);
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,

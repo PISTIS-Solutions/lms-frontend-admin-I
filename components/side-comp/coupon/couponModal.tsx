@@ -1,11 +1,12 @@
 import { urls } from "@/utils/config";
-import axios from "axios";
+// import axios from "axios";
 import { Loader2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { RiCoupon2Fill } from "react-icons/ri";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface CouponState {
   create: boolean;
@@ -20,7 +21,7 @@ interface CouponModalProps {
 
 const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
   const [loading, setLoading] = useState(false);
-
+  const axios = createAxiosInstance();
   const [data, setData] = useState({
     discount_percentage: "",
     usage_limit: "",
@@ -31,7 +32,6 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
 
   const listCoupon = async () => {
     try {
-
       const adminAccessToken = Cookies.get("adminAccessToken");
 
       const response = await axios.get(`${urls.coupon}`, {
@@ -40,15 +40,12 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
         },
       });
 
-      console.log(response, "rez coups");
+      // console.log(response, "rez coups");
       if (response.status === 200) {
         setCoupons(response.data);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await listCoupon();
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -123,10 +120,7 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
       setSelectedCouponData(null);
       listCoupon();
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await saveCoupon();
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -172,10 +166,7 @@ const CouponModal = ({ coupon, setCoupon }: CouponModalProps) => {
         setSelectedCoupon(null);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCoupon(id);
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

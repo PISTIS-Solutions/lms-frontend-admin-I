@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import { ToastContainer, toast } from "react-toastify";
@@ -51,6 +51,7 @@ import { GrTarget } from "react-icons/gr";
 import Image from "next/image";
 import modIcon from "@/src/assets/modIcon.svg";
 import EditProject from "@/components/side-comp/modal/edit-project";
+import { createAxiosInstance } from "@/lib/axios";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -64,7 +65,7 @@ const SideProject = () => {
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<any | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState(projectID);
-
+  const axios = createAxiosInstance();
   const fetchProjectsRead = async () => {
     try {
       setLoading(true);
@@ -80,10 +81,7 @@ const SideProject = () => {
       setProject(response.data);
       // console.log(project, "pr")
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchProjectsRead();
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -130,10 +128,7 @@ const SideProject = () => {
       );
       setProjectList(response.data);
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchProjects();
-      } else if (error?.message === "Network Error") {
+    if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -212,10 +207,7 @@ const SideProject = () => {
           fetchProjects();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await addProject(e);
-        } else if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -302,10 +294,7 @@ const SideProject = () => {
       }
     } catch (error: any) {
       // console.error("Error deleting course:", error.response.data.detail);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCourse();
-      } else if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

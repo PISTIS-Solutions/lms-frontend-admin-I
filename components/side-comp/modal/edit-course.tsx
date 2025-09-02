@@ -7,12 +7,13 @@ import useCourseFormStore from "@/store/course-module-project";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { Loader } from "lucide-react";
 import { createKey } from "next/dist/shared/lib/router/router";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface cardProps {
   id: number;
@@ -37,7 +38,7 @@ const EditCourse = ({
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>();
-
+  const axios = createAxiosInstance();
   // useEffect(() => {}, [title, image, url]);
 
   useEffect(() => {
@@ -140,10 +141,7 @@ const EditCourse = ({
           window.location.reload();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await onSubmit(e);
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,

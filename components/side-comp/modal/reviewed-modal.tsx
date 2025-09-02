@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import axios from "axios";
+// import axios from "axios";
 import { baseURL, urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 
@@ -11,10 +11,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { createAxiosInstance } from "@/lib/axios";
 
 const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
   const [submitDetails, setSubmitDetails] = useState<any | null>(null);
   const [loadSubmit, setLoadSubmit] = useState(false);
+  const axios = createAxiosInstance();
   const fetchSubDetails = async () => {
     try {
       setLoadSubmit(true);
@@ -32,10 +34,7 @@ const ReviewedModal = ({ handleCloseModalApproved, person }: any) => {
         setLoadSubmit(false);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchSubDetails();
-      } else if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

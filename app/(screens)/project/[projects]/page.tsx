@@ -16,7 +16,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import { ToastContainer, toast } from "react-toastify";
@@ -53,6 +53,7 @@ import { GrTarget } from "react-icons/gr";
 import modIcon from "@/src/assets/modIcon.svg";
 import EditProject from "@/components/side-comp/modal/edit-project";
 import EditProjects from "@/components/side-comp/modal/edit-projects";
+import { createAxiosInstance } from "@/lib/axios";
 
 const SingleProject = () => {
   const router = useRouter();
@@ -69,7 +70,7 @@ const SingleProject = () => {
 
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<any | null>(null);
-
+  const axios = createAxiosInstance();
   //fetc project list
   const fetchProjects = async () => {
     try {
@@ -86,10 +87,7 @@ const SingleProject = () => {
       setProject(response.data);
       // console.log(response.data);
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchProjects();
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -168,10 +166,7 @@ const SingleProject = () => {
           fetchProjects();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await addProject(e);
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -255,10 +250,7 @@ const SingleProject = () => {
       }
     } catch (error: any) {
       // console.error("Error deleting course:", error.response.data.detail);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCourse();
-      } else if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -339,10 +331,7 @@ const SingleProject = () => {
           fetchProjects();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await editProject(e);
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,

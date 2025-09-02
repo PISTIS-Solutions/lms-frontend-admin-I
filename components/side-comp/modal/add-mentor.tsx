@@ -4,18 +4,19 @@ import { IoSend } from "react-icons/io5";
 import { GrClose } from "react-icons/gr";
 import { urls } from "@/utils/config";
 
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Loader2 } from "lucide-react";
+import { createAxiosInstance } from "@/lib/axios";
 
 const AddMentorModal = ({ handleAddMentor }: any) => {
   const [access, setAccess] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const axios = createAxiosInstance();
   const inviteMentorFunction = async () => {
     try {
       setLoading(true);
@@ -46,10 +47,7 @@ const AddMentorModal = ({ handleAddMentor }: any) => {
       }
     } catch (error: any) {
       // console.log(error.response?.data?.message);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await inviteMentorFunction();
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

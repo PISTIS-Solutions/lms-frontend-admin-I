@@ -4,12 +4,13 @@ import { IoSend } from "react-icons/io5";
 import { GrClose } from "react-icons/gr";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { urls } from "@/utils/config";
 import { showToast } from "@/lib/showToast";
 import refreshAdminToken from "@/utils/refreshToken";
 import useCohortStore from "@/store/fetch-cohorts";
+import { createAxiosInstance } from "@/lib/axios";
 
 const NewCohorts = ({ handleAddCohorts }: any) => {
   const [startDate, setStartDate] = useState("");
@@ -48,7 +49,7 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
           : value,
     }));
   };
-
+  const axios = createAxiosInstance();
   const [loading, setLoading] = useState(false);
   const createCohort = async () => {
     try {
@@ -72,15 +73,12 @@ const NewCohorts = ({ handleAddCohorts }: any) => {
       );
       if (response.status === 201) {
         showToast("Cohort created successfully!", "success");
-        fetchCohorts( 1, "")
+        fetchCohorts(1, "");
         handleAddCohorts(false);
       }
     } catch (error: any) {
-      console.log(error, "error");
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await createCohort();
-      } else if (error?.message === "Network Error") {
+      // console.log(error, "error");
+     if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data[0], "error");

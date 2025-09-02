@@ -3,7 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import axios from "axios";
+// import axios from "axios";
 import { baseURL, urls } from "@/utils/config";
 import refreshAdminToken from "@/utils/refreshToken";
 
@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { createAxiosInstance } from "@/lib/axios";
 
 const PendingModal = ({
   handleCloseModal,
@@ -25,6 +26,7 @@ const PendingModal = ({
   const [submitDetails, setSubmitDetails] = useState<any | null>(null);
   const [loadSubmit, setLoadSubmit] = useState(false);
   const [rejectSubmit, setRejectSubmit] = useState(false);
+  const axios = createAxiosInstance();
   const fetchSubDetails = async () => {
     try {
       setLoadSubmit(true);
@@ -42,10 +44,7 @@ const PendingModal = ({
         setLoadSubmit(false);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchSubDetails();
-      } else if (error?.message === "Network Error") {
+    if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -115,10 +114,7 @@ const PendingModal = ({
           // window.location.reload();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await handleSubmit();
-        } else if (error?.message === "Network Error") {
+       if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -191,10 +187,7 @@ const PendingModal = ({
           fetchProjectReview(id, "");
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await rejectSubmitFunct();
-        } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,

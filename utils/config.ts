@@ -33,5 +33,6 @@ export const urls = {
   cohorts: `${baseURL}/cohorts/`,
   coupon: `${baseURL}/coupon-codes/`,
 
-  blog: `${baseURL}/blogs/`
+  blog: `${baseURL}/blogs/`,
+  booking: `${baseURL}/booking-sessions/`,
 };

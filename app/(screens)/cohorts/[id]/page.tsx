@@ -23,10 +23,11 @@ import { BsDownload } from "react-icons/bs";
 import { IoIosClose } from "react-icons/io";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { urls } from "@/utils/config";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import EditCohorts from "@/components/side-comp/cohorts/EditCohorts";
+import { createAxiosInstance } from "@/lib/axios";
 
 const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
 
@@ -36,7 +37,7 @@ const ReadCohort = () => {
   const router = useRouter();
 
   const params = useParams<{ id: string }>();
-
+  const axios = createAxiosInstance();
   const id = params.id;
 
   const [fetching, setFetching] = useState(false);
@@ -68,10 +69,7 @@ const ReadCohort = () => {
       }
     } catch (error: any) {
       setFetching(false);
-      if (error?.response && error?.response.status === 401) {
-        await refreshAdminToken();
-        await FetchStudents(id, searchQuery);
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -138,10 +136,7 @@ const ReadCohort = () => {
       }
     } catch (error: any) {
       setExporting(false);
-      if (error?.response && error?.response.status === 401) {
-        await refreshAdminToken();
-        await ExportStudent(id);
-      } else if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -207,10 +202,7 @@ const ReadCohort = () => {
       router.back();
     } catch (error: any) {
       setDeleting(false);
-      if (error?.response && error?.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCohort(id);
-      } else if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

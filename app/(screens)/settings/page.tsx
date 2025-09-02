@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TopNav from "@/components/side-comp/topNav";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import refreshToken from "@/utils/refreshToken";
 import Cookies from "js-cookie";
@@ -31,6 +31,7 @@ import "react-toastify/dist/ReactToastify.css";
 import refreshAdminToken from "@/utils/refreshToken";
 import useStudentStore from "@/store/fetch-student";
 import { useRouter } from "next/navigation";
+import { createAxiosInstance } from "@/lib/axios";
 
 const passwordSchema = z.object({
   currentPassword: z.string(),
@@ -65,8 +66,8 @@ const SettingsPage = () => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   // const [phoneNumber, setPhoneNumber] = useState("");
-  const router = useRouter()
-
+  const router = useRouter();
+  const axios = createAxiosInstance();
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
@@ -120,7 +121,7 @@ const SettingsPage = () => {
           });
 
           Cookies.remove("adminAccessToken");
-          router.replace("/")
+          router.replace("/");
         }
       } catch (error: any) {
         // console.log(error);
@@ -288,7 +289,6 @@ const SettingsPage = () => {
     setShowConfirmPassword((prev) => !prev);
   };
 
-
   const [loading, setLoading] = useState(false);
   const DeactivateStudent = async () => {
     try {
@@ -321,10 +321,7 @@ const SettingsPage = () => {
       }
     } catch (error: any) {
       setLoading(false);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await DeactivateStudent();
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

@@ -2,7 +2,7 @@
 import SideNav from "@/components/side-comp/side-nav";
 import React, { useEffect, useState } from "react";
 import PaginatedTable from "@/components/side-comp/pagination-table-students";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import TopNav from "@/components/side-comp/topNav";
@@ -21,6 +21,9 @@ import { showToast } from "@/lib/showToast";
 import DashCards from "@/components/side-comp/dashboard/dashCards";
 import EnrollmentActivity from "@/components/side-comp/dashboard/enrollmentActivity";
 import PendingGrading from "@/components/side-comp/dashboard/pendingGrading";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import UpcomingSessions from "@/components/side-comp/dashboard/upcomingSessions";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface AdminData {
   total_courses: number;
@@ -37,7 +40,7 @@ const Dashboard = () => {
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
   const [studentPerMonth, setStudentPerMonth] = useState<StudentPerMonth[]>([]);
-
+  const axios = createAxiosInstance();
   const getMonthName = (dateString: string): string => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = { month: "long" };
@@ -50,8 +53,7 @@ const Dashboard = () => {
     }));
   };
 
-
-const [list, setList] = useState([]);
+  const [list, setList] = useState([]);
   const fetchAdminData = async () => {
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
@@ -60,20 +62,17 @@ const [list, setList] = useState([]);
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      console.log(response?.data?.students)
+      // console.log(response?.data?.students);
       if (response.status === 200) {
         const formattedData = updateMonthNames(
           response.data.students_per_month
         );
         setAdminData(response.data);
         setStudentPerMonth(formattedData);
-        setList(response?.data?.students)
+        setList(response?.data?.students);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchAdminData();
-      } else if (error?.message === "Network Error") {
+    if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");
@@ -81,7 +80,6 @@ const [list, setList] = useState([]);
     } finally {
       setLoading(false);
     }
-    
   };
   const [projectOverview, setProjectOverview] = useState<any>();
   const [overviewLoad, setOverviewLoad] = useState<boolean>(false);
@@ -94,14 +92,11 @@ const [list, setList] = useState([]);
           Authorization: `Bearer ${adminAccessToken}`,
         },
       });
-      console.log(response, "pending grading")
+      // console.log(response, "pending grading");
       setProjectOverview(response.data);
       setOverviewLoad(false);
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchProjectOverview();
-      } else if (error?.message === "Network Error") {
+    if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");
@@ -143,13 +138,16 @@ const [list, setList] = useState([]);
                 studentPerMonth={studentPerMonth}
               />
             </div>
-            <PendingGrading
-              overviewLoad={overviewLoad}
-              projectOverview={projectOverview}
-            />
+            <div className="flex flex-col  col-span-3 gap-2 w-full">
+              <PendingGrading
+                overviewLoad={overviewLoad}
+                projectOverview={projectOverview}
+              />
+              <UpcomingSessions />
+            </div>
           </div>
           <div className="p-4">
-            <PaginatedTable  />
+            <PaginatedTable />
           </div>
         </div>
       </div>

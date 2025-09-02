@@ -10,7 +10,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import pLogo from "@/src/assets/pistis_logo.png";
 import countryCodes from "@/utils/countryCode";
 import pat from "@/src/assets/patric.png";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -36,6 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { createAxiosInstance } from "@/lib/axios";
 
 const formSchema = z
   .object({
@@ -65,7 +66,7 @@ const MentorInformation = () => {
   const params = useParams<{ uid: string; token: string }>();
   const uid = params.uid;
   const token = params.token;
-
+  const axios = createAxiosInstance();
   const router = useRouter();
   //select image
   const [selectedImage, setSelectedImage] = useState<any>(null);
@@ -170,10 +171,7 @@ const MentorInformation = () => {
         router.replace("/");
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await uploadMentorInfo(values);
-      } else if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -516,12 +514,16 @@ const MentorInformation = () => {
                           {showConfirmPassword ? (
                             <FaRegEye
                               className="sm:h-6 h-4 w-4 sm:w-6 text-[#666666]"
-                              onClick={() => setShowConfirmPassword((prev) => !prev)}
+                              onClick={() =>
+                                setShowConfirmPassword((prev) => !prev)
+                              }
                             />
                           ) : (
                             <FaRegEyeSlash
                               className="sm:h-6 h-4 w-4 sm:w-6  text-[#666666]"
-                              onClick={() => setShowConfirmPassword((prev) => !prev)}
+                              onClick={() =>
+                                setShowConfirmPassword((prev) => !prev)
+                              }
                             />
                           )}
                         </span>

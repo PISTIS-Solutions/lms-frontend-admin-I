@@ -9,11 +9,12 @@ import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
 import { toolbarOptions } from "../toolbar";
 import { urls } from "@/utils/config";
-import axios from "axios";
+// import axios from "axios";
 import refreshAdminToken from "@/utils/refreshToken";
 
 import Cookies from "js-cookie";
 import { Loader } from "lucide-react";
+import { createAxiosInstance } from "@/lib/axios";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -27,7 +28,7 @@ const EditProject = ({
   const [projectLink, setProjectLink] = useState("");
   const [description, setDescription] = useState("");
   const [editLoading, seteditLoading] = useState(false);
-
+  const axios = createAxiosInstance();
   useEffect(() => {
     if (project?.[0]?.project_title) {
       setProjectitle(project?.[0]?.project_title);
@@ -79,10 +80,7 @@ const EditProject = ({
           fetchProjects();
         }
       } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-          await refreshAdminToken();
-          await editProject(e);
-        } else if (error?.message === "Network Error") {
+        if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,

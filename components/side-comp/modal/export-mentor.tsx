@@ -9,16 +9,17 @@ import { GoDotFill } from "react-icons/go";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import { urls } from "@/utils/config";
-import axios from "axios";
+// import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import useMentorsList from "@/store/mentors-list";
+import { createAxiosInstance } from "@/lib/axios";
 
 const ExportMentorModal = ({ handleExportMentor }: any) => {
   const { mentors, loadMentors, fetchMentors, previous, next, count } =
     useMentorsList();
-
+  const axios = createAxiosInstance();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [role, setRole] = useState("");
@@ -78,10 +79,7 @@ const ExportMentorModal = ({ handleExportMentor }: any) => {
         document.body.removeChild(a);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await exportMentorList(page, role); // Retry with a refreshed token
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { baseURL, urls } from "@/utils/config";
 import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface student {
   id: string;
@@ -45,7 +46,7 @@ interface StudentsStore {
     is_challenge_user?: boolean
   ) => Promise<any>;
 }
-
+const axios = createAxiosInstance();
 const useStudentsStore = create<StudentsStore>((set, get) => ({
   students: [],
   loading: false,
@@ -86,10 +87,7 @@ const useStudentsStore = create<StudentsStore>((set, get) => ({
       return response.data.results;
     } catch (error: any) {
       console.error("Error fetching students:", error.message);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await get().fetchStudents(page, searchQuery, selectedValue, category);
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

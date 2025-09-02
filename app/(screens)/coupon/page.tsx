@@ -11,18 +11,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiCoupon2Fill, RiDeleteBin6Line } from "react-icons/ri";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
 import useStudentsStore from "@/store/fetch-students";
+import { createAxiosInstance } from "@/lib/axios";
 
 const Coupon = () => {
   const { studentData, fetchStudentData } = useStudentStore();
   //   const { students, loading: loadStudent, fetchStudents } = useStudentsStore();
   const [students, setStudents] = useState<any[]>([]);
   const [loadStudent, setLoadStudent] = useState(true);
-
+  const axios = createAxiosInstance();
   const fetchStudents = async () => {
     try {
       const adminAccessToken = Cookies.get("adminAccessToken");
@@ -37,10 +38,7 @@ const Coupon = () => {
         setStudents(response.data);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await fetchStudents();
-      } else if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -91,10 +89,7 @@ const Coupon = () => {
         setCoupons(response.data);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await listCoupon();
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -140,10 +135,7 @@ const Coupon = () => {
         setSelectedCoupon(null);
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCoupon(id);
-      } else if (error.message === "Network Error") {
+     if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -217,7 +209,7 @@ const Coupon = () => {
       payload["user"] = user_email;
     }
 
-    console.log(payload, "pay");
+    // console.log(payload, "pay");
 
     // return;
 
@@ -250,10 +242,7 @@ const Coupon = () => {
       listCoupon();
       setOpenModal(false);
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await saveCoupon();
-      } else if (error.message === "Network Error") {
+    if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -611,11 +600,15 @@ const Coupon = () => {
                 Cancel
               </button>
               <button
-              disabled={loadDelCoupon}
+                disabled={loadDelCoupon}
                 onClick={confirmDelete}
                 className="px-4 py-2 bg-red-600 text-white rounded"
               >
-                {loadDelCoupon ? <Loader2 className="animate-spin" /> : "Delete"}
+                {loadDelCoupon ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Delete"
+                )}
               </button>
             </div>
           </div>

@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { baseURL, urls } from "@/utils/config";
 import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface mentors {
   id: string;
@@ -23,7 +24,7 @@ interface MentorsStore {
   previous: null | string;
   fetchMentors: (page: number, searchQuery?: string, role?:string) => Promise<any>;
 }
-
+const axios = createAxiosInstance();
 const useMentorsList = create<MentorsStore>((set, get) => ({
   mentors: [],
   count: 0,
@@ -54,11 +55,7 @@ const useMentorsList = create<MentorsStore>((set, get) => ({
       });
       return response.data.results;
     } catch (error: any) {
-      console.error("Error fetching students:", error.message);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await get().fetchMentors(page, searchQuery, role);
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

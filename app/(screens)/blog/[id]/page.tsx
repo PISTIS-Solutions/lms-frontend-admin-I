@@ -2,8 +2,8 @@
 import SideNav from "@/components/side-comp/side-nav";
 import TopNav from "@/components/side-comp/topNav";
 import { urls } from "@/utils/config";
-import axios from "axios";
-import { useParams } from "next/navigation";
+// import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Image from "next/image";
@@ -23,6 +23,8 @@ import {
   strong,
   customLink,
 } from "@/utils/markdown";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface blogT {
   id: string;
@@ -38,7 +40,7 @@ const GetBlogbyId = () => {
   const params = useParams();
   const [loading, setLoading] = useState(true);
   const [readBlog, setReadBlog] = useState<blogT>();
-
+  const axios = createAxiosInstance();
   const readBlogs = async () => {
     try {
       const response = await axios.get(`${urls.blog}${params?.id}/`);
@@ -56,6 +58,7 @@ const GetBlogbyId = () => {
     readBlogs();
   }, []);
 
+  const router = useRouter();
   return (
     <div className="relative h-screen bg-[#FBFBFB]">
       <SideNav />
@@ -76,6 +79,15 @@ const GetBlogbyId = () => {
             </div>
           ) : readBlog ? (
             <div className="space-y-6">
+              <div className="flex items-center gap-1">
+                <MdKeyboardArrowLeft
+                  onClick={() => router.back()}
+                  className="w-9 cursor-pointer h-9 text-main"
+                />
+                <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
+                  {readBlog.title}
+                </h1>
+              </div>
               <div className="w-full h-[250px] md:h-[400px] overflow-hidden rounded-2xl shadow-sm">
                 <Image
                   src={readBlog.blog_picture}

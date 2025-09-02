@@ -25,10 +25,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import axios from "axios";
+// import axios from "axios";
 import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
 import refreshAdminToken from "@/utils/refreshToken";
+import { createAxiosInstance } from "@/lib/axios";
 
 const Cohorts = () => {
   const { cohorts, loading, fetchCohorts, previous, next, count } =
@@ -36,7 +37,7 @@ const Cohorts = () => {
   const { studentData, fetchStudentData } = useStudentStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedStudent, setExpandedStudent] = useState(null);
-
+  const axios = createAxiosInstance();
   const [loadingManage, setLoadingManage] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
@@ -110,10 +111,7 @@ const Cohorts = () => {
         fetchCohorts(currentPage, searchQuery);
       }
     } catch (error: any) {
-      if (error?.response && error?.response.status === 401) {
-        await refreshAdminToken();
-        await deleteCohort(id);
-      } else if (error.message === "Network Error") {
+    if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,

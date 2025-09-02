@@ -34,7 +34,7 @@ const PaginatedTable = () => {
   const renderStudents = () => {
     // console.log(students);
     return students
-      ?.filter((person: any) => person?.is_student)
+      ?.filter((person: any) => person?.is_student).splice(0, 5)
       .map((person: any) => (
         <tr
           onClick={() => readStudent(person.id)}
@@ -102,12 +102,12 @@ const PaginatedTable = () => {
         </tbody>
       </table>
 
-      <div className="flex items-center justify-end gap-2 md:gap-5 mt-2">
+      {/* <div className="flex items-center justify-end gap-2 md:gap-5 mt-2">
         <Button
           className="bg-transparent text-main cursor-pointer text-[12px] md:text-[14px] flex items-center gap-1 hover:bg-transparent hover:text-main"
           onClick={prevPage}
           disabled={previous == null}
-          // disabled={currentPage === 1}
+        
         >
           <ChevronLeft />
           Previous
@@ -120,7 +120,7 @@ const PaginatedTable = () => {
           <ChevronRight />
           Next
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

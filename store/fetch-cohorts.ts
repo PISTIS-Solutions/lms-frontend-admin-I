@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { baseURL, urls } from "@/utils/config";
 import { toast } from "react-toastify";
 import refreshAdminToken from "@/utils/refreshToken";
+import { createAxiosInstance } from "@/lib/axios";
 
 interface cohorts {
   id: string;
@@ -23,13 +24,13 @@ interface CohortStore {
   previous: null | string;
   fetchCohorts: (
     page: number,
-    searchQuery?: string,
+    searchQuery?: string
     // selectedValue?: string,
     // ordering?: string,
     // isActive?: string
   ) => Promise<any>;
 }
-
+const axios = createAxiosInstance();
 const useCohortStore = create<CohortStore>((set, get) => ({
   cohorts: [],
   count: 0,
@@ -50,12 +51,15 @@ const useCohortStore = create<CohortStore>((set, get) => ({
 
       const trimmedQuery = searchQuery.trim();
 
-      const response = await axios.get(`${urls.cohorts}?page=${page}&search=${trimmedQuery}&page_size=10`, {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
-        },
-      });
-      console.log(response)
+      const response = await axios.get(
+        `${urls.cohorts}?page=${page}&search=${trimmedQuery}&page_size=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        }
+      );
+      console.log(response);
       set({
         cohorts: response.data.results,
         count: response.data.count,
@@ -65,10 +69,7 @@ const useCohortStore = create<CohortStore>((set, get) => ({
       return response.data.results;
     } catch (error: any) {
       console.error("Error fetching cohorts:", error.message);
-      if (error.response && error.response.status === 401) {
-        await refreshAdminToken();
-        await get().fetchCohorts(page, searchQuery);
-      } else if (error?.message === "Network Error") {
+     if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
