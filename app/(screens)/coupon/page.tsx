@@ -72,8 +72,15 @@ const Coupon = () => {
     usage_limit: "",
     expires_at: "",
     user_email: "",
+    user_email_text: "",
   });
-  const { discount_percentage, usage_limit, expires_at, user_email } = data;
+  const {
+    discount_percentage,
+    usage_limit,
+    expires_at,
+    user_email,
+    user_email_text,
+  } = data;
 
   const listCoupon = async () => {
     try {
@@ -89,7 +96,7 @@ const Coupon = () => {
         setCoupons(response.data);
       }
     } catch (error: any) {
-     if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -135,7 +142,7 @@ const Coupon = () => {
         setSelectedCoupon(null);
       }
     } catch (error: any) {
-     if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -194,6 +201,7 @@ const Coupon = () => {
       usage_limit: coupon.usage_limit.toString(),
       expires_at: new Date(coupon.expires_at).toISOString().split("T")[0],
       user_email: matchedStudent?.id || "",
+      user_email_text: coupon.assigned_email || "",
     });
   };
 
@@ -203,15 +211,12 @@ const Coupon = () => {
       usage_limit: Number(usage_limit),
       expires_at: new Date(expires_at + "T00:00:00Z").toISOString(),
       active: true,
+      assigned_email: user_email_text,
     };
 
     if (!isGeneral) {
       payload["user"] = user_email;
     }
-
-    // console.log(payload, "pay");
-
-    // return;
 
     try {
       setLoading(true);
@@ -235,6 +240,7 @@ const Coupon = () => {
         usage_limit: "",
         expires_at: "",
         user_email: "",
+        user_email_text: "",
       });
       setEditMode(false);
       setSelectedCoupon(null);
@@ -242,7 +248,7 @@ const Coupon = () => {
       listCoupon();
       setOpenModal(false);
     } catch (error: any) {
-    if (error.message === "Network Error") {
+      if (error.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -386,9 +392,9 @@ const Coupon = () => {
                             {coupon?.code}
                           </td>
                           <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs whitespace-nowrap md:text-base">
-                            {coupon.user_email
-                              ? coupon.user_email
-                              : "All users"}
+                            {coupon.user_email ||
+                              coupon.assigned_email ||
+                              "All users"}
                           </td>
                           <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs whitespace-nowrap md:text-base">
                             {coupon.discount_percentage}%
@@ -465,6 +471,7 @@ const Coupon = () => {
                   usage_limit: "",
                   expires_at: "",
                   user_email: "",
+                  user_email_text: "",
                 });
                 setIsGeneral(false);
                 setEditMode(false);
@@ -533,7 +540,6 @@ const Coupon = () => {
               <label htmlFor="studeents" className="text-sm text-main">
                 Students
               </label>
-              {/* <br /> */}
               <select
                 className="border text-sm border-gray-300 rounded p-2 w-full"
                 name="students"
@@ -554,6 +560,21 @@ const Coupon = () => {
                   </option>
                 ))}
               </select>
+              <label htmlFor="expires_at" className="text-sm text-main">
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={user_email_text}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    user_email_text: e.target.value,
+                  })
+                }
+                placeholder="Input user email"
+                className="border text-sm ring-main border-gray-300 rounded p-2"
+              />
             </div>
             <>
               <div className="flex items-center justify-between mt-4">
