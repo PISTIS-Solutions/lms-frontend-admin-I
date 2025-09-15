@@ -19,10 +19,10 @@ const SideProjects = ({
           {(role === "advanced" || role === "super_admin") && (
             <span
               onClick={handleModal}
-              className="flex items-center gap-1 bg-sub py-3 hover:bg-white hover:border hover:border-sub hover:text-sub cursor-pointer px-3 text-white rounded-[8px] font-medium"
+              className="flex items-center gap-1 text-sm bg-sub p-1 hover:bg-white hover:border hover:border-sub hover:text-sub cursor-pointer text-white rounded-sm font-medium"
             >
               <Plus />
-              <p className="hidden text-base md:block">Add a new project</p>
+              <p className="hidden text-base md:block">Add project</p>
             </span>
           )}
         </div>

@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import { create } from "zustand";
 
 interface CourseFormState {
   courseTitle: string;
@@ -11,6 +11,7 @@ interface CourseFormState {
   hours: number;
   minutes: number;
   seconds: number;
+  tutor: string;
   setCourseTitle: (title: string) => void;
   setDescription: (description: string) => void;
   setCourseLink: (link: string) => void;
@@ -21,6 +22,7 @@ interface CourseFormState {
   setHours: (hours: number) => void;
   setMinutes: (minutes: number) => void;
   setSeconds: (seconds: number) => void;
+  setTutor: (tutor: string) => void;
 }
 
 interface ModuleFormData {
@@ -51,10 +53,11 @@ const useCourseFormStore = create<
   selectedFile: null,
   courseOverwiew: "",
   price: "",
-  course_category:"",
+  course_category: "Intermediate",
   hours: 0,
   minutes: 0,
   seconds: 0,
+  tutor: "",
   filteredModuleDataStore: [],
   setFilteredModuleData: (data) => set({ filteredModuleDataStore: data }),
   filteredProjectDataStore: [],
@@ -63,12 +66,13 @@ const useCourseFormStore = create<
   setDescription: (description: string) => set({ description: description }),
   setCourseLink: (link: string) => set({ courseLink: link }),
   setSelectedFile: (file: File | null) => set({ selectedFile: file }),
-  setCourseOverview: (overview: string) => set({courseOverwiew: overview}),
+  setCourseOverview: (overview: string) => set({ courseOverwiew: overview }),
   setPrice: (price: string) => set({ price: price }),
   setCourseCategory: (category: string) => set({ course_category: category }),
   setHours: (hours: number) => set({ hours: hours }),
   setMinutes: (minutes: number) => set({ minutes: minutes }),
   setSeconds: (seconds: number) => set({ seconds: seconds }),
+  setTutor: (tutor: string) => set({ tutor: tutor }),
 }));
 
 export default useCourseFormStore;

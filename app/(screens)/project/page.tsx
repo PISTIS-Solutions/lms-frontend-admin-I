@@ -168,7 +168,7 @@ const Project = () => {
             {loading ? (
               <div className="flex flex-col justify-center items-center">
                 <div className="flex flex-col space-y-3 shadow-md p-4 w-full">
-                  <Skeleton className="h-[125px]  rounded-xl" />
+                  <Skeleton className="h-[125px] rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[250px]" />
                     <Skeleton className="h-4 w-[200px]" />

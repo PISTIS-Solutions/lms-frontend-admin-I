@@ -45,7 +45,7 @@ const EditProject = ({
   const editProject = async (e: any) => {
     e.preventDefault();
 
-    if (projectTitle !== "" && projectLink !== "" && description !== "") {
+    if (projectTitle !== "" && projectLink !== "") {
       try {
         const adminAccessToken = Cookies.get("adminAccessToken");
         seteditLoading(true);
@@ -66,7 +66,7 @@ const EditProject = ({
 
         if (response.status === 200) {
           seteditLoading(false);
-          //   setEditModal(false);
+            setEditModal(false);
           toast.success("Project successfully edited!", {
             position: "top-right",
             autoClose: 5000,
