@@ -48,6 +48,7 @@ const AddProjectForms = () => {
     setFilteredModuleData,
     setSeconds,
     setCourseTitle,
+    tutor,
   } = useCourseFormStore();
 
   useEffect(() => {
@@ -80,6 +81,20 @@ const AddProjectForms = () => {
     showToast("Section Deleted", "error");
   };
 
+  const appendIfExists = (
+    form: FormData,
+    key: string,
+    value?: string | Blob
+  ) => {
+    if (
+      value !== undefined &&
+      value !== null &&
+      value.toString().trim() !== ""
+    ) {
+      form.append(key, value);
+    }
+  };
+
   const uploadProject = async (): Promise<void> => {
     if (
       !courseTitle ||
@@ -99,38 +114,54 @@ const AddProjectForms = () => {
       const payload = new FormData();
 
       payload.append("title", courseTitle);
+      payload.append("course_url", courseLink);
+      payload.append("course_image", selectedFile);
       payload.append(
         "course_duration",
         `PT${hours * 3600 + minutes * 60 + seconds}S`
       );
-      payload.append("course_url", courseLink);
-      payload.append("course_image", selectedFile);
-      if (price !== undefined && price !== null) {
-        payload.append("price", price.toString());
-      }
 
-      payload.append("overview", courseOverwiew);
-      payload.append("course_category", course_category);
+      appendIfExists(payload, "price", price?.toString());
+      appendIfExists(payload, "course_category", course_category);
+      appendIfExists(payload, "overview", courseOverwiew);
+      appendIfExists(payload, "tutor", tutor);
 
       filteredModuleDataStore.forEach((module: any, index: number) => {
-        payload.append(`modules[${index}]module_title`, module.module_title);
-        payload.append(`modules[${index}]module_url`, module.module_url);
-        payload.append(
+        appendIfExists(
+          payload,
+          `modules[${index}]module_title`,
+          module.module_title
+        );
+        appendIfExists(
+          payload,
+          `modules[${index}]module_url`,
+          module.module_url
+        );
+        appendIfExists(
+          payload,
           `modules[${index}]module_video_link`,
           module.module_Github_url
         );
       });
 
       filteredProjectDataStore.forEach((project: any, index: number) => {
-        payload.append(
+        appendIfExists(
+          payload,
           `projects[${index}]project_title`,
           project.project_title
         );
-        payload.append(
+        appendIfExists(
+          payload,
+          `projects[${index}]project_url`,
+          project.project_url
+        );
+
+        // ✅ Only add project_hint if it exists
+        appendIfExists(
+          payload,
           `projects[${index}]project_hint`,
           project.project_description
         );
-        payload.append(`projects[${index}]project_url`, project.project_url);
       });
 
       const response = await axios.post(urls.uploadCourses, payload, {
@@ -142,8 +173,8 @@ const AddProjectForms = () => {
 
       if (response.status === 201) {
         showToast(`${response.data.title} added`, "success");
-        // resetForm();
-        // router.push("/courses");
+        resetForm();
+        router.push("/courses");
       }
     } catch (error: any) {
       handleUploadError(error);
@@ -153,16 +184,18 @@ const AddProjectForms = () => {
   };
 
   const handleUploadError = async (error: any) => {
-   if (error?.message === "Network Error") {
+    if (error?.message === "Network Error") {
       showToast("Check your network!", "error");
     } else if (error?.response?.status === 400) {
-      // console.log(error, "error");
       showToast(
         error?.response?.data || "Check links and form fields properly!",
         "error"
       );
     } else {
-      showToast(error?.response?.data?.detail || "Upload failed", "error");
+      showToast(
+        error?.response?.data?.detail || "Upload failed",
+        error.response.data.message
+      );
     }
   };
 
@@ -181,22 +214,24 @@ const AddProjectForms = () => {
 
     const validProjects = sections
       .map((section) => {
-        const title = (
-          document.getElementById(
-            `projectTitle-${section.id}`
-          ) as HTMLInputElement
-        )?.value;
-        const url = (
-          document.getElementById(
-            `projectLink-${section.id}`
-          ) as HTMLInputElement
-        )?.value;
+        const title =
+          (
+            document.getElementById(
+              `projectTitle-${section.id}`
+            ) as HTMLInputElement
+          )?.value || "";
+        const url =
+          (
+            document.getElementById(
+              `projectLink-${section.id}`
+            ) as HTMLInputElement
+          )?.value || "";
         const desc =
           (
             document.getElementById(
               `projectDetails-${section.id}`
             ) as HTMLElement
-          )?.textContent ?? "";
+          )?.textContent?.trim() || "";
 
         return {
           project_title: title,
@@ -204,12 +239,7 @@ const AddProjectForms = () => {
           project_description: desc,
         };
       })
-      .filter(
-        (p) =>
-          p.project_title.trim() &&
-          p.project_url.trim() &&
-          p.project_description.trim()
-      );
+      .filter((p) => p.project_title.trim() && p.project_url.trim());
 
     setFilteredProjectData(validProjects);
   };

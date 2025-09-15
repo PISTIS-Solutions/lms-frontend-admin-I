@@ -191,6 +191,10 @@ const Coupon = () => {
   const [editMode, setEditMode] = useState(false);
   const [selectedCouponData, setSelectedCouponData] = useState<any>(null);
 
+  const [couponMode, setCouponMode] = useState<"student" | "email" | "general">(
+    "general"
+  );
+
   const handleEdit = (coupon: any) => {
     const matchedStudent = students.find(
       (student) => student.email === coupon.user_email
@@ -209,13 +213,18 @@ const Coupon = () => {
     const payload: any = {
       discount_percentage: Number(discount_percentage),
       usage_limit: Number(usage_limit),
-      expires_at: new Date(expires_at + "T00:00:00Z").toISOString(),
       active: true,
-      assigned_email: user_email_text,
     };
 
-    if (!isGeneral) {
+    if (expires_at && !isNaN(Date.parse(expires_at))) {
+      payload.expires_at = new Date(expires_at + "T00:00:00Z").toISOString();
+    }
+
+    if (couponMode === "student") {
       payload["user"] = user_email;
+    }
+    if (couponMode === "email") {
+      payload["assigned_email"] = user_email_text;
     }
 
     try {
@@ -376,7 +385,7 @@ const Coupon = () => {
               <tbody className="relative">
                 {loadCoupons ? (
                   <tr>
-                    <td colSpan={8} className="py-4">
+                    <td colSpan={7} className="py-4">
                       <Skeleton className="h-4 w-full" />
                       <p className="text-center">Loading Coupons</p>
                     </td>
@@ -447,7 +456,7 @@ const Coupon = () => {
                   </>
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-4 text-center">
+                    <td colSpan={7} className="py-4 text-center">
                       No data available.
                     </td>
                   </tr>
@@ -478,6 +487,7 @@ const Coupon = () => {
               }}
               className="text-red-500 cursor-pointer absolute right-2 top-2"
             />
+
             <h1
               className={`text-center text-base font-semibold mb-4 flex items-center gap-1 justify-center w-full text-black`}
             >
@@ -537,55 +547,88 @@ const Coupon = () => {
                 placeholder="Expiry Date"
                 className="border text-sm ring-main border-gray-300 rounded p-2"
               />
-              <label htmlFor="studeents" className="text-sm text-main">
-                Students
-              </label>
-              <select
-                className="border text-sm border-gray-300 rounded p-2 w-full"
-                name="students"
-                id="students"
-                value={user_email || ""}
-                onChange={(e) => {
-                  setData({
-                    ...data,
-                    user_email: e.target.value,
-                  });
-                }}
-              >
-                <option value="">Select student</option>
 
-                {students.map((std: any, idx) => (
-                  <option key={idx} value={std.id}>
-                    {`${std.first_name || ""} ${std.last_name || ""}`.trim()}
-                  </option>
-                ))}
-              </select>
-              <label htmlFor="expires_at" className="text-sm text-main">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={user_email_text}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    user_email_text: e.target.value,
-                  })
-                }
-                placeholder="Input user email"
-                className="border text-sm ring-main border-gray-300 rounded p-2"
-              />
+              <div className="flex gap-2 my-3 bg-gray-200 p-2 rounded-sm">
+                <button
+                  onClick={() => setCouponMode("general")}
+                  className={`px-3 text-xs py-1 w-full rounded-sm ${
+                    couponMode === "general"
+                      ? "bg-main text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  General
+                </button>
+                <button
+                  onClick={() => setCouponMode("student")}
+                  className={`px-3 text-xs py-1 w-full rounded-sm ${
+                    couponMode === "student"
+                      ? "bg-main text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  Student
+                </button>
+                <button
+                  onClick={() => setCouponMode("email")}
+                  className={`px-3 text-xs py-1 w-full rounded-sm ${
+                    couponMode === "email"
+                      ? "bg-main text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  Email
+                </button>
+              </div>
+
+              {couponMode === "student" && (
+                <>
+                  <label className="text-sm text-main">Students</label>
+                  <select
+                    className="border text-sm border-gray-300 rounded p-2 w-full"
+                    value={user_email || ""}
+                    onChange={(e) =>
+                      setData({ ...data, user_email: e.target.value })
+                    }
+                  >
+                    <option value="">Select student</option>
+                    {students.map((std: any, idx) => (
+                      <option key={idx} value={std.id}>
+                        {`${std.first_name || ""} ${
+                          std.last_name || ""
+                        }`.trim()}
+                      </option>
+                    ))}
+                  </select>
+                </>
+              )}
+              {couponMode === "email" && (
+                <>
+                  <label className="text-sm text-main">Email Address</label>
+                  <input
+                    type="email"
+                    value={user_email_text}
+                    onChange={(e) =>
+                      setData({ ...data, user_email_text: e.target.value })
+                    }
+                    placeholder="Input user email"
+                    className="border text-sm border-gray-300 rounded p-2"
+                  />
+                </>
+              )}
             </div>
             <>
-              <div className="flex items-center justify-between mt-4">
-                <span className="text-sm text-gray-700">General Coupon?</span>
-                <input
-                  type="checkbox"
-                  checked={isGeneral}
-                  onChange={() => setIsGeneral(!isGeneral)}
-                  className="w-4 h-4 accent-main"
-                />
-              </div>
+              {/* {couponMode === "general" && (
+                <div className="flex items-center justify-between mt-4">
+                  <span className="text-sm text-gray-700">General Coupon?</span>
+                  <input
+                    type="checkbox"
+                    checked={isGeneral}
+                    onChange={() => setIsGeneral(!isGeneral)}
+                    className="w-4 h-4 accent-main"
+                  />
+                </div>
+              )} */}
 
               <button
                 disabled={loading || loadStudent}

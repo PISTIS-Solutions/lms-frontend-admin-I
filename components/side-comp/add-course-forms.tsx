@@ -35,6 +35,8 @@ const AddCourseForms = () => {
     setHours,
     setMinutes,
     setSeconds,
+    tutor,
+    setTutor,
   } = useCourseFormStore();
 
   // const [courseLevel, setCourseLevel] = useState("intermediate");
@@ -66,7 +68,7 @@ const AddCourseForms = () => {
     if (
       courseTitle.trim() &&
       courseLink.trim() &&
-      courseOverwiew.trim() &&
+      // courseOverwiew.trim() &&
       selectedFile &&
       // price &&
       course_category &&
@@ -78,6 +80,9 @@ const AddCourseForms = () => {
       showToast("Form Details incomplete", "error");
     }
   };
+
+  const levels = ["Intermediate", "Advanced"];
+  // const [courseLev, setCourseLev] = useState(levels[0]);
 
   return (
     <div>
@@ -146,19 +151,10 @@ const AddCourseForms = () => {
                 // onChange={(e) => setCourseDescription(e.target.value)}
               />
             </FormItem> */}
-            <FormItem className="py-2">
-              <label className="py-2 text-[#666666]">Course Overview</label>
-              <textarea
-                className="w-full h-24 bg-[#FAFAFA] border border-[#D6DADE] rounded-md p-2"
-                placeholder="Enter your course overview here"
-                value={courseOverwiew}
-                onChange={(e) => setCourseOverview(e.target.value)}
-              />
-            </FormItem>
             <div className="py-2">
               <label className="py-2 block text-[#666666]">Course Level</label>
               <div className="flex items-center gap-4">
-                {["Intermediate", "Advanced"].map((level) => (
+                {levels.map((level) => (
                   <label
                     key={level}
                     className="flex items-center cursor-pointer"
@@ -179,6 +175,29 @@ const AddCourseForms = () => {
                 ))}
               </div>
             </div>
+            {course_category === "Advanced" && (
+              <FormItem className="py-2">
+                <label className="py-2 text-[#666666]">Course Overview</label>
+                <textarea
+                  className="w-full h-24 bg-[#FAFAFA] border border-[#D6DADE] rounded-md p-2"
+                  placeholder="Enter your course overview here"
+                  value={courseOverwiew}
+                  onChange={(e) => setCourseOverview(e.target.value)}
+                />
+              </FormItem>
+            )}
+            {course_category === "Advanced" && (
+              <div className="py-2">
+                <label className="py-2 text-[#666666]">Tutor</label>
+                <Input
+                  className="w-full bg-[#FAFAFA] border border-[#D6DADE] rounded-md p-2"
+                  type="text"
+                  placeholder="Enter tutor name here"
+                  value={tutor}
+                  onChange={(e) => setTutor(e.target.value)}
+                />
+              </div>
+            )}
             <FormItem className="py-4">
               <label className="block mb-3 text-[#666666] font-medium text-sm">
                 Set Course Duration
@@ -256,23 +275,25 @@ const AddCourseForms = () => {
                 </select>
               </div> */}
 
-             { course_category === "Advanced" && <div className="flex-1">
-                <label className="block mb-1 text-[#666666]">Price</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#666666]">
-                    ₦
-                  </span>
-                  <input
-                    type="number"
-                    name="price"
-                    value={price}
-                    min={1}
-                    onChange={(e) => setPrice(e.target.value)}
-                    placeholder="Enter amount"
-                    className="w-full pl-8 pr-3 py-2 border border-[#ccc] rounded text-[#333] focus:outline-none focus:ring-1 focus:ring-sub"
-                  />
+              {course_category === "Advanced" && (
+                <div className="flex-1">
+                  <label className="block mb-1 text-[#666666]">Price</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#666666]">
+                      ₦
+                    </span>
+                    <input
+                      type="number"
+                      name="price"
+                      value={price}
+                      min={1}
+                      onChange={(e) => setPrice(e.target.value)}
+                      placeholder="Enter amount"
+                      className="w-full pl-8 pr-3 py-2 border border-[#ccc] rounded text-[#333] focus:outline-none focus:ring-1 focus:ring-sub"
+                    />
+                  </div>
                 </div>
-              </div>}
+              )}
             </div>
           </div>
           <div className="flex items-center justify-between gap-4">

@@ -84,6 +84,7 @@ const Courses = () => {
           },
         }
       );
+      console.log(response.data, "courses")
       if (response.status === 200) {
         setDisplayedCourses(response.data);
         setAllCourses(response.data);
@@ -92,7 +93,7 @@ const Courses = () => {
         // console.log(response, "response");
       }
     } catch (error: any) {
-     if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");
@@ -125,7 +126,7 @@ const Courses = () => {
         fetchCourses();
       }
     } catch (error: any) {
-     if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else if (error.response.data.detail === "Not found.") {
         showToast("Course already deleted!", "error");
@@ -238,7 +239,7 @@ const Courses = () => {
       setAllCourses(displayedCourses);
       showToast(response.data.detail, "success");
     } catch (error: any) {
-       if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");
@@ -354,7 +355,7 @@ const Courses = () => {
                         handleCardClick={handleCardClick}
                         handleOpen={() => handleOpen(course?.id)}
                         openEditModal={() => openEditModal(course)}
-                        key={course.id}
+                        key={course?.id}
                         isDraggable={isDragDropEnabled}
                         role={role}
                       />
@@ -383,11 +384,12 @@ const Courses = () => {
         {editModal && selectedCourse && (
           <section className="absolute z-[99] top-0 flex justify-center items-center left-0 bg h-screen w-full backdrop-blur-[5px] bg-white/30">
             <EditCourse
-              image={selectedCourse?.course_image_url}
+              image={selectedCourse?.course_image}
               id={selectedCourse?.id}
               title={selectedCourse?.title}
               duration={selectedCourse?.course_duration}
               url={selectedCourse?.course_url}
+              course_category={selectedCourse?.course_category}
               setEditModal={setEditModal}
             />
           </section>

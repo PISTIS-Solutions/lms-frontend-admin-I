@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Loader2, MinusCircle, PlusCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import useCourseFormStore from "@/store/course-module-project";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/lib/showToast";
@@ -17,12 +17,29 @@ import {
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
 
-const AddModuleForms = () => {
-  const [sections, setSections] = useState([{ id: 1, isOpen: true }]);
+interface ModuleFormData {
+  id: number;
+  isOpen: boolean;
+  module_title: string;
+  module_url: string;
+  module_Github_url: string; 
+}
 
+const AddModuleForms = () => {
   const { setFilteredModuleData, courseTitle, courseLink } =
     useCourseFormStore();
   const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [sections, setSections] = useState<ModuleFormData[]>([
+    {
+      id: 1,
+      isOpen: true,
+      module_title: "",
+      module_url: "",
+      module_Github_url: "",
+    },
+  ]);
 
   const toggleSection = (id: number) => {
     setSections((prev) =>
@@ -32,9 +49,30 @@ const AddModuleForms = () => {
     );
   };
 
+  const handleInputChange = (
+    id: number,
+    field: keyof ModuleFormData,
+    value: string
+  ) => {
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === id ? { ...section, [field]: value } : section
+      )
+    );
+  };
+
   const addSection = () => {
     const newId = sections.length + 1;
-    setSections([...sections, { id: newId, isOpen: true }]);
+    setSections([
+      ...sections,
+      {
+        id: newId,
+        isOpen: true,
+        module_title: "",
+        module_url: "",
+        module_Github_url: "",
+      },
+    ]);
     showToast("Section Added", "success");
   };
 
@@ -43,77 +81,36 @@ const AddModuleForms = () => {
       showToast("Cannot delete the only section", "error");
       return;
     }
-    setSections(sections.filter((section) => section.id !== id));
+    setSections(sections.filter((s) => s.id !== id));
     showToast("Section Deleted", "error");
   };
 
-  interface ModuleFormData {
-    module_title: string;
-    module_url: string;
-    module_Github_url: string;
-  }
-  const [loading, setLoading] = useState<boolean>(false);
   const onContinue = () => {
     setLoading(true);
-    const filteredModuleData = sections
-      .map((section) => {
-        const moduleTitleInput = document.getElementById(
-          `moduleTitle-${section.id}`
-        ) as HTMLInputElement | null;
-        const moduleLinkInput = document.getElementById(
-          `moduleLink-${section.id}`
-        ) as HTMLInputElement | null;
-        const moduleGithubLinkInput = document.getElementById(
-          `moduleGithubLink-${section.id}`
-        ) as HTMLInputElement | null;
-        if (moduleTitleInput && moduleLinkInput && moduleGithubLinkInput) {
-          return {
-            module_title: moduleTitleInput.value,
-            module_url: moduleLinkInput.value,
-            module_Github_url: moduleGithubLinkInput.value,
-          };
-        } else {
-          return null;
-        }
-      })
-      .filter((data): data is ModuleFormData => data !== null);
 
-    const areFieldsValid = sections.every((section) => {
-      const moduleTitleInput = document.getElementById(
-        `moduleTitle-${section.id}`
-      ) as HTMLInputElement | null;
-      const moduleLinkInput = document.getElementById(
-        `moduleLink-${section.id}`
-      ) as HTMLInputElement | null;
-      const moduleGithubLinkInput = document.getElementById(
-        `moduleGithubLink-${section.id}`
-      ) as HTMLInputElement | null;
-
-      return (
-        moduleTitleInput?.value.trim() !== "" &&
-        moduleLinkInput?.value.trim() !== "" &&
-        moduleGithubLinkInput?.value.trim() !== ""
-      );
-    });
+    const areFieldsValid = sections.every(
+      (s) =>
+        s.module_title.trim() !== "" &&
+        s.module_url.trim() !== "" &&
+        s.module_Github_url.trim() !== ""
+    );
 
     if (areFieldsValid) {
-      setFilteredModuleData(filteredModuleData);
-      setLoading(false);
+      setFilteredModuleData(sections);
       showToast("Modules added!", "success");
       router.push("add-modules/add-project");
     } else {
       showToast("Check form fields!", "error");
-
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   useEffect(() => {
     if (!courseTitle || !courseLink) {
-      showToast("Error! Add Course again!", "error")
+      showToast("Error! Add Course again!", "error");
       setLoading(false);
       router.replace("/courses/add-course");
-      return;
     }
   }, []);
 
@@ -123,6 +120,7 @@ const AddModuleForms = () => {
       <div className="flex items-center justify-between">
         <h1 className="md:text-3xl text-xl font-semibold">Curriculum</h1>
       </div>
+
       {sections.map((section, index) => (
         <div
           key={section.id}
@@ -142,32 +140,24 @@ const AddModuleForms = () => {
 
           {section.isOpen && (
             <div className="p-3 space-y-3 transition-all duration-300">
-             
               <div>
                 <label className="md:text-base text-sm text-[#3E3E3E]">
                   Module Title
                 </label>
                 <Input
                   type="text"
-                  name={`moduleTitle-${section.id}`}
-                  id={`moduleTitle-${section.id}`}
+                  value={section.module_title}
+                  onChange={(e) =>
+                    handleInputChange(
+                      section.id,
+                      "module_title",
+                      e.target.value
+                    )
+                  }
                   className="bg-[#FAFAFA]"
                   placeholder="Enter your module title here"
                 />
               </div>
-
-              {/* <div>
-                <label className="md:text-base text-sm text-[#3E3E3E]">
-                  Sub-title
-                </label>
-                <Input
-                  type="text"
-                  name={`moduleSubTitle-${section.id}`}
-                  id={`moduleSubTitle-${section.id}`}
-                  className="bg-[#FAFAFA]"
-                  placeholder="Enter your module sub-title here"
-                />
-              </div> */}
 
               <div>
                 <label className="md:text-base text-sm text-[#3E3E3E]">
@@ -175,8 +165,14 @@ const AddModuleForms = () => {
                 </label>
                 <Input
                   type="url"
-                  name={`moduleGithubLink-${section.id}`}
-                  id={`moduleGithubLink-${section.id}`}
+                  value={section.module_Github_url}
+                  onChange={(e) =>
+                    handleInputChange(
+                      section.id,
+                      "module_Github_url",
+                      e.target.value
+                    )
+                  }
                   className="bg-[#FAFAFA]"
                   placeholder="Enter your video link here"
                 />
@@ -188,8 +184,10 @@ const AddModuleForms = () => {
                 </label>
                 <Input
                   type="url"
-                  name={`moduleLink-${section.id}`}
-                  id={`moduleLink-${section.id}`}
+                  value={section.module_url}
+                  onChange={(e) =>
+                    handleInputChange(section.id, "module_url", e.target.value)
+                  }
                   className="bg-[#FAFAFA]"
                   placeholder="Enter your github link here"
                 />
@@ -208,6 +206,7 @@ const AddModuleForms = () => {
           )}
         </div>
       ))}
+
       <Button
         onClick={addSection}
         className="mt-4 w-full flex items-center justify-center gap-2 bg-[#F1F1F1] hover:text-white text-black"
@@ -229,7 +228,7 @@ const AddModuleForms = () => {
           disabled={loading}
           onClick={onContinue}
           type="submit"
-          className="bg-sub  text-white hover:bg-sub/90 w-full max-w-[113px]"
+          className="bg-sub text-white hover:bg-sub/90 w-full max-w-[113px]"
         >
           {loading ? (
             <Loader2 className="animate-spin" />

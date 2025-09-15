@@ -1,26 +1,21 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Form, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useCourseFormStore from "@/store/course-module-project";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from "next/navigation";
-// import axios from "axios";
-import { urls } from "@/utils/config";
 import Cookies from "js-cookie";
-import refreshAdminToken from "@/utils/refreshToken";
 import { Loader } from "lucide-react";
-import { createKey } from "next/dist/shared/lib/router/router";
+import { urls } from "@/utils/config";
 import { createAxiosInstance } from "@/lib/axios";
+import Image from "next/image";
 
 interface cardProps {
   id: number;
   title: string;
-  duration: number;
+  duration: string;
   image: any;
-  setEditModal: any;
+  setEditModal: (val: boolean) => void;
+  course_category: string;
   url: string;
 }
 
@@ -31,44 +26,37 @@ const EditCourse = ({
   image,
   setEditModal,
   url,
+  course_category,
 }: cardProps) => {
   const [courseTitle, setCourseTitle] = useState("");
   const [courseLink, setCourseLink] = useState("");
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
-  const [selectedFile, setSelectedFile] = useState<File | null>();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [category, setCategory] = useState(course_category || "Intermediate");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
+
   const axios = createAxiosInstance();
-  // useEffect(() => {}, [title, image, url]);
+  const levels = ["Intermediate", "Advanced"];
 
   useEffect(() => {
-    if (title) {
-      setCourseTitle(title);
-    }
-    if (image) {
-      setSelectedFile(image);
-    }
-    if (url) {
-      setCourseLink(url);
-    }
-    if (duration) {
-      const splitTime = (timeString: any) => {
-        const [Oldhours, Oldminutes, Oldseconds] = timeString
-          .split(":")
-          .map(Number);
-        return { Oldhours, Oldminutes, Oldseconds };
-      };
+    if (title) setCourseTitle(title);
+    if (url) setCourseLink(url);
+    if (image) setSelectedFile(image);
 
-      const { Oldhours, Oldminutes, Oldseconds } = splitTime(duration);
+    console.log(image, "image");
+
+    if (duration) {
+      const [Oldhours, Oldminutes, Oldseconds] = duration
+        .split(":")
+        .map(Number);
       setHours(Oldhours);
       setMinutes(Oldminutes);
       setSeconds(Oldseconds);
     }
-
-    // console.log(hours, minutes, image);
-  }, []);
-  // console.log(selectedFile)
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  }, [title, url, image, duration]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -80,246 +68,198 @@ const EditCourse = ({
   };
 
   const handleSelectImageClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current?.click();
   };
 
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (courseTitle && hours && courseLink && selectedFile) {
-      try {
-        setLoading(true);
+    if (!courseTitle || !hours || !courseLink || !selectedFile || !category) {
+      toast.error("Form Details incomplete", { theme: "dark" });
+      return;
+    }
 
-        const convertToISO8601 = (
-          hours: number,
-          minutes: number,
-          seconds: number
-        ): string => {
-          const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-          return `PT${totalSeconds}S`;
-        };
+    try {
+      setLoading(true);
 
-        const formData = new FormData();
-        formData.append("title", courseTitle);
-        formData.append("course_url", courseLink);
-        formData.append(
-          "course_duration",
-          convertToISO8601(hours, minutes, seconds)
-        );
+      const convertToISO8601 = (h: number, m: number, s: number): string => {
+        const totalSeconds = h * 3600 + m * 60 + s;
+        return `PT${totalSeconds}S`;
+      };
 
-        // Check if `selectedFile` is a string or a File object
-        if (typeof selectedFile !== "string") {
-          formData.append("course_image", selectedFile);
-        }
+      const formData = new FormData();
+      formData.append("title", courseTitle);
+      formData.append("course_url", courseLink);
+      formData.append("course_category", category);
+      formData.append(
+        "course_duration",
+        convertToISO8601(hours, minutes, seconds)
+      );
 
-        const adminAccessToken = Cookies.get("adminAccessToken");
-        const response = await axios.patch(
-          `${urls.getCourses}${id}/`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${adminAccessToken}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          setLoading(true);
-          toast.success(`${courseTitle} has been modified successfully!`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-          window.location.reload();
-        }
-      } catch (error: any) {
-       if (error?.message === "Network Error") {
-          toast.error("Check your network!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-        } else {
-          toast.error(error?.response?.data?.detail, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            theme: "dark",
-          });
-        }
-      } finally {
-        setLoading(false);
+      if (typeof selectedFile !== "string") {
+        formData.append("course_image", selectedFile);
       }
-    } else {
-      toast.error("Form Details incomplete", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
+
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const response = await axios.patch(`${urls.getCourses}${id}/`, formData, {
+        headers: { Authorization: `Bearer ${adminAccessToken}` },
+      });
+
+      if (response.status === 200) {
+        toast.success(`${courseTitle} updated successfully!`, {
+          theme: "dark",
+        });
+        window.location.reload();
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.detail || "Something went wrong", {
         theme: "dark",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="rounded-[8px] border-t-4 border-t-primary bg-white p-2 md:p-6 w-[90%]">
       <ToastContainer />
-      <div>
-        <h1 className="md:text-3xl text-xl font-semibold">Course Details</h1>
-      </div>
-      <div className="mt-4">
-        <form className="space-y-8" onSubmit={onSubmit}>
-          <div className="my-4">
-            <div className="py-2">
-              <label className="py-2">Course Title (required)</label>
-              <Input
-                type="text"
-                placeholder={title}
-                value={courseTitle}
-                onChange={(e) => setCourseTitle(e.target.value)}
-              />
-            </div>
-            <FormItem className="py-2">
-              <label className="py-2">Course Cover</label>
-              <div className="flex bg-[#FAFAFA] border py-3 relative border-[#D6DADE] rounded-md w-full items-center">
-                <span
-                  className="bg-[#D6DADE] text-black cursor-pointer text-sm  absolute right-0 px-8 py-3 font-semibold rounded-br-md rounded-tr-md"
-                  onClick={handleSelectImageClick}
-                >
-                  Select
-                </span>
-                {/* <div className="flex items-center ml-2">
-                  {selectedFile ? (
-                    <p className="text-black text-sm">{selectedFile.name ? |}</p>
-                  ) : (
-                    <p className="italic text-[#919BA7] text-sm">
-                      {image ? image.toString() : "No image selected"}
-                    </p>
-                  )}
-                  <input
-                    type="file"
-                    id="fileInput"
-                    accept="image/*"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                  />
-                </div> */}
-                <div className="flex items-center ml-2">
-                  {typeof selectedFile === "string" ? (
-                    <p className="italic text-[#919BA7] text-sm">
-                      {selectedFile || image}
-                    </p>
-                  ) : selectedFile ? (
-                    <p className="text-black text-sm">{selectedFile.name}</p>
-                  ) : (
-                    <p className="italic text-[#919BA7] text-sm">{image}</p>
-                  )}
-                  <input
-                    type="file"
-                    id="fileInput"
-                    accept="image/*"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                  />
-                </div>
-              </div>
-            </FormItem>
-            <FormItem className="py-2">
-              <label className="py-2">Course Link</label>
-              <Input
-                type="url"
-                placeholder={url}
-                value={courseLink}
-                onChange={(e) => setCourseLink(e.target.value)}
-              />
-            </FormItem>
+      <h1 className="md:text-3xl text-xl font-semibold">Course Details</h1>
 
-            <FormItem className="py-2">
-              <label className="py-2">Set Course Duration</label>
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    value={hours}
-                    // placeholder={hours || 0}
-                    className="w-14 bg-[#FAFAFA] placeholder:italic text-center"
-                    onChange={(e) =>
-                      setHours(Math.min(parseInt(e.target.value, 10), 99))
-                    }
-                    max={99}
-                  />
-                  <p>Hour(s)</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    value={minutes}
-                    // placeholder={}
-                    className="w-14 bg-[#FAFAFA] placeholder:italic text-center"
-                    onChange={(e) =>
-                      setMinutes(Math.min(parseInt(e.target.value, 10), 59))
-                    }
-                    max={59}
-                  />
-                  <p>Min(s)</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    value={seconds}
-                    className="w-14 bg-[#FAFAFA] placeholder:italic text-center"
-                    onChange={(e) =>
-                      setSeconds(Math.min(parseInt(e.target.value, 10), 59))
-                    }
-                    max={59}
-                  />
-                  <p>Sec(s)</p>
-                </div>
-              </div>
-            </FormItem>
-          </div>
-          <div className="flex items-center gap-2 justify-center">
-            <p
-              onClick={() => {
-                setEditModal(false);
-              }}
-              className="cursor-pointer w-full py-4 rounded-[8px] text-center border border-[#3e3e3e] text-sm md:text-lg hover:bg-[#3e3e3e] hover:text-white font-medium"
-            >
-              Cancel
-            </p>
+      <form className="space-y-8 mt-4" onSubmit={onSubmit}>
+        <div>
+          <label>Course Title (required)</label>
+          <Input
+            type="text"
+            placeholder={title}
+            value={courseTitle}
+            onChange={(e) => setCourseTitle(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label>Course Cover</label>
+
+          {typeof selectedFile === "string" ? (
+            <Image
+              width={100}
+              height={100}
+              src={selectedFile}
+              alt="Course Cover"
+              className="w-40 h-28 object-cover rounded-md border mb-3"
+            />
+          ) : selectedFile ? (
+            <Image
+              width={100}
+              height={100}
+              src={URL.createObjectURL(selectedFile)}
+              alt="Selected Cover"
+              className="w-40 h-28 object-cover rounded-md border mb-3"
+            />
+          ) : image ? (
+            <Image
+              width={100}
+              height={100}
+              src={
+                typeof image === "string" ? image : URL.createObjectURL(image)
+              }
+              alt="Current Cover"
+              className="w-40 h-28 object-cover rounded-md border mb-3"
+            />
+          ) : null}
+
+          <div className="flex items-center gap-3">
             <button
-              disabled={loading}
-              className="w-full py-4 flex items-center justify-center disabled:bg-sub/25 rounded-[8px] bg-sub"
-              type="submit"
+              type="button"
+              onClick={handleSelectImageClick}
+              className="bg-[#D6DADE] text-black px-4 py-2 text-sm font-medium rounded-md hover:bg-[#c2c6cc]"
             >
-              {loading ? (
-                <Loader className="animate-spin text-center" />
-              ) : (
-                "Proceed"
-              )}
+              {selectedFile ? "Change Image" : "Upload Image"}
             </button>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div>
+          <label>Course Link</label>
+          <Input
+            type="url"
+            placeholder={url}
+            value={courseLink}
+            onChange={(e) => setCourseLink(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label>Set Course Duration</label>
+          <div className="flex gap-4">
+            <Input
+              type="number"
+              value={hours}
+              className="w-14 text-center"
+              onChange={(e) => setHours(Math.min(+e.target.value, 99))}
+              max={99}
+            />
+            <span>Hour(s)</span>
+            <Input
+              type="number"
+              value={minutes}
+              className="w-14 text-center"
+              onChange={(e) => setMinutes(Math.min(+e.target.value, 59))}
+              max={59}
+            />
+            <span>Min(s)</span>
+            <Input
+              type="number"
+              value={seconds}
+              className="w-14 text-center"
+              onChange={(e) => setSeconds(Math.min(+e.target.value, 59))}
+              max={59}
+            />
+            <span>Sec(s)</span>
+          </div>
+        </div>
+
+        <div>
+          <label>Course Category</label>
+          <div className="flex gap-4">
+            {levels.map((level) => (
+              <label key={level} className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="courseLevel"
+                  value={level}
+                  checked={category === level}
+                  onChange={() => setCategory(level)}
+                  className="accent-sub w-4 h-4"
+                />
+                <span className="ml-2">{level} Course</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-2 justify-center">
+          <p
+            onClick={() => setEditModal(false)}
+            className="cursor-pointer w-full py-2 rounded-[8px] text-center border border-[#3e3e3e] text-sm md:text-lg hover:bg-[#3e3e3e] hover:text-white font-medium"
+          >
+            Cancel
+          </p>
+          <button
+            disabled={loading}
+            className="w-full py-2 flex items-center justify-center disabled:bg-sub/25 rounded-[8px] bg-sub"
+            type="submit"
+          >
+            {loading ? <Loader className="animate-spin" /> : "Proceed"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

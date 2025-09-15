@@ -370,10 +370,10 @@ const SideProject = () => {
         </div> */}
         <div className="flex items-center justify-between mt-4 relative">
           <div className="px-5 ">
-            <p className=" font-medium text-[#666666] text-sm">
-              {project?.course}
+            <p className=" font-medium uppercase text-[#666666] text-sm">
+              {project?.course.title} - <span className="text-main">{project?.course.category} </span>
             </p>
-            <h3 className=" font-semibold text-2xl text-main">
+            <h3 className=" font-semibold uppercase text-2xl text-main">
               {project?.project_title}
             </h3>
           </div>
@@ -525,6 +525,7 @@ const SideProject = () => {
             <Button
               onClick={(e) => {
                 addProject(e);
+                setOpenModal(false)
               }}
               disabled={editLoading}
               className="bg-sub hover:text-white disabled:bg-sub/25 rounded-[8px] py-2 font-semibold mt-4 text-black w-full"

@@ -87,7 +87,7 @@ const SingleProject = () => {
       setProject(response.data);
       // console.log(response.data);
     } catch (error: any) {
-     if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         toast.error("Check your network!", {
           position: "top-right",
           autoClose: 5000,
@@ -131,7 +131,7 @@ const SingleProject = () => {
   const addProject = async (e: any) => {
     e.preventDefault();
 
-    if (projectTitle !== "" && projectLink !== "" && description !== "") {
+    if (projectTitle !== "" && projectLink !== "") {
       try {
         const adminAccessToken = Cookies.get("adminAccessToken");
         seteditLoading(true);
@@ -166,7 +166,7 @@ const SingleProject = () => {
           fetchProjects();
         }
       } catch (error: any) {
-       if (error?.message === "Network Error") {
+        if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -327,11 +327,10 @@ const SingleProject = () => {
             draggable: false,
             theme: "dark",
           });
-          // window.parent.location = window.parent.location.href;
           fetchProjects();
         }
       } catch (error: any) {
-       if (error?.message === "Network Error") {
+        if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -400,10 +399,13 @@ const SingleProject = () => {
         </div> */}
         <div className="flex items-center justify-between mt-4 relative">
           <div className="px-5 ">
-            <p className=" font-medium text-[#666666] text-sm">
-              {project?.[0]?.course}
+            <p className=" font-medium uppercase text-[#666666] text-sm">
+              {project?.[0]?.course.title} -{" "}
+              <span className="text-main">
+                {project?.[0]?.course.category}{" "}
+              </span>
             </p>
-            <h3 className=" font-semibold text-2xl text-main">
+            <h3 className=" font-semibold uppercase text-2xl text-main">
               {project?.[0]?.project_title}
             </h3>
           </div>
@@ -554,6 +556,7 @@ const SingleProject = () => {
             <Button
               onClick={(e) => {
                 addProject(e);
+                
               }}
               disabled={editLoading}
               className="bg-sub hover:text-white disabled:bg-sub/25 rounded-[8px] py-2 font-semibold mt-4 text-black w-full"
