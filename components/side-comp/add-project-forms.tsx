@@ -39,7 +39,7 @@ const AddProjectForms = () => {
     seconds,
     price,
     course_category,
-    courseOverwiew,
+    // courseOverwiew,
     filteredModuleDataStore,
     setCourseLink,
     setSelectedFile,
@@ -123,7 +123,7 @@ const AddProjectForms = () => {
 
       appendIfExists(payload, "price", price?.toString());
       appendIfExists(payload, "course_category", course_category);
-      appendIfExists(payload, "overview", courseOverwiew);
+      // appendIfExists(payload, "overview", courseOverwiew);
       // appendIfExists(payload, "tutor", tutor);
 
       filteredModuleDataStore.forEach((module: any, index: number) => {
