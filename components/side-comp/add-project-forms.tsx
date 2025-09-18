@@ -353,9 +353,9 @@ const AddProjectForms = () => {
           </div>
           <div>
             <h2 className="font-semibold text-main">Course Description</h2>
-            <p className="text-blue-600 hover:underline break-all">
+            {/* <p className="text-blue-600 hover:underline break-all">
               {courseOverwiew}
-            </p>
+            </p> */}
           </div>
           <div>
             <h2 className="font-semibold text-main">Course Link</h2>
