@@ -24,6 +24,7 @@ import PendingGrading from "@/components/side-comp/dashboard/pendingGrading";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UpcomingSessions from "@/components/side-comp/dashboard/upcomingSessions";
 import { createAxiosInstance } from "@/lib/axios";
+import NotificationsPage from "@/components/side-comp/notification";
 
 interface AdminData {
   total_courses: number;
@@ -72,7 +73,7 @@ const Dashboard = () => {
         setList(response?.data?.students);
       }
     } catch (error: any) {
-    if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");
@@ -96,7 +97,7 @@ const Dashboard = () => {
       setProjectOverview(response.data);
       setOverviewLoad(false);
     } catch (error: any) {
-    if (error?.message === "Network Error") {
+      if (error?.message === "Network Error") {
         showToast("Check your network!", "error");
       } else {
         showToast(error?.response?.data?.detail, "error");
@@ -148,6 +149,7 @@ const Dashboard = () => {
           </div>
           <div className="p-4">
             <PaginatedTable />
+            <NotificationsPage />
           </div>
         </div>
       </div>

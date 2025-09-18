@@ -11,7 +11,7 @@ interface CourseFormState {
   hours: number;
   minutes: number;
   seconds: number;
-  tutor: string;
+  // tutor: string;
   setCourseTitle: (title: string) => void;
   setDescription: (description: string) => void;
   setCourseLink: (link: string) => void;
@@ -22,7 +22,7 @@ interface CourseFormState {
   setHours: (hours: number) => void;
   setMinutes: (minutes: number) => void;
   setSeconds: (seconds: number) => void;
-  setTutor: (tutor: string) => void;
+  // setTutor: (tutor: string) => void;
 }
 
 interface ModuleFormData {
@@ -57,7 +57,7 @@ const useCourseFormStore = create<
   hours: 0,
   minutes: 0,
   seconds: 0,
-  tutor: "",
+  // tutor: "",
   filteredModuleDataStore: [],
   setFilteredModuleData: (data) => set({ filteredModuleDataStore: data }),
   filteredProjectDataStore: [],
@@ -72,7 +72,7 @@ const useCourseFormStore = create<
   setHours: (hours: number) => set({ hours: hours }),
   setMinutes: (minutes: number) => set({ minutes: minutes }),
   setSeconds: (seconds: number) => set({ seconds: seconds }),
-  setTutor: (tutor: string) => set({ tutor: tutor }),
+  // setTutor: (tutor: string) => set({ tutor: tutor }),
 }));
 
 export default useCourseFormStore;
