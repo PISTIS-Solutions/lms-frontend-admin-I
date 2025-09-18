@@ -39,7 +39,7 @@ const AddProjectForms = () => {
     seconds,
     price,
     course_category,
-    courseOverwiew,
+    // courseOverwiew,
     filteredModuleDataStore,
     setCourseLink,
     setSelectedFile,
@@ -123,7 +123,7 @@ const AddProjectForms = () => {
 
       appendIfExists(payload, "price", price?.toString());
       appendIfExists(payload, "course_category", course_category);
-      appendIfExists(payload, "overview", courseOverwiew);
+      // appendIfExists(payload, "overview", courseOverwiew);
       // appendIfExists(payload, "tutor", tutor);
 
       filteredModuleDataStore.forEach((module: any, index: number) => {
@@ -353,9 +353,9 @@ const AddProjectForms = () => {
           </div>
           <div>
             <h2 className="font-semibold text-main">Course Description</h2>
-            <p className="text-blue-600 hover:underline break-all">
+            {/* <p className="text-blue-600 hover:underline break-all">
               {courseOverwiew}
-            </p>
+            </p> */}
           </div>
           <div>
             <h2 className="font-semibold text-main">Course Link</h2>

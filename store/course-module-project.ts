@@ -5,7 +5,7 @@ interface CourseFormState {
   description: string;
   courseLink: string;
   selectedFile: File | null;
-  courseOverwiew: string;
+  // courseOverwiew: string;
   price: string;
   course_category: string;
   hours: number;
@@ -16,7 +16,7 @@ interface CourseFormState {
   setDescription: (description: string) => void;
   setCourseLink: (link: string) => void;
   setSelectedFile: (file: File | null) => void;
-  setCourseOverview: (overview: string) => void;
+  // setCourseOverview: (overview: string) => void;
   setPrice: (price: string) => void;
   setCourseCategory: (category: string) => void;
   setHours: (hours: number) => void;
@@ -51,7 +51,7 @@ const useCourseFormStore = create<
   description: "",
   courseLink: "",
   selectedFile: null,
-  courseOverwiew: "",
+  // courseOverwiew: "",
   price: "",
   course_category: "Intermediate",
   hours: 0,
@@ -66,7 +66,7 @@ const useCourseFormStore = create<
   setDescription: (description: string) => set({ description: description }),
   setCourseLink: (link: string) => set({ courseLink: link }),
   setSelectedFile: (file: File | null) => set({ selectedFile: file }),
-  setCourseOverview: (overview: string) => set({ courseOverwiew: overview }),
+  // setCourseOverview: (overview: string) => set({ courseOverwiew: overview }),
   setPrice: (price: string) => set({ price: price }),
   setCourseCategory: (category: string) => set({ course_category: category }),
   setHours: (hours: number) => set({ hours: hours }),

@@ -25,10 +25,10 @@ const AddCourseForms = () => {
     seconds,
     price,
     course_category,
-    courseOverwiew,
+    // courseOverwiew,
     setPrice,
     setCourseCategory,
-    setCourseOverview,
+    // setCourseOverview,
     setCourseTitle,
     setCourseLink,
     setSelectedFile,
@@ -175,7 +175,7 @@ const AddCourseForms = () => {
                 ))}
               </div>
             </div>
-            {course_category === "Advanced" && (
+            {/* {course_category === "Advanced" && (
               <FormItem className="py-2">
                 <label className="py-2 text-[#666666]">Course Overview</label>
                 <textarea
@@ -185,7 +185,7 @@ const AddCourseForms = () => {
                   onChange={(e) => setCourseOverview(e.target.value)}
                 />
               </FormItem>
-            )}
+            )} */}
             {/* {course_category === "Advanced" && (
               <div className="py-2">
                 <label className="py-2 text-[#666666]">Tutor</label>
