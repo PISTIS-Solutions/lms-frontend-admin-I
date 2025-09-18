@@ -149,7 +149,7 @@ const Dashboard = () => {
           </div>
           <div className="p-4">
             <PaginatedTable />
-            <NotificationsPage />
+            {/* <NotificationsPage /> */}
           </div>
         </div>
       </div>
