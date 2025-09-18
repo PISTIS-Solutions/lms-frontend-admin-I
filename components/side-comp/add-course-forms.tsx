@@ -35,8 +35,8 @@ const AddCourseForms = () => {
     setHours,
     setMinutes,
     setSeconds,
-    tutor,
-    setTutor,
+    // tutor,
+    // setTutor,
   } = useCourseFormStore();
 
   // const [courseLevel, setCourseLevel] = useState("intermediate");
@@ -186,7 +186,7 @@ const AddCourseForms = () => {
                 />
               </FormItem>
             )}
-            {course_category === "Advanced" && (
+            {/* {course_category === "Advanced" && (
               <div className="py-2">
                 <label className="py-2 text-[#666666]">Tutor</label>
                 <Input
@@ -197,7 +197,7 @@ const AddCourseForms = () => {
                   onChange={(e) => setTutor(e.target.value)}
                 />
               </div>
-            )}
+            )} */}
             <FormItem className="py-4">
               <label className="block mb-3 text-[#666666] font-medium text-sm">
                 Set Course Duration

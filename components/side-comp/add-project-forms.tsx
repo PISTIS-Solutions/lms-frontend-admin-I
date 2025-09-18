@@ -48,7 +48,7 @@ const AddProjectForms = () => {
     setFilteredModuleData,
     setSeconds,
     setCourseTitle,
-    tutor,
+    // tutor,
   } = useCourseFormStore();
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const AddProjectForms = () => {
       appendIfExists(payload, "price", price?.toString());
       appendIfExists(payload, "course_category", course_category);
       appendIfExists(payload, "overview", courseOverwiew);
-      appendIfExists(payload, "tutor", tutor);
+      // appendIfExists(payload, "tutor", tutor);
 
       filteredModuleDataStore.forEach((module: any, index: number) => {
         appendIfExists(
@@ -156,7 +156,6 @@ const AddProjectForms = () => {
           project.project_url
         );
 
-        // ✅ Only add project_hint if it exists
         appendIfExists(
           payload,
           `projects[${index}]project_hint`,
