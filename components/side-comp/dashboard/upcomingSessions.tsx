@@ -31,7 +31,7 @@ const UpcomingSessions = () => {
                 key={session.id}
                 className="p-3 border rounded-lg shadow-sm hover:shadow-md transition bg-gray-50"
               >
-                <h2 className="font-semibold text-base text-gray-800">
+                <h2 className="font-semibold capitalize text-base text-gray-800">
                   {session.topic}
                 </h2>
                 <p className="text-sm text-gray-500 capitalize mb-2">
