@@ -112,9 +112,7 @@ const EditCourse = ({
         window.location.reload();
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.detail || "Something went wrong", {
-        theme: "dark",
-      });
+      toast.error(error?.response?.data?.detail || "Something went wrong");
     } finally {
       setLoading(false);
     }
