@@ -51,93 +51,103 @@ const Sessions = () => {
         ) : sessions.length === 0 ? (
           <p>No sessions available.</p>
         ) : (
-          <table className="w-full whitespace-nowrap">
-            <thead className="bg-[#E6F6FF]">
-              <tr className="rounded-[6px]">
-                {[
-                  "Topic",
-                  "Preferred Date",
-                  "Alternative Date",
-                  "Duration",
-                  "Status",
-                  "Student name",
-                  "Student email",
-                  "Note",
-                ].map((heading) => (
-                  <th
-                    key={heading}
-                    className="text-[#00173A] font-medium text-sm md:text-base text-left p-[6px_12px] md:p-[10px_16px]"
-                  >
-                    {heading}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {sessions.map((session: any) => {
-                const isExpanded = expandedNotes[session.id];
-                return (
-                  <tr key={session.id} className="hover:bg-gray-50">
-                    <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                      {session.topic}
-                    </td>
-                    <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                      {dayjs(session.preferred_date).format(
-                        "D, MMMM, YYYY; hh:mma"
-                      )}
-                    </td>
-                    <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                      {dayjs(session.alternative_date).format(
-                        "D, MMMM, YYYY; hh:mma"
-                      )}
-                    </td>
-                    <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                      {session.duration} mins
-                    </td>
-                    <td className="p-3 border-b capitalize">
-                      {session.status}
-                    </td>
-                    <td className="p-3 border-b capitalize">
-                      {session.user?.first_name} {session.user?.last_name}
-                    </td>
-                    <td className="p-3 border-b">{session.user?.email}</td>
-
-                    <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                      {session.note ? (
-                        <button
-                          onClick={() => setSelectedNote(session.note)}
-                          className="text-[#157BFF] hover:underline text-xs font-semibold"
-                        >
-                          View Note
-                        </button>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-              {selectedNote && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                  <div className="bg-white rounded-lg shadow-lg max-w-md w-[90%] p-6 relative animate-fadeIn">
-                    <button
-                      onClick={() => setSelectedNote(null)}
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+          <div className="w-full overflow-x-auto">
+            <table className="min-w-full whitespace-nowrap">
+              <thead className="bg-[#E6F6FF]">
+                <tr className="rounded-[6px]">
+                  {[
+                    "Topic",
+                    "Preferred Date",
+                    "Alternative Date",
+                    "Duration",
+                    "Meeting Link",
+                    "Status",
+                    "Student name",
+                    "Student email",
+                    "Note",
+                  ].map((heading) => (
+                    <th
+                      key={heading}
+                      className="text-[#00173A] font-medium text-sm md:text-base text-left p-[6px_12px] md:p-[10px_16px]"
                     >
-                      ✕
-                    </button>
-                    <h2 className="text-lg font-semibold text-[#00173A] mb-3">
-                      Session Note
-                    </h2>
-                    <p className="text-sm text-black">
-                      {selectedNote}
-                    </p>
-                  </div>
+                      {heading}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody>
+                {sessions.map((session: any) => {
+                  const isExpanded = expandedNotes[session.id];
+                  return (
+                    <tr key={session.id} className="hover:bg-gray-50">
+                      <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
+                        {session.topic}
+                      </td>
+                      <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
+                        {dayjs(session.preferred_date).format(
+                          "D, MMMM, YYYY; HH:mm"
+                        )}
+                      </td>
+                      <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
+                        {dayjs(session.alternative_date).format(
+                          "D, MMMM, YYYY; HH:mm"
+                        )}
+                      </td>
+                      <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
+                        {session.duration} mins
+                      </td>
+                      <td className="p-3 border-b">
+                        <a
+                          className="underline text-main cursor-pointer"
+                          href={session.meeting_link}
+                          target="_blank"
+                        >
+                          {session.meeting_link}
+                        </a>
+                      </td>
+                      <td className="p-3 border-b capitalize">
+                        {session.status}
+                      </td>
+                      <td className="p-3 border-b capitalize">
+                        {session.user?.first_name} {session.user?.last_name}
+                      </td>
+                      <td className="p-3 border-b">{session.user?.email}</td>
+                      <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
+                        {session.note ? (
+                          <button
+                            onClick={() => setSelectedNote(session.note)}
+                            className="text-[#157BFF] hover:underline text-xs font-semibold"
+                          >
+                            View Note
+                          </button>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            {selectedNote && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-lg max-w-md w-[90%] p-6 relative animate-fadeIn">
+                  <button
+                    onClick={() => setSelectedNote(null)}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+                  >
+                    ✕
+                  </button>
+                  <h2 className="text-lg font-semibold text-[#00173A] mb-3">
+                    Session Note
+                  </h2>
+                  <p className="text-sm text-black">{selectedNote}</p>
                 </div>
-              )}
-            </tbody>
-          </table>
+              </div>
+            )}
+          </div>
         )}
 
         <div className="flex justify-between items-center mt-4">

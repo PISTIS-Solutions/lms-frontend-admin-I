@@ -15,8 +15,8 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 const ProjectReview = ({
   reviewLoad,
   projectReview,
-  count,
-  next,
+  page,
+  setPage,
   previous,
   fetchProjectReview,
 }: any) => {
@@ -30,21 +30,23 @@ const ProjectReview = ({
   const totalPages = Math.ceil(projectReview.length / itemsPerPage);
 
   const nextPage = async () => {
-    if (next !== null) {
-      setCurrentPage((prevPage) => prevPage + 1);
-    }
+    // setCurrentPage((prevPage) => prevPage + 1);
+    setPage((prev: number) => prev + 1);
+    // if (next !== null) {
+    // }
   };
   const prevPage = () => {
-    if (previous !== null) {
-      setCurrentPage((prevPage) => prevPage - 1);
-    }
+    // if (previous !== null) {
+    //   setCurrentPage((prevPage) => prevPage - 1);
+    // }
+    setPage((prev: number) => prev - 1);
   };
 
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+  // const goToPage = (page: number) => {
+  //   if (page >= 1 && page <= totalPages) {
+  //     setCurrentPage(page);
+  //   }
+  // };
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
   const router = useRouter();
@@ -205,7 +207,7 @@ const ProjectReview = ({
           <Button
             className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
             onClick={prevPage}
-            disabled={previous === null}
+            disabled={page === 1}
           >
             <FaAngleLeft className="w-5 h-5" />
             Previous
@@ -215,7 +217,7 @@ const ProjectReview = ({
           <Button
             onClick={nextPage}
             className="bg-transparent text-main cursor-pointer text-[14px] flex items-center gap-1 hover:bg-transparent text-sm md:text-base hover:text-main"
-            disabled={next === null}
+            // disabled={currentData.length < 10}
           >
             <FaAngleRight />
             Next

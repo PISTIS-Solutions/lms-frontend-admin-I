@@ -6,6 +6,7 @@ import {
   CalendarIcon,
   ClockIcon,
   StickyNoteIcon,
+  Link,
 } from "lucide-react";
 import dayjs from "dayjs";
 
@@ -64,10 +65,10 @@ const UpcomingSessions = () => {
                     <span>{session.duration} mins</span>
                   </div>
 
-                  {session.note && (
+                  {session.meeting_link && (
                     <div className="flex items-start gap-2">
-                      <StickyNoteIcon size={16} />
-                      <span>{session.note}</span>
+                      <Link size={16} />
+                      <a className="underline text-main cursor-pointer" href={session.meeting_link} target="_blank">{session.meeting_link}</a>
                     </div>
                   )}
                 </div>
