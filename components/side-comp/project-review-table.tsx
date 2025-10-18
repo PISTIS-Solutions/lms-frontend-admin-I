@@ -88,59 +88,59 @@ const ProjectReview = ({
     <div className="overflow-x-scroll md:overflow-x-auto">
       <table className="w-full mt-2 text-left">
         <thead className="text-main">
-          <tr className="bg-[#F8F9FF] py-2 w-full">
-            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
-              Course Title
-            </th>
-            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
-              Project Title
-            </th>
-            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
-              Deadline
-            </th>
-            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
-              Date Submitted
-            </th>
-            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
-              Status
-            </th>
-            <th className="md:py-4 px-2 md:px-2 md:text-base text-xs py-2">
-              Link
-            </th>
+          <tr className="bg-[#F8F9FF]">
+            {[
+              "Course Title",
+              "Project Title",
+              "Deadline",
+              "Date Submitted",
+              "Status",
+              "Link",
+            ].map((header) => (
+              <th
+                key={header}
+                className="md:py-4 py-2 px-2 md:text-base text-xs font-medium"
+              >
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
+
         <tbody className="relative">
           {reviewLoad ? (
             <tr>
-              <td colSpan={6} className="py-4">
-                {/* <span className="flex items-center justify-center">
-                  <Loader2Icon className="animate-spin" />
-                  <p>Loading</p>
-                </span> */}
+              <td colSpan={6} className="py-6 text-center">
                 <Skeleton />
               </td>
             </tr>
-          ) : currentData && currentData.length > 0 ? (
-            currentData?.map((person: any, index: number) => (
-              <>
-                <tr key={index}>
-                  <td className="md:py-4 px-2 md:px-2 md:text-base text-xs py-1 capitalize cursor-pointer">
-                    {person?.course?.title}
-                  </td>
-                  <td className="md:py-4 px-2 md:px-2 md:text-base text-xs py-1 capitalize cursor-pointer">
-                    {person?.project?.title}
-                  </td>
-                  <td className="md:py-4 md:text-base text-xs py-1">
-                    {formatDate(person.deadline)}
-                  </td>
+          ) : currentData?.length > 0 ? (
+            currentData.map((person: any) => (
+              <tr
+                key={person.id}
+                className="hover:bg-[#F8F9FF]/60 transition-colors duration-150"
+              >
+                <td className="md:py-4 py-2 px-2 text-xs md:text-base capitalize">
+                  {person?.course?.title || "-"}
+                </td>
 
-                  <td className="md:py-4 text-left md:text-base text-xs py-1">
-                    {!person.date_submitted
-                      ? "-"
-                      : formatDate(person.date_submitted)}
-                  </td>
-                  <td
-                    className={`md:py-4 md:text-base text-left text-xs py-1 capitalize flex gap-x-2 items-center md:whitespace-nowrap ${
+                <td className="md:py-4 py-2 px-2 text-xs md:text-base capitalize">
+                  {person?.project?.title || "-"}
+                </td>
+
+                <td className="md:py-4 py-2 px-2 text-xs md:text-base">
+                  {person.deadline ? formatDate(person.deadline) : "-"}
+                </td>
+
+                <td className="md:py-4 py-2 px-2 text-xs md:text-base">
+                  {person.date_submitted
+                    ? formatDate(person.date_submitted)
+                    : "-"}
+                </td>
+
+                <td className="md:py-4 py-2 px-2 text-xs md:text-base">
+                  <div
+                    className={`flex items-center gap-x-2 capitalize ${
                       !person.status
                         ? "text-gray-600"
                         : person.status === "Submitted"
@@ -164,38 +164,39 @@ const ProjectReview = ({
                           ? "bg-red-500"
                           : "bg-gray-600"
                       }`}
-                    ></div>
+                    />
                     {!person.status ? "No Submission" : person.status}
-                  </td>
-                  <td className="md:py-4 md:text-base px-2 text-xs py-1 text-main text-center">
-                    {!person.status ? (
-                      "-"
-                    ) : person.status === "Submitted" ||
-                      person.status === "Rejected" ? (
-                      <p
-                        onClick={() => handleModal(person)}
-                        className="bg-[#F8F9FF] rounded-[24px]  text-center p-1 w-[107px] cursor-pointer"
-                      >
-                        Review
-                      </p>
-                    ) : person.status === "Reviewed" ? (
-                      <p
-                        onClick={() => handleModalApproved(person)}
-                        className="bg-white border border-[#EEEEFB] rounded-[24px]  text-center p-1 w-[107px] cursor-pointer"
-                      >
-                        View
-                      </p>
-                    ) : (
-                      ""
-                    )}
-                  </td>
-                </tr>
-              </>
+                  </div>
+                </td>
+
+                <td className="md:py-4 py-2 px-2 text-xs md:text-base text-main text-center">
+                  {!person.status ? (
+                    "-"
+                  ) : person.status === "Submitted" ||
+                    person.status === "Rejected" ? (
+                    <button
+                      onClick={() => handleModal(person)}
+                      className="bg-[#F8F9FF] rounded-[24px] text-center px-4 py-1 w-[107px] cursor-pointer hover:bg-[#f0f1ff]"
+                    >
+                      Review
+                    </button>
+                  ) : person.status === "Reviewed" ? (
+                    <button
+                      onClick={() => handleModalApproved(person)}
+                      className="bg-white border border-[#EEEEFB] rounded-[24px] text-center px-4 py-1 w-[107px] cursor-pointer hover:bg-[#f8f9ff]"
+                    >
+                      View
+                    </button>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+              </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={6} className="py-4">
-                No data available yet.
+              <td colSpan={6} className="py-6 text-center text-gray-500">
+                No project reviews found.
               </td>
             </tr>
           )}

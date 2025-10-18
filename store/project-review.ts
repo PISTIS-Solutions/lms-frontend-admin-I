@@ -9,7 +9,11 @@ import { createAxiosInstance } from "@/lib/axios";
 interface pendingGrading {
   projectReview: any;
   reviewLoad: boolean;
-  fetchProjectReview: (id: string, submissionStatus: string, page:number) => Promise<void>;
+  fetchProjectReview: (
+    id: string,
+    submissionStatus: string,
+    page: number
+  ) => Promise<void>;
 }
 const axios = createAxiosInstance();
 const usePendingGradeStore = create<pendingGrading>((set, get) => ({
@@ -20,11 +24,12 @@ const usePendingGradeStore = create<pendingGrading>((set, get) => ({
     id,
     submissionStatus = "",
     page = 1,
-    page_size = 2
+    page_size = 10
   ) => {
     try {
       set({ reviewLoad: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
+
       const response = await axios.get(
         `${urls.projectReview}${id}/?status=${submissionStatus}&page=${page}&page_size=${page_size}`,
         {
@@ -33,31 +38,24 @@ const usePendingGradeStore = create<pendingGrading>((set, get) => ({
           },
         }
       );
-      if (response.status === 200) {
-        set({
-          projectReview: response.data.results,
-          reviewLoad: false,
-        });
-      }
+
+      set({
+        projectReview: response.data.results ?? [],
+        reviewLoad: false,
+      });
     } catch (error: any) {
+      console.log(error, "error")
+      if (
+        error.response?.status === 404 ||
+        error.response?.data?.detail === "Invalid page"
+      ) {
+        set({ projectReview: [] });
+      }
+
       if (error.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+        toast.error("Check your network!", { theme: "dark" });
       } else {
-        toast.error(error.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
+        toast.error(error.response?.data?.detail || "Something went wrong", {
           theme: "dark",
         });
       }
