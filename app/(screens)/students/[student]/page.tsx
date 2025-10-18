@@ -25,9 +25,6 @@ const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
     projectReview,
     reviewLoad,
     fetchProjectReview,
-    // count,
-    // next,
-    // previous,
   } = usePendingGradeStore();
   const params = useParams<{ student: string }>();
   const [selectedValue, setSelectedValue] = useState("");

@@ -9,24 +9,18 @@ import { createAxiosInstance } from "@/lib/axios";
 interface pendingGrading {
   projectReview: any;
   reviewLoad: boolean;
-  // count: 0;
-  // next: null;
-  // previous: null;
   fetchProjectReview: (id: string, submissionStatus: string, page:number) => Promise<void>;
 }
 const axios = createAxiosInstance();
 const usePendingGradeStore = create<pendingGrading>((set, get) => ({
   projectReview: [],
   reviewLoad: false,
-  // count: 0,
-  // next: null,
-  // previous: null,
 
   fetchProjectReview: async (
     id,
     submissionStatus = "",
     page = 1,
-    page_size = 10
+    page_size = 2
   ) => {
     try {
       set({ reviewLoad: true });
@@ -44,8 +38,6 @@ const usePendingGradeStore = create<pendingGrading>((set, get) => ({
           projectReview: response.data.results,
           reviewLoad: false,
         });
-        console.log(response.data, "rD");
-        // return response.data.results;
       }
     } catch (error: any) {
       if (error.message === "Network Error") {

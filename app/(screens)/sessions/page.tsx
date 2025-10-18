@@ -17,13 +17,6 @@ const Sessions = () => {
 
   const [selectedNote, setSelectedNote] = useState<string | null>(null);
 
-  const toggleNote = (id: string) => {
-    setExpandedNotes((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
   useEffect(() => {
     fetchSessions(page);
   }, [page, fetchSessions]);
