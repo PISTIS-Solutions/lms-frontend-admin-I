@@ -53,7 +53,6 @@ const Sessions = () => {
                     "Preferred Date",
                     "Assigned To",
                     "Duration",
-                    // "Meeting Link",
                     "Status",
                     "Student name",
                     "Student email",
@@ -94,15 +93,7 @@ const Sessions = () => {
                       <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                         {session.duration} mins
                       </td>
-                      {/* <td className="p-3 border-b">
-                        <a
-                          className="underline text-main cursor-pointer"
-                          href={session.meeting_link}
-                          target="_blank"
-                        >
-                          {session.meeting_link}
-                        </a>
-                      </td> */}
+                     
                       <td className="p-3 border-b capitalize">
                         {session.status}
                       </td>
