@@ -51,9 +51,9 @@ const Sessions = () => {
                   {[
                     "Topic",
                     "Preferred Date",
-                    "Alternative Date",
+                    "Assigned To",
                     "Duration",
-                    "Meeting Link",
+                    // "Meeting Link",
                     "Status",
                     "Student name",
                     "Student email",
@@ -83,14 +83,18 @@ const Sessions = () => {
                         )}
                       </td>
                       <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
-                        {dayjs(session.alternative_date).format(
-                          "D, MMMM, YYYY; HH:mm"
-                        )}
+                        {session?.assigned_to?.first_name ||
+                        session?.assigned_to?.last_name
+                          ? `${session.assigned_to?.first_name ?? ""} ${
+                              session.assigned_to?.last_name ?? ""
+                            }`.trim()
+                          : "-"}
                       </td>
+
                       <td className="p-[6px_12px] capitalize md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                         {session.duration} mins
                       </td>
-                      <td className="p-3 border-b">
+                      {/* <td className="p-3 border-b">
                         <a
                           className="underline text-main cursor-pointer"
                           href={session.meeting_link}
@@ -98,7 +102,7 @@ const Sessions = () => {
                         >
                           {session.meeting_link}
                         </a>
-                      </td>
+                      </td> */}
                       <td className="p-3 border-b capitalize">
                         {session.status}
                       </td>
