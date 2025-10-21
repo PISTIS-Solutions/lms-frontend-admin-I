@@ -54,6 +54,7 @@ const Sessions = () => {
                     "Assigned To",
                     "Duration",
                     "Status",
+                    "Meeting Link",
                     "Student name",
                     "Student email",
                     "Note",
@@ -94,13 +95,18 @@ const Sessions = () => {
                         {session.duration} mins
                       </td>
                      
-                      <td className="p-3 border-b capitalize">
+                      <td className="p-3 capitalize">
                         {session.status}
                       </td>
-                      <td className="p-3 border-b capitalize">
+                      <td className="p-3">
+                        <a target="_blank" href={session?.meeting_link}>
+                          {session?.meeting_link}
+                        </a>
+                      </td>
+                      <td className="p-3 capitalize">
                         {session.user?.first_name} {session.user?.last_name}
                       </td>
-                      <td className="p-3 border-b">{session.user?.email}</td>
+                      <td className="p-3">{session.user?.email}</td>
                       <td className="p-[6px_12px] md:p-[10px_16px] text-[#666666] font-medium text-xs md:text-base">
                         {session.note ? (
                           <button
