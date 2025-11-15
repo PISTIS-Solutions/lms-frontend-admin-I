@@ -19,22 +19,24 @@ const RejectMentorModal = ({ handleRejectModal, selectedMentor }: any) => {
 
   const [loading, setLoading] = useState(false);
   const revokeMentorAccess = async () => {
-    const requestBody = {
-      user_id: selectedMentor?.id,
-      role: selectedMentor?.role
-        ? selectedMentor.role.toLowerCase() === "basic"
-          ? "basic"
-          : selectedMentor.role.toLowerCase() === "advanced"
-          ? "advanced"
-          : selectedMentor.role.toLowerCase() === "admin" ||
-            selectedMentor.role.toLowerCase() === "super_admin"
-          ? "super_admin"
-          : null
-        : null,
-      action: "revoke",
-    };
+    // const requestBody = {
+    //   user_id: selectedMentor?.id,
+    //   role: selectedMentor?.role
+    //     ? selectedMentor.role.toLowerCase() === "basic"
+    //       ? "basic"
+    //       : selectedMentor.role.toLowerCase() === "advanced"
+    //       ? "advanced"
+    //       : selectedMentor.role.toLowerCase() === "admin" ||
+    //         selectedMentor.role.toLowerCase() === "super_admin"
+    //       ? "super_admin"
+    //       : null
+    //     : null,
+    //   action: "revoke",
+    // };
 
-    await mentorAccess(requestBody, handleConfirmReject, setLoading);
+    await mentorAccess(
+      // requestBody, 
+      handleConfirmReject, setLoading, selectedMentor?.id);
   };
 
   return (
