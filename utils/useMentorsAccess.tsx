@@ -9,16 +9,16 @@ import { createAxiosInstance } from "@/lib/axios";
 
 const axios = createAxiosInstance();
 export const mentorAccess = async (
-  // requestBody: any,
+  requestBody: any,
   callback: () => void,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  id:any
+
 ) => {
   try {
     setLoading(true);
     const adminAccessToken = Cookies.get("adminAccessToken");
-    const response = await axios.delete(`${baseURL}/mentors/${id}`,
-      //  requestBody, 
+    const response = await axios.post(`${urls.manageRole}`,
+       requestBody, 
        {
       headers: {
         Authorization: `Bearer ${adminAccessToken}`,
