@@ -74,7 +74,7 @@ const EditCourse = ({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!courseTitle || !hours || !courseLink || !selectedFile || !category) {
+    if (!courseTitle || !courseLink || !selectedFile || !category) {
       toast.error("Form Details incomplete", { theme: "dark" });
       return;
     }
@@ -112,16 +112,14 @@ const EditCourse = ({
         window.location.reload();
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.detail || "Something went wrong", {
-        theme: "dark",
-      });
+      toast.error(error?.response?.data?.detail || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="rounded-[8px] border-t-4 border-t-primary bg-white p-2 md:p-6 w-[90%]">
+    <div className="rounded-[8px] border-t-4 border-t-primary bg-white p-2 md:p-6 h-[80vh] overflow-y-scroll scrollbar-hide w-[70%]">
       <ToastContainer />
       <h1 className="md:text-3xl text-xl font-semibold">Course Details</h1>
 
@@ -197,7 +195,7 @@ const EditCourse = ({
 
         <div>
           <label>Set Course Duration</label>
-          <div className="flex gap-4">
+          <div className="flex items-center text-sm gap-2">
             <Input
               type="number"
               value={hours}

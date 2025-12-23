@@ -7,39 +7,68 @@ import mentorImg from "@/src/assets/avatar.png";
 import { GoDotFill } from "react-icons/go";
 import { Loader2 } from "lucide-react";
 import { mentorAccess } from "@/utils/useMentorsAccess";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { createAxiosInstance } from "@/lib/axios";
+import { baseURL } from "@/utils/config";
+import Cookies from "js-cookie";
 
 const RejectMentorModal = ({ handleRejectModal, selectedMentor }: any) => {
   const [confirmReject, setConfirmReject] = useState(false);
-
+  const axios = createAxiosInstance();
   const handleConfirmReject = () => {
     setConfirmReject(true);
-    
   };
 
   const [loading, setLoading] = useState(false);
-  const revokeMentorAccess = async () => {
-    const requestBody = {
-      user_id: selectedMentor?.id,
-      role: selectedMentor?.role
-        ? selectedMentor.role.toLowerCase() === "basic"
-          ? "basic"
-          : selectedMentor.role.toLowerCase() === "advanced"
-          ? "advanced"
-          : selectedMentor.role.toLowerCase() === "admin" ||
-            selectedMentor.role.toLowerCase() === "super_admin"
-          ? "super_admin"
-          : null
-        : null,
-      action: "revoke",
-    };
+  // const revokeMentorAccess = async () => {
+  //   await mentorAccess(
+  //     handleConfirmReject, setLoading, selectedMentor?.id);
+  // };
 
-    await mentorAccess(requestBody, handleConfirmReject, setLoading);
+  const revokeMentorAccess = async ({ id }: { id: string }) => {
+    try {
+      setLoading(true);
+      const adminAccessToken = Cookies.get("adminAccessToken");
+      const res = await axios.delete(`${baseURL}/mentors/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+
+      if (res.status === 200) {
+        handleConfirmReject();
+        toast.success("Mentor access revoked successfully");
+      }
+    } catch (error: any) {
+      if (error.message === "Network Error") {
+        toast.error("Check your network!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error.response?.data?.detail || "Something went wrong", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "dark",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="p-3">
-      <ToastContainer/>
+      <ToastContainer />
       {confirmReject ? (
         <div className="w-[1/3] max-w-[600px] flex flex-col items-center justify-between h-[345px] p-7 bg-white rounded-[10px] shadow-[0_0_80px_0_rgba(0,0,0,0.4)]">
           <h1 className="text-[#2E2E2E] sm:text-left text-center font-medium text-xl sm:text-2xl">
@@ -101,14 +130,10 @@ const RejectMentorModal = ({ handleRejectModal, selectedMentor }: any) => {
             </button>
             <button
               disabled={loading}
-              onClick={revokeMentorAccess}
+              onClick={() => revokeMentorAccess({ id: selectedMentor?.id })}
               className="bg-[#FF0000] text-center flex items-center justify-center disabled:cursor-not-allowed cursor-pointer disabled:bg-[#ff0000]/50 rounded-[8px] text-[#C4C4C4] py-4 px-5 w-full text-sm sm:text-base font-medium"
             >
-              {loading ? (
-                <Loader2 className=" animate-spin" />
-              ) : (
-                "Revoke Access"
-              )}
+              {loading ? <Loader2 className="animate-spin" /> : "Revoke Access"}
             </button>
           </div>
         </div>

@@ -9,61 +9,53 @@ import { createAxiosInstance } from "@/lib/axios";
 interface pendingGrading {
   projectReview: any;
   reviewLoad: boolean;
-  count: 0;
-  next: null;
-  previous: null;
-  fetchProjectReview: (id: string, submissionStatus: string) => Promise<void>;
+  fetchProjectReview: (
+    id: string,
+    submissionStatus: string,
+    page: number
+  ) => Promise<void>;
 }
 const axios = createAxiosInstance();
 const usePendingGradeStore = create<pendingGrading>((set, get) => ({
   projectReview: [],
   reviewLoad: false,
-  count: 0,
-  next: null,
-  previous: null,
 
-  fetchProjectReview: async (id, submissionStatus = "") => {
+  fetchProjectReview: async (
+    id,
+    submissionStatus = "",
+    page = 1,
+    page_size = 10
+  ) => {
     try {
       set({ reviewLoad: true });
       const adminAccessToken = Cookies.get("adminAccessToken");
+
       const response = await axios.get(
-        `${urls.projectReview}${id}/?submission_status=${submissionStatus}`,
+        `${urls.projectReview}${id}/?status=${submissionStatus}&page=${page}&page_size=${page_size}`,
         {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
           },
         }
       );
-      if (response.status === 200) {
-        set({
-          projectReview: response.data.results,
-          reviewLoad: false,
-          count: response.data.count,
-          next: response.data.next,
-          previous: response.data.previous,
-        });
-        // console.log(response.data, "rD");
-        return response.data.results;
-      }
+
+      set({
+        projectReview: response.data.results ?? [],
+        reviewLoad: false,
+      });
     } catch (error: any) {
-    if (error.message === "Network Error") {
-        toast.error("Check your network!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "dark",
-        });
+      console.log(error, "error")
+      if (
+        error.response?.status === 404 ||
+        error.response?.data?.detail === "Invalid page"
+      ) {
+        set({ projectReview: [] });
+      }
+
+      if (error.message === "Network Error") {
+        toast.error("Check your network!", { theme: "dark" });
       } else {
-        toast.error(error.response?.data?.detail, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
+        toast.error(error.response?.data?.detail || "Something went wrong", {
           theme: "dark",
         });
       }

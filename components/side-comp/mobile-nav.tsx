@@ -39,10 +39,10 @@ const MobileNav = ({ role }: any) => {
       title: "Dashboard",
       link: "dashboard",
     },
-    {
-      icon: <ImBooks />,
-      title: "Course Content",
-      link: "courses",
+    role === "super_admin" && {
+      icon: <FaChalkboardUser />,
+      title: "Mentors",
+      link: "mentors",
     },
     {
       icon: <RiGraduationCapFill />,
@@ -50,19 +50,15 @@ const MobileNav = ({ role }: any) => {
       link: "students",
     },
     {
+      icon: <ImBooks />,
+      title: "Course Content",
+      link: "courses",
+    },
+
+    {
       icon: <CgNotes />,
       title: "Projects",
       link: "project",
-    },
-    {
-      icon: <IoWifiOutline />,
-      title: "Live Sessions",
-      link: "cohorts",
-    },
-    {
-      icon: <RiCoupon2Fill />,
-      title: "Coupon",
-      link: "coupon",
     },
     {
       icon: <IoReaderSharp />,
@@ -74,11 +70,17 @@ const MobileNav = ({ role }: any) => {
       title: "Sessions",
       link: "sessions",
     },
-    role === "super_admin" && {
-      icon: <FaChalkboardUser />,
-      title: "Mentors",
-      link: "mentors",
+    {
+      icon: <IoWifiOutline />,
+      title: "Live Sessions",
+      link: "cohorts",
     },
+    {
+      icon: <RiCoupon2Fill />,
+      title: "Coupon",
+      link: "coupon",
+    },
+
     {
       icon: <IoMdSettings />,
       title: "Settings",

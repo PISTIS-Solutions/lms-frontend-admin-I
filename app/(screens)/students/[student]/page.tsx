@@ -25,12 +25,11 @@ const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
     projectReview,
     reviewLoad,
     fetchProjectReview,
-    count,
-    next,
-    previous,
   } = usePendingGradeStore();
   const params = useParams<{ student: string }>();
   const [selectedValue, setSelectedValue] = useState("");
+
+  const [page, setPage] = useState(1)
 
   const [timeLeftString, setTimeLeftString] = useState("");
   const [lastLoginString, setLastLoginString] = useState("");
@@ -42,8 +41,8 @@ const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
   }, [id]);
 
   useEffect(() => {
-    fetchProjectReview(id, selectedValue);
-  }, [id, selectedValue]);
+    fetchProjectReview(id, selectedValue, page);
+  }, [id, selectedValue, page]);
 
   useEffect(() => {
     if (studentData?.time_left) {
@@ -192,9 +191,11 @@ const filterData = ["Pending", "Reviewed", "Submitted", "Rejected"];
                 <ProjectReview
                   reviewLoad={reviewLoad}
                   projectReview={projectReview}
-                  count={count}
-                  next={next}
-                  previous={previous}
+                  // count={count}
+                  // next={next}
+                  // previous={previous}
+                  page={page}
+                  setPage={setPage}
                   fetchProjectReview={fetchProjectReview}
                 />
               </div>

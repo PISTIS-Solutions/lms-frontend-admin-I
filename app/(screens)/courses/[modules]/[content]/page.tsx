@@ -52,6 +52,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import { GrTarget } from "react-icons/gr";
 import { IoTrash } from "react-icons/io5";
 import { createAxiosInstance } from "@/lib/axios";
+import ProtectedVideoPlayer from "@/components/side-comp/protectedVideo";
 
 const Content = () => {
   const params = useParams<{ modules: string; content: string }>();
@@ -135,7 +136,7 @@ const Content = () => {
           fetchCourseRead(courseID);
         }
       } catch (error: any) {
-       if (error?.message === "Network Error") {
+        if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -269,6 +270,9 @@ const Content = () => {
     setRole(userRole);
   }, []);
 
+  const isYouTubeLink = (url?: string) =>
+    !!url && /(youtube\.com|youtu\.be|vimeo\.com)/i.test(url);
+
   return (
     <main className="relative h-screen bg-[#F8F9FF]">
       <SideNav />
@@ -337,24 +341,29 @@ const Content = () => {
               </div>
               <div className="md:grid flex flex-col-reverse gap-x-2 grid-cols-10">
                 <span className="relative col-span-7 md:h-[428px] md:my-0 my-4">
-                  <ReactPlayer
-                    controls={true}
-                    width="100%"
-                    height="100%"
-                    playing={false}
-                    url={moduleData?.module_video_link}
-                    className=""
-                    config={{
-                      youtube: {
-                        playerVars: {
-                          modestbranding: 1,
-                          controls: 1,
+                  {isYouTubeLink(moduleData?.module_video_link) ? (
+                    <ReactPlayer
+                      url={moduleData?.module_video_link}
+                      controls
+                      width="100%"
+                      height="100%"
+                      playing={false}
+                      className="md:h-[428px] md:my-0 my-4"
+                      config={{
+                        youtube: {
+                          playerVars: {
+                            controls: 1,
+                            modestbranding: 1,
+                          },
                         },
-                      },
-                    }}
-                  />
-                  {/* <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute top-0" />
-                  <div className=" bg-transparent cursor-not-allowed w-full h-14 absolute bottom-0" /> */}
+                      }}
+                    />
+                  ) : (
+                    <ProtectedVideoPlayer
+                      videoUrl={moduleData?.module_video_link!}
+                      className="md:h-[428px] md:my-0 my-4 w-full"
+                    />
+                  )}
                 </span>
                 <ScrollArea className="my-2 md:my-0 col-span-3 max-h-[428px]">
                   {loading ? (
