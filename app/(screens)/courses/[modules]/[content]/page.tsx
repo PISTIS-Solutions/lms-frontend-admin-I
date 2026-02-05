@@ -115,7 +115,7 @@ const Content = () => {
               Authorization: `Bearer ${adminAccessToken}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (response.status === 200) {
@@ -135,7 +135,7 @@ const Content = () => {
           fetchCourseRead(courseID);
         }
       } catch (error: any) {
-       if (error?.message === "Network Error") {
+        if (error?.message === "Network Error") {
           toast.error("Check your network!", {
             position: "top-right",
             autoClose: 5000,
@@ -202,7 +202,7 @@ const Content = () => {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 204) {
@@ -336,7 +336,7 @@ const Content = () => {
                 )}
               </div>
               <div className="md:grid flex flex-col-reverse gap-x-2 grid-cols-10">
-                <span className="relative col-span-7 md:h-[428px] md:my-0 my-4">
+                <span className="relative col-span-7 md:my-0 my-4">
                   <ReactPlayer
                     controls={true}
                     width="100%"
