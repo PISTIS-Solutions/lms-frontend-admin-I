@@ -116,7 +116,7 @@ const Content = () => {
               Authorization: `Bearer ${adminAccessToken}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (response.status === 200) {
@@ -203,7 +203,7 @@ const Content = () => {
           headers: {
             Authorization: `Bearer ${adminAccessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 204) {
